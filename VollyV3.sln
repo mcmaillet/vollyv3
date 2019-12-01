@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VollyV3", "VollyV3\VollyV3.csproj", "{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VollyV3", "VollyV3\VollyV3.csproj", "{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
