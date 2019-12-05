@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using VollyV3.Models;
 using VollyV3.Services;
 using VollyV3.Services.HostedServices;
+using VollyV3.Services.ImageManager;
 
 namespace VollyV3
 {
@@ -61,8 +62,6 @@ namespace VollyV3
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            //services.AddSingleton<IImageManager, ImageManager>();
-
             services.AddMemoryCache();
 
             services.AddMvc(options =>
@@ -84,6 +83,10 @@ namespace VollyV3
 
             services.AddHostedService<RoleSeedingService>();
             services.AddHostedService<PlatformAdministratorSeedingService>();
+            services.AddHostedService<TestOrganizationAdministratorSeedingService>();
+            services.AddHostedService<TestVolunteerSeedingService>();
+
+            services.AddSingleton<IImageManager, ImageManagerImpl>();
         }
 
         public void Configure(

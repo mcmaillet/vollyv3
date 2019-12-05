@@ -5,6 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20191201131052_AddOpportunitySupport.cs" />
+    <Compile Remove="Migrations\20191201131052_AddOpportunitySupport.Designer.cs" />
+    <Compile Remove="Migrations\20191201131436_AddOpportunitySupport.cs" />
+    <Compile Remove="Migrations\20191201131436_AddOpportunitySupport.Designer.cs" />
+    <Compile Remove="Migrations\20191201132149_AddOpportunitySupport.cs" />
+    <Compile Remove="Migrations\20191201132149_AddOpportunitySupport.Designer.cs" />
+    <Compile Remove="Migrations\20191201132406_AddOpportunitySupport.cs" />
+    <Compile Remove="Migrations\20191201132406_AddOpportunitySupport.Designer.cs" />
+    <Compile Remove="Migrations\20191201133303_AddOpportunitySupport.cs" />
+    <Compile Remove="Migrations\20191201133303_AddOpportunitySupport.Designer.cs" />
+    <Compile Remove="Migrations\20191201133557_AddOpportunitySupport.cs" />
+    <Compile Remove="Migrations\20191201133557_AddOpportunitySupport.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0" />
@@ -17,6 +32,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Sendgrid" Version="9.12.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,23 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/css/home.browse.min.css",
+    "inputFiles": [
+      "wwwroot/css/home.browse.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/home.browse.min.js",
+    "inputFiles": [
+      "wwwroot/js/home.browse.js"
+    ],
+    "minify": { "enabled": true }
+  }
+]

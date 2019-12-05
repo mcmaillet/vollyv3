@@ -1,0 +1,70 @@
+﻿.img-opp img {
+    width: 100%;
+    max-height: 100%;
+}
+
+
+.wrap-map {
+    position: fixed;
+    right: 0;
+}
+
+#toggleMap {
+    display: none;
+}
+
+@media (max-width:768px) {
+    #toggleMap {
+        display: unset;
+    }
+
+    #searchNearMe {
+        display: none;
+    }
+
+    .wrap-map {
+        position: relative !important;
+    }
+
+    .map {
+        float: unset;
+    }
+
+    .wrap-toggle {
+        right: unset;
+        left: 0;
+        position: absolute !important;
+        margin-bottom: 15px;
+        height: 100%;
+    }
+
+    #wrap-main {
+        margin-top: 15px;
+    }
+
+    #map {
+        opacity: 0;
+        height: 0;
+    }
+}
+
+.wrap-toggle {
+    text-align: center;
+    visibility: visible;
+    position: fixed;
+    right: 0;
+    z-index: 100;
+    margin-right: 15px;
+}
+
+#opportunityList div.result-card {
+    opacity: 1;
+    -webkit-transition: opacity linear 1s;
+    -moz-transition: opacity linear 1s;
+    -o-transition: opacity linear 1s;
+    transition: opacity linear 1s;
+}
+
+    #opportunityList div.result-card.hide {
+        opacity: 0 !important;
+    }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VollyV3.Data;
-using VollyV3.GlobalConstants;
 using VollyV3.Models.Users;
 
 namespace VollyV3.Models
@@ -16,7 +15,6 @@ namespace VollyV3.Models
         public DbSet<Opportunity> Opportunities { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<OrganizationAdministratorUser> OrganizationAdministratorUsers { get; set; }
-        public DbSet<VolunteerUser> VolunteerUsers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Cause> Causes { get; set; }
         public DbSet<Location> Locations { get; set; }
@@ -55,10 +53,9 @@ namespace VollyV3.Models
             //    .HasOne(uc => uc.Cause)
             //    .WithMany(uc => uc.Users)
             //    .HasForeignKey(uc => uc.CauseId);
+
             builder.Entity<OrganizationAdministratorUser>()
-                .HasKey(u => u.UserId);
-            builder.Entity<VolunteerUser>()
-                .HasKey(x => x.UserId);
+                .HasKey(x => new { x.UserId, x.OrganizationId });
 
             builder.Entity<Organization>()
                 .HasKey(o => o.Id);

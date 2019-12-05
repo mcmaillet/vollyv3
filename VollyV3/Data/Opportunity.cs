@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VollyV3.Models;
 using VollyV3.Models.Users;
+using VollyV3.Services.ImageManager;
 
 namespace VollyV3.Data
 {
@@ -67,20 +69,20 @@ namespace VollyV3.Data
             };
         }
 
-        //public async Task<OpportunityImage> UploadImage(IImageManager imageManager, ApplicationDbContext context, IFormFile imageFile)
-        //{
-        //    string imageUrl = await imageManager.UploadImageAsync(imageFile, GetImageFileName(imageFile.FileName));
-        //    OpportunityImage image = new OpportunityImage()
-        //    {
-        //        OpportunityId = Id,
-        //        ImageUrl = imageUrl
+        public async Task<OpportunityImage> UploadImage(IImageManager imageManager, ApplicationDbContext context, IFormFile imageFile)
+        {
+            string imageUrl = await imageManager.UploadImageAsync(imageFile, GetImageFileName(imageFile.FileName));
+            OpportunityImage image = new OpportunityImage()
+            {
+                OpportunityId = Id,
+                ImageUrl = imageUrl
 
-        //    };
-        //    context.OpportunityImages.Add(image);
-        //    await context.SaveChangesAsync();
+            };
+            context.OpportunityImages.Add(image);
+            await context.SaveChangesAsync();
 
-        //    return image;
-        //}
+            return image;
+        }
 
         private string GetImageFileName(string fileName)
         {

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using VollyV3.Models
+@using VollyV3.Areas.Identity
 
 @inject SignInManager<VollyV3User> SignInManager
 @inject UserManager<VollyV3User> UserManager
@@ -7,27 +8,14 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle"
-               href="#"
-               id="organizationAdministatorMenu"
-               role="button"
-               data-toggle="dropdown"
-               aria-haspopup="true"
-               aria-expanded="false">
-                Administrator Menu
-            </a>
-            <div class="dropdown-menu" aria-labelledby="organizationAdministatorMenu">
-                <a class="dropdown-item"
-                   asp-area=""
-                   asp-controller="Opportunities"
-                   asp-action="Index">Manage Opportunities</a>
-                <a class="dropdown-item"
-                   asp-area=""
-                   asp-controller="Applications"
-                   asp-action="Index">Manage Applications</a>
-            </div>
-        </li>
+        if (User.IsInRole(Enum.GetName(typeof(Role), Role.OrganizationAdministrator)))
+        {
+            <partial name="NavigationBar/_OrganizationAdministratorMenu" />
+        }
+        if (User.IsInRole(Enum.GetName(typeof(Role), Role.PlatformAdministrator)))
+        {
+            <partial name="NavigationBar/_PlatformAdministratorMenu" />
+        }
         <li class="nav-item">
             <a id="manage" class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
         </li>

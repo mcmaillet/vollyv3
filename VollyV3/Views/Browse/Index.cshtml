@@ -1,53 +1,177 @@
-﻿@{
-     Layout = "/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Home";
-    ViewData["BodyClass"] = "class=blend";
-    ViewData["DarkNav"] = true;
+﻿@using VollyV3.Data
+@model VollyV3.Models.ViewModels.Components.MapViewModel
+
+@{
+    ViewData["Title"] = "Browse Opportunities";
 }
-
-<div class="container">
-    <div class="jumbotron vollytron">
-        <div class="row">
-            <div class="col-md-12 col-lg-8">
-                <div class="vtitle">Volunteering in Calgary has never been easier! Sign up. Show up.</div>
+<link rel="stylesheet" href="/css/home.browse.min.css" asp-append-version="true" />
+<div class="container-fluid">
+    <div class="row">
+        <div id="wrap-main" class="col-lg-8 col-md-8 col-sm-12 order-lg-first order-md-first order-last">
+            <br />
+            <div class="alert alert-success" id="nothingFoundAlert">
+                <h4 class="alert-heading">Sorry! Nothing found!</h4>
+                <p>Please change your search criteria to browse available opportunities</p>
+                <hr>
+                <p class="mb-0">If you see nothing that you like, please <a href="/Home/Contact">Contact Us</a> and make a suggestion. Thank you!</p>
             </div>
-            <div class="col-md-12 col-lg-4">
-                <div class="start-browsing">
-                    <a asp-action="Opportunities">
-                        <img src="~/images/assets/startbrowsing.png" />
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="vtext">
-            We’ve created a user-friendly platform for you to learn about non-profits in Calgary and find fun ways to give back to your community.
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-lg-8">
-                <div id="mc_embed_signup">
-                    <form id="mc-embedded-subscribe-form" class="validate" action="https://vollyapp.us18.list-manage.com/subscribe/post?u=8ff31a021b0b0effbd6a226bc&amp;id=3b751364e1" method="post" name="mc-embedded-subscribe-form" novalidate="" target="_blank">
-                        <div id="mc_embed_signup_scroll" class="secondary-text">
-                            <label for="mce-EMAIL">Subscribe to our mailing list</label>
-                            <input id="mce-EMAIL" class="email" name="EMAIL" required="" type="email" value="" placeholder="email address" />
-                        </div>
-                        <div style="position: absolute; left: -5000px;" aria-hidden="true">
-                            <input tabindex="-1" name="b_8ff31a021b0b0effbd6a226bc_3b751364e1" type="text" value="" />
-                        </div>
-                        <div class="clear">
-                            <input id="mc-embedded-subscribe" class="button" name="subscribe" type="submit" value="Subscribe" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-12 col-lg-4">
-                <a href="https://www.paypal.me/VollyApp" target="_blank">
-                    <img src="~/images/assets/makeadonation.png" />
-                </a>
+            <ul class="nav nav-tabs">
+                @{
+                    foreach (OpportunityType opportunityType in Enum.GetValues(typeof(OpportunityType)))
+                    {
+                        int type = (int)opportunityType;
+                        <li class="nav-item">
+                            <a class="nav-link opportunityType" id="@opportunityType" value="@type" data-toggle="tab" href="#home">@OpportunityName.MapDictionary.GetValueOrDefault(opportunityType, opportunityType.ToString())</a>
+                        </li>
+                    }
+                }
+            </ul>
+            <div class="row" id="opportunityList">
             </div>
         </div>
 
-        <a href="http://www.facebook.com/vollyapp" target="_blank">
-            <img src="~/images/assets/fblike.png" class="bottom-right-notify" />
-        </a>
+        <div class="col-lg-4 col-md-4 col-sm-12 order-sm-first order-first wrap-map">
+            <div class="sticky-top">
+                <input type="button" id="toggleMap" class="btn-map btn btn-light" data-show="1" value="Show Map" />
+                <input type="button" id="searchNearMe" class="btn-map btn btn-light" value="Focus Near Me" />
+                <div class="map" id="map"></div>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+
+<div class="modal fade" id="OpportunityModal" tabindex="-1" role="dialog" aria-labelledby="OpportunityModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="OpportunityModalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Apply" id="applyForm">
+                <div class="modal-body">
+                    <a target="resource window" id="OpportunityModalOrganizationUrl"><div id="OpportunityModalOrganization"></div></a>
+                    <div id="fb-share-wrap" class="share-wrap">
+                        <a target="resource window" id="fb-share">
+                            <img src="~/images/assets/fb-logo.png" />
+                            Share
+                        </a>
+                    </div>
+                    <div id="tw-share-wrap" class="share-wrap">
+                        <a target="resource window" id="tw-share">
+                            <img src="~/images/assets/tw-logo.png" />
+                            Tweet
+                        </a>
+                    </div>
+                    <div id="ln-share-wrap" class="share-wrap">
+                        Share Link: <a id="ln-share"></a>
+                    </div>
+                    <a id="ModalAddressHref" target="_blank"><div class="text-warning" id="ModalAddress"></div></a>
+                    <span class="badge badge-success" id="OpportunityModalCategory"></span>
+                    <span class="badge badge-warning" id="OpportunityModalCause"></span>
+                    <span class="badge badge-info" id="OpportunityModalTime"></span>
+                    <span class="badge badge-danger" id="OpportunityModalSpotsRemaining"></span>
+                    <br />
+                    <div id="ModalDescription" class="div-description"></div>
+                    <input asp-for="@Model.ApplyModel.OpportunityId" type="hidden" class="form-control" id="OpportunityId" />
+                    <div>
+                        Have a question before applying?
+                        <a asp-controller="Home" asp-action="Contact">Contact Volly</a>
+                    </div>
+                    <div id="apply-now"> Apply Now:</div>
+                    <div class="form-group row apply-opportunity-row">
+                        <label asp-for="@Model.ApplyModel.Name" class="col-form-label col-sm-2">Name</label>
+                        <input asp-for="@Model.ApplyModel.Name" class="form-control col-sm-10" />
+                        <span asp-validation-for="@Model.ApplyModel.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row apply-opportunity-row">
+                        <label asp-for="@Model.ApplyModel.Email" class="col-form-label col-sm-2">Email</label>
+                        <input asp-for="@Model.ApplyModel.Email" class="form-control col-sm-10" />
+                        <span asp-validation-for="@Model.ApplyModel.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row apply-opportunity-row">
+                        <label asp-for="@Model.ApplyModel.PhoneNumber" class="col-form-label col-sm-2">Phone</label>
+                        <input asp-for="@Model.ApplyModel.PhoneNumber" class="form-control col-sm-10" />
+                        <span asp-validation-for="@Model.ApplyModel.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" id="occurrencesSelect">
+                        <label asp-for="@Model.ApplyModel.OccurrenceIds" class="row apply-opportunity-row col-form-label">Select a time:</label>
+                        <div class="row apply-opportunity-row">
+                            <select asp-for="@Model.ApplyModel.OccurrenceIds" class="form-control" id="occurrencesInput" multiple="multiple"></select>
+                            <span asp-validation-for="@Model.ApplyModel.OccurrenceIds" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.ApplyModel.Message" class="row apply-opportunity-row col-form-label">Message</label>
+                        <div class="row apply-opportunity-row">
+                            <textarea asp-for="@Model.ApplyModel.Message" class="form-control col-sm-12" rows="4" placeholder="Send a custom message. Please state your availability if you cannot help out the whole time"></textarea>
+                            <span asp-validation-for="@Model.ApplyModel.Message" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="VolunteerSubmit">Volunteer</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<div class="modal fade" id="ApplyModal" tabindex="-1" role="dialog" aria-labelledby="ApplyModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ApplyModalTitle">Thanks for applying</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Thank you for applying! you will receive an email confirmation shortly!</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden="hidden" id="InitialOpportunity">@ViewData["OpportunityId"]</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" />
+
+<script src="~/js/gmaps.js"></script>
+
+<script src="~/js/home.browse.min.js" asp-append-version="true"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCi84qEblX_oHY4fLUW8pjliIsrXZJs3eI&callback=initMap"></script>
+
+<script>
+    $('#applyForm').submit(function (e) {
+        var $theForm = $(this);
+        $('#VolunteerSubmit').prop('disabled', true);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                $('#OpportunityModal').modal('hide');
+                $('#ApplyModal').modal('show');
+                $theForm.trigger("reset");
+                $('#VolunteerSubmit').prop('disabled', false);
+            },
+            error: function (data) {
+                $('#VolunteerSubmit').prop('disabled', false);
+            }
+        });
+        return false;
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

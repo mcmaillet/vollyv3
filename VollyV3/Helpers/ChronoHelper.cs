@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using VollyV3.Data;
 
 namespace VollyV3.Helpers
 {
     public class ChronoHelper
     {
         private static readonly TimeZoneInfo TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(
-            GlobalConstants.Data.TimeZoneId);
+            GlobalConstants.TimeZoneId);
 
         public static DateTime ConvertFromUtc(DateTime dateTime)
         {

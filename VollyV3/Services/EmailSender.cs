@@ -4,6 +4,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VollyV3.Data;
 
 namespace VollyV3.Services
 {
@@ -22,7 +23,7 @@ namespace VollyV3.Services
             var client = new SendGridClient(SendgridApiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress(FromEmail, GlobalConstants.Data.FromEmailName),
+                From = new EmailAddress(FromEmail, GlobalConstants.FromEmailName),
                 Subject = subject,
                 HtmlContent = message,
                 PlainTextContent = message
@@ -49,7 +50,7 @@ namespace VollyV3.Services
 
             SendGridMessage sendGridMessage = new SendGridMessage()
             {
-                From = new EmailAddress(FromEmail, GlobalConstants.Data.FromEmailName),
+                From = new EmailAddress(FromEmail, GlobalConstants.FromEmailName),
                 Subject = "Volly: Account auto created",
                 HtmlContent = messageText,
                 PlainTextContent = messageText

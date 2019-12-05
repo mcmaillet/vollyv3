@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using VollyV3.Models;
 using VollyV3.Models.Users;
 
 namespace VollyV3.Data
@@ -17,6 +18,6 @@ namespace VollyV3.Data
         public string Message { get; set; }
         public DateTime DateTime { get; set; }
         public string UserId { get; set; }
-        public virtual VolunteerUser User { get; set; }
+        public virtual VollyV3User VollyV3User { get; set; }
     }
 }
