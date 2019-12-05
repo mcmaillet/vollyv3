@@ -16,8 +16,8 @@ namespace VollyV3.Models.ViewModels.Components
         public string OrganizationLink { get; set; }
         public string CauseName { get; set; }
         public string CategoryName { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
         public string CommunityName { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
@@ -36,20 +36,21 @@ namespace VollyV3.Models.ViewModels.Components
                 Address = opportunity.Address,
                 OrganizationName = opportunity.Organization.Name,
                 OrganizationLink = opportunity.Organization.WebsiteLink,
-                CauseName = opportunity.Organization.Cause.Name,
-                CategoryName = opportunity.Category.Name,
-                Latitude = opportunity.Location.Latitude,
-                Longitude = opportunity.Location.Longitude,
+                CauseName = opportunity.Organization.Cause?.Name,
+                CategoryName = opportunity.Category?.Name,
+                Latitude = opportunity.Location?.Latitude,
+                Longitude = opportunity.Location?.Longitude,
                 CommunityName = opportunity.Community?.Name,
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
-                OccurrenceViews = opportunity.Occurrences
-                    .Where(oc => oc.ApplicationDeadline > DateTime.Now &&
-                    oc.Openings > oc.Applications.Count)
-                    .OrderBy(o => o.StartTime)
-                    .Select(OccurrenceViewModel.FromOccurrence)
-                    .ToList(),
+                OccurrenceViews = null,
+                //opportunity.Occurrences
+                //    .Where(oc => oc.ApplicationDeadline > DateTime.Now &&
+                //    oc.Openings > oc.Applications.Count)
+                //    .OrderBy(o => o.StartTime)
+                //    .Select(OccurrenceViewModel.FromOccurrence)
+                //    .ToList(),
                 Approved = opportunity.Approved
             };
         }

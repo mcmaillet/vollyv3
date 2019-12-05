@@ -39,24 +39,25 @@ namespace VollyV3.Controllers.API
             List<OpportunityViewModel> opportunityViews = opportunities
                 .Where(GetEligibleOpportunityPredicate(opportunitySearch))
                 .Select(OpportunityViewModel.FromOpportunity)
-                .Where(o => o.OccurrenceViews.Count > 0)
+                //.Where(o => o.OccurrenceViews?.Count > 0)
                 .ToList();
-
-            return Ok(Sort(opportunityViews, opportunitySearch.Sort));
+            return Ok(opportunityViews);
+            //return Ok(Sort(opportunityViews, opportunitySearch.Sort));
         }
         private static Func<Opportunity, bool> GetEligibleOpportunityPredicate(OpportunitySearch opportunitySearch)
         {
-            return o =>
-                (opportunitySearch.CauseIds == null || o.Organization.Cause != null &&
-                 opportunitySearch.CauseIds.Contains(o.Organization.Cause.Id)) &&
-                (opportunitySearch.CategoryIds == null ||
-                 opportunitySearch.CategoryIds.Contains(o.Category.Id)) &&
-                (opportunitySearch.OrganizationIds == null ||
-                 opportunitySearch.OrganizationIds.Contains(o.Organization.Id)) &&
-                (opportunitySearch.CommunityIds == null || o.Community != null &&
-                 opportunitySearch.CommunityIds.Contains(o.Community.Id)) &&
-                (opportunitySearch.OpportunityType == OpportunityType.All || opportunitySearch.OpportunityType == o.OpportunityType) &&
-                o.Approved;
+            return o => true;
+            //return o =>
+            //    (opportunitySearch.CauseIds == null || o.Organization.Cause != null &&
+            //     opportunitySearch.CauseIds.Contains(o.Organization.Cause.Id)) &&
+            //    (opportunitySearch.CategoryIds == null ||
+            //     opportunitySearch.CategoryIds.Contains(o.Category.Id)) &&
+            //    (opportunitySearch.OrganizationIds == null ||
+            //     opportunitySearch.OrganizationIds.Contains(o.Organization.Id)) &&
+            //    (opportunitySearch.CommunityIds == null || o.Community != null &&
+            //     opportunitySearch.CommunityIds.Contains(o.Community.Id)) &&
+            //    (opportunitySearch.OpportunityType == OpportunityType.All || opportunitySearch.OpportunityType == o.OpportunityType) &&
+            //    o.Approved;
         }
         private List<OpportunityViewModel> Sort(List<OpportunityViewModel> opportunityViews, int sort)
         {

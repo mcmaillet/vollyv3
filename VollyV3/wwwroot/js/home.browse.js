@@ -74,11 +74,13 @@ function appendOpportunityPanel(opportunity, marker) {
     var dateTimeStringWrapper = "";
     if (opportunity.opportunityType == 1) {
         var dateTimeString = "Multiple Shifts";
-        if (opportunity.occurrenceViews.length === 1) {
-            var firstOccurrence = opportunity.occurrenceViews[0];
-            dateTimeString = prettyFormatDateTimes(firstOccurrence.startTime, firstOccurrence.endtime, true);
-        } else if (opportunity.occurrenceViews.length === 0) {
-            dateTimeString = "Ongoing";
+        if (opportunity.occurrenceViews) {
+            if (opportunity.occurrenceViews.length === 1) {
+                var firstOccurrence = opportunity.occurrenceViews[0];
+                dateTimeString = prettyFormatDateTimes(firstOccurrence.startTime, firstOccurrence.endtime, true);
+            } else if (opportunity.occurrenceViews.length === 0) {
+                dateTimeString = "Ongoing";
+            }
         }
         dateTimeStringWrapper = '<div class="wrap-center"><div class="result-datetime">' + dateTimeString + '</div></div>';
     }
@@ -112,16 +114,18 @@ function appendOpportunityPanel(opportunity, marker) {
 
 function getOccurrenceSelectors(occurrences) {
     var element = "";
-    for (var i = 0; i < occurrences.length; i++) {
-        var selected = "";
-        if (i === 0) {
-            selected = "selected";
+    if (occurrences) {
+        for (var i = 0; i < occurrences.length; i++) {
+            var selected = "";
+            if (i === 0) {
+                selected = "selected";
+            }
+            var occurrence = occurrences[i];
+            element = element + "<option value='" + occurrence.id +
+                "'" + selected +
+                ">" + prettyFormatDateTimes(occurrence.startTime, occurrence.endTime, false) +
+                " (" + occurrence.openings + " spots remaining) </option>";
         }
-        var occurrence = occurrences[i];
-        element = element + "<option value='" + occurrence.id +
-            "'" + selected +
-            ">" + prettyFormatDateTimes(occurrence.startTime, occurrence.endTime, false) +
-            " (" + occurrence.openings + " spots remaining) </option>";
     }
     return element;
 }

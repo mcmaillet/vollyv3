@@ -24,7 +24,7 @@ namespace VollyV3.Services
                     .ToListAsync();
 
                 List<Opportunity> opportunities = await context.Opportunities
-                    .Where(o => opportunityIds.Contains(o.Id) && o.Approved)
+                    .Where(o => o.Approved)
                     .Include(o => o.Category)
                     .Include(o => o.Community)
                     .Include(o => o.Organization)
