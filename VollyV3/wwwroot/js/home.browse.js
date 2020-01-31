@@ -204,7 +204,6 @@ function filter(opportunityType) {
         "CategoryIds": null,
         "CauseIds": null,
         "OrganizationIds": null,
-        "CommunityIds": null,
         "OpportunityType": opportunityType,
         "Dates": null,
         "Sort": 1
@@ -237,9 +236,7 @@ $("#categories-a").click(function (e) {
 $("#organizations-a").click(function (e) {
     toggleFilterVisibility(e.target.id);
 });
-$("#communities-a").click(function (e) {
-    toggleFilterVisibility(e.target.id);
-});
+
 function toggleFilterVisibility(filterid) {
     if ($("#" + filterid).hasClass("active")) {
         if ($("#filter-wrapper").hasClass("filter-wrapper-hide")) {

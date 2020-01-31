@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +33,6 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             VollyV3User user = await _userManager.GetUserAsync(HttpContext.User);
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.Category)
-                .Include(o => o.Community)
                 .Include(o => o.Organization);
 
             List<Opportunity> opportunities;
@@ -56,9 +54,6 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 Organizations = new SelectList(_context.Organizations
                 .OrderBy(o => o.Name)
                 .ToList(), "Id", "Name"),
-                Communities = new SelectList(_context.Communities
-                .OrderBy(o => o.Name)
-                .ToList(), "Id", "Name")
             };
             return View(model);
         }

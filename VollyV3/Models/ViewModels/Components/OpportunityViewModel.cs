@@ -18,7 +18,6 @@ namespace VollyV3.Models.ViewModels.Components
         public string CategoryName { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
-        public string CommunityName { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
         public OpportunityType OpportunityType { get; set; }
@@ -40,7 +39,6 @@ namespace VollyV3.Models.ViewModels.Components
                 CategoryName = opportunity.Category?.Name,
                 Latitude = opportunity.Location?.Latitude,
                 Longitude = opportunity.Location?.Longitude,
-                CommunityName = opportunity.Community?.Name,
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,

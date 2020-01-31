@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using VollyV3.Data;
 using VollyV3.Services;
 using VollyV3.Services.ImageManager;
@@ -31,7 +28,6 @@ namespace VollyV3.Models.Volly
         public int CommunityId { get; set; }
         public SelectList Organizations { get; set; }
         public SelectList Categories { get; set; }
-        public SelectList Communities { get; set; }
         public string ImageUrl { get; set; }
         [Display(Name = "Upload an image for this event")]
         public IFormFile ImageFile { get; set; }
@@ -51,7 +47,6 @@ namespace VollyV3.Models.Volly
                 Address = opportunity.Address,
                 OrganizationId = opportunity.Organization.Id,
                 CategoryId = opportunity.Category.Id,
-                CommunityId = opportunity.Community?.Id ?? 0,
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
@@ -59,9 +54,6 @@ namespace VollyV3.Models.Volly
                     .OrderBy(c => c.Name)
                     .ToList(), "Id", "Name"),
                 Organizations = new SelectList(dbContext.Organizations
-                    .OrderBy(o => o.Name)
-                    .ToList(), "Id", "Name"),
-                Communities = new SelectList(dbContext.Communities
                     .OrderBy(o => o.Name)
                     .ToList(), "Id", "Name"),
                 Approved = opportunity.Approved
@@ -83,7 +75,6 @@ namespace VollyV3.Models.Volly
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
             opportunity.Organization = context.Organizations.Find(OrganizationId);
             opportunity.Category = context.Categories.Find(CategoryId);
-            opportunity.Community = context.Communities.Find(CommunityId);
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
             opportunity.OpportunityType = OpportunityType;
             return opportunity;

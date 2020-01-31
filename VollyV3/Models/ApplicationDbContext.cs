@@ -24,7 +24,6 @@ namespace VollyV3.Models
         public DbSet<ApplicationOccurrence> ApplicationsOccurrence { get; set; }
         //public DbSet<Company> Companies { get; set; }
         //public DbSet<VolunteerHours> VolunteerHours { get; set; }
-        public DbSet<Community> Communities { get; set; }
         //public DbSet<UserCause> UserCauses { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
