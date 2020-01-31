@@ -14,7 +14,6 @@ namespace VollyV3.Models.ViewModels.Components
         public List<int> Causes { get; set; }
         public List<int> Categories { get; set; }
         public List<int> Organizations { get; set; }
-        public List<int> Communities { get; set; }
-        public ApplyViewModel ApplyModel { get; set; }
+        public ApplyViewModel ApplyViewModel { get; set; }
     }
 }

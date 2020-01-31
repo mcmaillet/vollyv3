@@ -15,13 +15,12 @@ namespace VollyV3.Models.ViewModels.Components
         public string OrganizationName { get; set; }
         public string OrganizationLink { get; set; }
         public string CauseName { get; set; }
-        public string CategoryName { get; set; }
+        public string? CategoryName { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
         public OpportunityType OpportunityType { get; set; }
-        public bool Approved { get; set; }
 
         public List<OccurrenceViewModel> OccurrenceViews { get; set; }
 
@@ -49,7 +48,6 @@ namespace VollyV3.Models.ViewModels.Components
                 //    .OrderBy(o => o.StartTime)
                 //    .Select(OccurrenceViewModel.FromOccurrence)
                 //    .ToList(),
-                Approved = opportunity.Approved
             };
         }
     }

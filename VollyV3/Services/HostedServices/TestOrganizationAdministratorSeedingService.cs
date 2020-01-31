@@ -56,7 +56,6 @@ namespace VollyV3.Services.HostedServices
                 {
                     var newOrganization = new Organization()
                     {
-                        IsApproved = true,
                         Name = email + "_testorg",
                         ContactEmail = email,
                         PhoneNumber = phoneNumber,

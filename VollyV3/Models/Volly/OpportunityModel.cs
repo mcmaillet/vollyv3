@@ -23,9 +23,7 @@ namespace VollyV3.Models.Volly
         [Display(Name = "Non Profit Name")]
         public int OrganizationId { get; set; }
         [Display(Name = "What type of volunteering is this?")]
-        public int CategoryId { get; set; }
-        [Display(Name = "Community")]
-        public int CommunityId { get; set; }
+        public int? CategoryId { get; set; }
         public SelectList Organizations { get; set; }
         public SelectList Categories { get; set; }
         public string ImageUrl { get; set; }
@@ -35,7 +33,6 @@ namespace VollyV3.Models.Volly
         public string ExternalSignUpUrl { get; set; }
         [Display(Name = "Opportunity Type")]
         public OpportunityType OpportunityType { get; set; }
-        public bool Approved { get; set; }
 
         public static OpportunityModel FromOpportunity(ApplicationDbContext dbContext, Opportunity opportunity)
         {
@@ -46,7 +43,7 @@ namespace VollyV3.Models.Volly
                 Description = opportunity.Description,
                 Address = opportunity.Address,
                 OrganizationId = opportunity.Organization.Id,
-                CategoryId = opportunity.Category.Id,
+                CategoryId = opportunity.Category?.Id,
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
@@ -56,7 +53,6 @@ namespace VollyV3.Models.Volly
                 Organizations = new SelectList(dbContext.Organizations
                     .OrderBy(o => o.Name)
                     .ToList(), "Id", "Name"),
-                Approved = opportunity.Approved
             };
         }
 

@@ -54,10 +54,7 @@ namespace VollyV3.Controllers.API
             //     opportunitySearch.CategoryIds.Contains(o.Category.Id)) &&
             //    (opportunitySearch.OrganizationIds == null ||
             //     opportunitySearch.OrganizationIds.Contains(o.Organization.Id)) &&
-            //    (opportunitySearch.CommunityIds == null || o.Community != null &&
-            //     opportunitySearch.CommunityIds.Contains(o.Community.Id)) &&
-            //    (opportunitySearch.OpportunityType == OpportunityType.All || opportunitySearch.OpportunityType == o.OpportunityType) &&
-            //    o.Approved;
+            //    (opportunitySearch.OpportunityType == OpportunityType.All || opportunitySearch.OpportunityType == o.OpportunityType);
         }
         private List<OpportunityViewModel> Sort(List<OpportunityViewModel> opportunityViews, int sort)
         {

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using VollyV3.Models;
 using VollyV3.Models.Users;
@@ -45,7 +43,6 @@ namespace VollyV3.Data
         public virtual OrganizationAdministratorUser CreatedByUser { get; set; }
         public virtual List<OpportunityImage> OpportunityImages { get; set; }
         public virtual List<Occurrence> Occurrences { get; set; }
-        public bool Approved { get; set; }
 
         public Opportunity Clone()
         {

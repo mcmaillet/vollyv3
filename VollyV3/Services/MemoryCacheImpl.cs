@@ -18,13 +18,7 @@ namespace VollyV3.Services
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2);
 
-                List<int> opportunityIds = await context.Occurrences
-                    .Where(o => o.ApplicationDeadline > DateTime.Now && o.Applications.Count < o.Openings)
-                    .Select(o => o.OpportunityId)
-                    .ToListAsync();
-
                 List<Opportunity> opportunities = await context.Opportunities
-                    .Where(o => o.Approved)
                     .Include(o => o.Category)
                     .Include(o => o.Organization)
                     .ThenInclude(o => o.Cause)

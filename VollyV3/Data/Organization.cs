@@ -18,6 +18,5 @@ namespace VollyV3.Data
         public string ImageUrl { get; set; }
         [JsonIgnore]
         public virtual List<Opportunity> Opportunities { get; set; }
-        public bool IsApproved { get; set; }
     }
 }

@@ -59,7 +59,21 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Address,DateTime,EndDateTime,ApplicationDeadline,Openings,CategoryId,OrganizationId,CommunityId,ImageFile,ExternalSignUpUrl,OpportunityType")] OpportunityModel model)
+        public async Task<IActionResult> Create([Bind(
+            "Id," +
+            "Name," +
+            "Description," +
+            "Address," +
+            "DateTime," +
+            "EndDateTime," +
+            "ApplicationDeadline," +
+            "Openings," +
+            "CategoryId," +
+            "OrganizationId," +
+            "ImageFile," +
+            "ExternalSignUpUrl," +
+            "OpportunityType"
+            )] OpportunityModel model)
         {
             if (ModelState.IsValid)
             {
