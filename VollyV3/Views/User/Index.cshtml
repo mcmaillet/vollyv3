@@ -1,0 +1,46 @@
+﻿@model IEnumerable<VollyV3.Models.VollyV3User>
+@{
+    ViewData["Title"] = "User Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="small bg-default-dark">
+    <div class="page-title padded">
+        User Index
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-content">
+        <div class="page-text">
+            <table class="table table-text table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </th>
+                        <th>
+                            Phone number
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NormalizedEmail)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                <a asp-route-id="@item.Id"
+                                   asp-action="Delete">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
