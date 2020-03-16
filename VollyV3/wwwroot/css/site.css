@@ -412,3 +412,7 @@ nav img.img-brand {
     font-weight: 600;
     font-size: 1.8rem;
 }
+
+.bg-default-dark {
+    background-color: rgba(0,0,0,.85);
+}

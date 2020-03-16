@@ -43,13 +43,6 @@ namespace VollyV3.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        public readonly IList<Role> PermittedRegistrationRoles = new List<Role>()
-            {
-                Role.OrganizationAdministrator,
-                Role.Volunteer
-            };
-
         public class InputModel
         {
             [Required]
@@ -69,8 +62,8 @@ namespace VollyV3.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            [Display(Name = "Register as")]
-            public Role Role { get; set; }
+            [Display(Name = "I am registering as an organization administrator.")]
+            public bool IsOrganizationAdministrator { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -81,10 +74,7 @@ namespace VollyV3.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            if (!PermittedRegistrationRoles.Contains(Input.Role))
-            {
-                throw new Exception(string.Format("Not allowed to register as {0}", Input.Role));
-            }
+ 
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -106,10 +96,11 @@ namespace VollyV3.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    var roleResult = await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(Role), Input.Role));
-                    if (!roleResult.Succeeded)
+
+                    await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(Role), Role.Volunteer));
+                    if (Input.IsOrganizationAdministrator)
                     {
-                        throw new Exception("Adding role to user failed. Contact your platform administrator.");
+                        await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(Role), Role.OrganizationAdministrator));
                     }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -128,7 +119,6 @@ namespace VollyV3.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }

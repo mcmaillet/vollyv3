@@ -36,11 +36,11 @@
     <div class="blend">
         @await Html.PartialAsync("NavigationBar/_NavigationWrapper")
         <br />
-        <div class="container-fluid">
+        <div class="container-fluid min-vh-100">
             @RenderBody()
             <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year - Volly</p>
+            <footer class="bg-default-dark padded">
+                <div>&copy; @DateTime.Now.Year - Volly</div>
             </footer>
         </div>
 
