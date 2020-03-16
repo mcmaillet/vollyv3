@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VollyV3.Models;
@@ -33,8 +34,6 @@ namespace VollyV3.Data
         public string Name { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
-        public virtual Organization Organization { get; set; }
-        public virtual Category Category { get; set; }
         public virtual Location Location { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
@@ -43,6 +42,7 @@ namespace VollyV3.Data
         public virtual OrganizationAdministratorUser CreatedByUser { get; set; }
         public virtual List<OpportunityImage> OpportunityImages { get; set; }
         public virtual List<Occurrence> Occurrences { get; set; }
+        public DateTime CreatedDateTime { get; set; }
 
         public Opportunity Clone()
         {
@@ -51,8 +51,6 @@ namespace VollyV3.Data
                 Name = "copy of " + Name,
                 Description = Description,
                 Address = Address,
-                Organization = Organization,
-                Category = Category,
                 Location = new Location()
                 {
                     Longitude = Location.Longitude,
@@ -60,7 +58,8 @@ namespace VollyV3.Data
                 },
                 ImageUrl = ImageUrl,
                 ExternalSignUpUrl = ExternalSignUpUrl,
-                OpportunityType = OpportunityType
+                OpportunityType = OpportunityType,
+                CreatedDateTime = DateTime.Now
             };
         }
 

@@ -6,72 +6,58 @@
     Layout = "_Layout";
 }
 
-<h2>Create</h2>
+<div class="padded bg-default-dark">
+    <h2>Create</h2>
 
-<h4>Opportunity</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="col-form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="col-form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="col-form-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="col-form-label"></label>
-                <select asp-for="CategoryId" class="form-control"
-                        asp-items="@Model?.Categories">
-                    <option value="">-- Select Category --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrganizationId" class="col-form-label"></label>
-                <select asp-for="OrganizationId" class="form-control"
-                        asp-items="@Model?.Organizations">
-                    <option value="">-- Select Organization --</option>
-                </select>
-                <span asp-validation-for="OrganizationId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OpportunityType" class="col-form-label"></label>
-                <select asp-for="OpportunityType" class="form-control"
-                        asp-items="Html.GetEnumSelectList<OpportunityType>()"></select>
-                <span asp-validation-for="OpportunityType" class="text-danger"></span>
-                <h5>
-                    Events Based: Volunteer Opportunities that have a set date<br />
-                    On-going: Opportunities that need a volunteer to commit on a consistent basis<br />
-                    Group: Opportunities that require a large group of people typically from a single company<br />
-                    Donations: Seek out non-monetary donations such as food/supplies/etc.
-                </h5>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageFile" class="col-form-label"></label>
-                <input asp-for="ImageFile" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+    <h4>Opportunity</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="col-form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="col-form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="col-form-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="OpportunityType" class="col-form-label"></label>
+                    <select asp-for="OpportunityType" class="form-control"
+                            asp-items="Html.GetEnumSelectList<OpportunityType>()"></select>
+                    <span asp-validation-for="OpportunityType" class="text-danger"></span>
+                    <h5>
+                        Events Based: Volunteer Opportunities that have a set date<br />
+                        On-going: Opportunities that need a volunteer to commit on a consistent basis<br />
+                        Group: Opportunities that require a large group of people typically from a single company<br />
+                        Donations: Seek out non-monetary donations such as food/supplies/etc.
+                    </h5>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="col-form-label"></label>
+                    <input asp-for="ImageFile" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-outline-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

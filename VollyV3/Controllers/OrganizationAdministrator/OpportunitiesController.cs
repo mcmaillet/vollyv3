@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -32,8 +33,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         {
             VollyV3User user = await _userManager.GetUserAsync(HttpContext.User);
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
-                .Include(o => o.Category)
-                .Include(o => o.Organization);
+                .Include(o => o.CreatedByUser)
+                .ThenInclude(u => u.Organization);
 
             List<Opportunity> opportunities;
             opportunities = await opportunitiesQueryable
@@ -48,12 +49,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         {
             OpportunityModel model = new OpportunityModel
             {
-                Categories = new SelectList(_context.Categories
-                .OrderBy(c => c.Name)
-                .ToList(), "Id", "Name"),
-                Organizations = new SelectList(_context.Organizations
-                .OrderBy(o => o.Name)
-                .ToList(), "Id", "Name"),
+
             };
             return View(model);
         }
@@ -68,8 +64,6 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             "EndDateTime," +
             "ApplicationDeadline," +
             "Openings," +
-            "CategoryId," +
-            "OrganizationId," +
             "ImageFile," +
             "ExternalSignUpUrl," +
             "OpportunityType"
@@ -82,9 +76,11 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 opportunity.CreatedByUser = _context.OrganizationAdministratorUsers.
                     Where(x => x.UserId == user.Id)
                     .FirstOrDefault();
+                opportunity.CreatedDateTime = DateTime.Now;
                 _context.Add(opportunity);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Create), "Occurrences", new { opportunityId = opportunity.Id });
+                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Create), "Occurrences", new { opportunityId = opportunity.Id });
             }
             return View(model);
         }

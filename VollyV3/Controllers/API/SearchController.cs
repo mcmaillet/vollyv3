@@ -10,8 +10,6 @@ using VollyV3.Models.Search;
 using VollyV3.Models.ViewModels.Components;
 using VollyV3.Services;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace VollyV3.Controllers.API
 {
     [Route("api/[controller]")]
@@ -39,7 +37,9 @@ namespace VollyV3.Controllers.API
             List<OpportunityViewModel> opportunityViews = opportunities
                 .Where(GetEligibleOpportunityPredicate(opportunitySearch))
                 .Select(OpportunityViewModel.FromOpportunity)
-                //.Where(o => o.OccurrenceViews?.Count > 0)
+                .Where(o =>
+                opportunitySearch.OpportunityType == OpportunityType.All
+                || o.OpportunityType == opportunitySearch.OpportunityType)
                 .ToList();
             return Ok(opportunityViews);
             //return Ok(Sort(opportunityViews, opportunitySearch.Sort));

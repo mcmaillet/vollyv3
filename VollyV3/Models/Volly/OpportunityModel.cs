@@ -19,13 +19,6 @@ namespace VollyV3.Models.Volly
         [Required]
         [Display(Name = "Where does the volunteering occur? Enter Address or simply write the city name if there are multiple locations.")]
         public string Address { get; set; }
-        [Required]
-        [Display(Name = "Non Profit Name")]
-        public int OrganizationId { get; set; }
-        [Display(Name = "What type of volunteering is this?")]
-        public int? CategoryId { get; set; }
-        public SelectList Organizations { get; set; }
-        public SelectList Categories { get; set; }
         public string ImageUrl { get; set; }
         [Display(Name = "Upload an image for this event")]
         public IFormFile ImageFile { get; set; }
@@ -42,17 +35,9 @@ namespace VollyV3.Models.Volly
                 Name = opportunity.Name,
                 Description = opportunity.Description,
                 Address = opportunity.Address,
-                OrganizationId = opportunity.Organization.Id,
-                CategoryId = opportunity.Category?.Id,
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
-                Categories = new SelectList(dbContext.Categories
-                    .OrderBy(c => c.Name)
-                    .ToList(), "Id", "Name"),
-                Organizations = new SelectList(dbContext.Organizations
-                    .OrderBy(o => o.Name)
-                    .ToList(), "Id", "Name"),
             };
         }
 
@@ -69,8 +54,6 @@ namespace VollyV3.Models.Volly
                 opportunity.ImageUrl = imageUrl;
             }
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
-            opportunity.Organization = context.Organizations.Find(OrganizationId);
-            opportunity.Category = context.Categories.Find(CategoryId);
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
             opportunity.OpportunityType = OpportunityType;
             return opportunity;

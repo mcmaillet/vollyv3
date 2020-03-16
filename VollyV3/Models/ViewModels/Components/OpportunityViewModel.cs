@@ -14,8 +14,6 @@ namespace VollyV3.Models.ViewModels.Components
         public string Address { get; set; }
         public string OrganizationName { get; set; }
         public string OrganizationLink { get; set; }
-        public string CauseName { get; set; }
-        public string? CategoryName { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string ImageUrl { get; set; }
@@ -32,10 +30,8 @@ namespace VollyV3.Models.ViewModels.Components
                 Name = opportunity.Name,
                 Description = opportunity.Description,
                 Address = opportunity.Address,
-                OrganizationName = opportunity.Organization.Name,
-                OrganizationLink = opportunity.Organization.WebsiteLink,
-                CauseName = opportunity.Organization.Cause?.Name,
-                CategoryName = opportunity.Category?.Name,
+                OrganizationName = opportunity.CreatedByUser.Organization.Name,
+                OrganizationLink = opportunity.CreatedByUser.Organization.WebsiteLink,
                 Latitude = opportunity.Location?.Latitude,
                 Longitude = opportunity.Location?.Longitude,
                 ImageUrl = opportunity.ImageUrl,
