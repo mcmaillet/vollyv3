@@ -32,16 +32,16 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         public async Task<IActionResult> Index()
         {
             VollyV3User user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var organizationAdministratorUser = _context.OrganizationAdministratorUsers.ToList();
+                
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.CreatedByUser)
                 .ThenInclude(u => u.Organization);
 
-            List<Opportunity> opportunities;
-            opportunities = await opportunitiesQueryable
+            List<Opportunity> opportunities = await opportunitiesQueryable
+                //.Where(x => x.CreatedByUser.Organization == organizationAdministratorUser.Organization)
                 .ToListAsync();
-            //opportunities = await opportunitiesQueryable
-            //    .Where(o => o.CreatedByUserId == user.Id)
-            //    .ToListAsync();
 
             return View(opportunities);
         }

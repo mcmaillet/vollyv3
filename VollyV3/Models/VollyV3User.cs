@@ -10,5 +10,6 @@ namespace VollyV3.Models
     // Add profile data for application users by adding properties to the VollyV3User class
     public class VollyV3User : IdentityUser
     {
+        public DateTime CreatedDateTime { get; set; }
     }
 }

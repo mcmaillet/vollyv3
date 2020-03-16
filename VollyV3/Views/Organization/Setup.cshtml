@@ -1,0 +1,16 @@
+﻿@model VollyV3.Models.ViewModels.OrganizationAdministrator.SetupViewModel
+@{
+    ViewData["Title"] = "Setup";
+}
+
+<div class="padded bg-default-dark">
+    <h1>Setup your organization</h1>
+
+    <form asp-action="Setup">
+        <div class="form-group">
+            <label asp-for="OrganizationName"></label>
+            <input asp-for="OrganizationName" />
+        </div>
+        <input type="submit" value="Submit" />
+    </form>
+</div>

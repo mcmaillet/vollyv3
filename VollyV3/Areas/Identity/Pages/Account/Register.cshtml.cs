@@ -29,7 +29,8 @@ namespace VollyV3.Areas.Identity.Pages.Account
             UserManager<VollyV3User> userManager,
             SignInManager<VollyV3User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -74,12 +75,16 @@ namespace VollyV3.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
- 
+
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new VollyV3User { UserName = Input.Email, Email = Input.Email };
+                var user = new VollyV3User {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    CreatedDateTime = DateTime.Now
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

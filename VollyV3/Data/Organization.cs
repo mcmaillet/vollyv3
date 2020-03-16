@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace VollyV3.Data
@@ -18,5 +19,6 @@ namespace VollyV3.Data
         public string ImageUrl { get; set; }
         [JsonIgnore]
         public virtual List<Opportunity> Opportunities { get; set; }
+        public DateTime CreatedDateTime { get; set; }
     }
 }

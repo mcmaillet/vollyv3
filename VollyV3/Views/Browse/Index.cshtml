@@ -7,15 +7,8 @@
 <link rel="stylesheet" href="/css/home.browse.min.css" asp-append-version="true" />
 <div class="container-fluid">
     <div class="row">
-        <div id="wrap-main" class="col-lg-8 col-md-8 col-sm-12 order-lg-first order-md-first order-last">
-            <br />
-            <div class="alert alert-success" id="nothingFoundAlert">
-                <h4 class="alert-heading">Sorry! Nothing found!</h4>
-                <p>Please change your search criteria to browse available opportunities</p>
-                <hr>
-                <p class="mb-0">If you see nothing that you like, please <a href="/Home/Contact">Contact Us</a> and make a suggestion. Thank you!</p>
-            </div>
-            <ul class="nav nav-tabs">
+        <div id="wrap-main" class="bg-default-dark col-lg-8 col-md-8 col-sm-12 order-lg-first order-md-first order-last">
+            <ul class="nav nav-tabs border-0">
                 @{
                     foreach (OpportunityType opportunityType in Enum.GetValues(typeof(OpportunityType)))
                     {
@@ -27,6 +20,12 @@
                 }
             </ul>
             <div class="row" id="opportunityList">
+            </div>
+            <div class="alert alert-success" id="nothingFoundAlert">
+                <h4 class="alert-heading">Sorry! Nothing found!</h4>
+                <p>Please change your search criteria to browse available opportunities</p>
+                <hr>
+                <p class="mb-0">If you see nothing that you like, please <a href="/Home/Contact">Contact Us</a> and make a suggestion. Thank you!</p>
             </div>
         </div>
 
