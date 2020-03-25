@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.Users;
@@ -63,7 +64,14 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             });
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(Role), Role.IsConfigured));
+
+            return RedirectToAction(nameof(SetupConfirm));
+        }
+        [HttpGet]
+        public IActionResult SetupConfirm()
+        {
+            return View();
         }
     }
 }

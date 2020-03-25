@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VollyV3.Authorization.Policies.Requirements;
 using VollyV3.Models;
 using VollyV3.Services;
 using VollyV3.Services.HostedServices;
@@ -78,6 +79,11 @@ namespace VollyV3
             //services.AddCors(o =>
             //    o.AddPolicy("MyPolicy", builder => { builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod(); }));
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -87,6 +93,12 @@ namespace VollyV3
             services.AddHostedService<TestVolunteerSeedingService>();
 
             services.AddSingleton<IImageManager, ImageManagerImpl>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsConfigured", policy =>
+                 policy.Requirements.Add(new IsConfiguredRequirement()));
+            });
         }
 
         public void Configure(
@@ -111,33 +123,12 @@ namespace VollyV3
 
             app.UseRouting();
 
-            //app.UseMvc(routes =>
-            //{
-            //    //routes.MapRoute(
-            //    //    name: "Home",
-            //    //    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-            //    routes.MapRoute(
-            //       name: "default",
-            //       template: "{controller=Home}/{action=Index}/{id?}");
-            //});
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapDefaultControllerRoute();
-            //endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            //endpoints.MapGet("/", async context =>
-            //{
-            //    await context.Response.WriteAsync("Hello World!");
-            //});
-            //    endpoints.MapControllers();
-            //    endpoints.MapRazorPages();
-            //});
-
         }
     }
 }

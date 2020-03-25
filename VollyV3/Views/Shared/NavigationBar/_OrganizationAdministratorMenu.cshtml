@@ -1,4 +1,6 @@
-﻿<li class="nav-item dropdown">
+﻿@using VollyV3.Areas.Identity
+
+<li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle"
        href="#"
        id="organizationAdministatorMenu"
@@ -13,13 +15,17 @@
            asp-area=""
            asp-controller="Organization"
            asp-action="Index">Configure My Organization</a>
-        <a class="dropdown-item"
-           asp-area=""
-           asp-controller="Opportunities"
-           asp-action="Index">Manage Opportunities</a>
-        <a class="dropdown-item"
-           asp-area=""
-           asp-controller="Applications"
-           asp-action="Index">Manage Applications</a>
+        @if (User.IsInRole(Enum.GetName(typeof(Role), Role.IsConfigured)))
+        {
+            <a class="dropdown-item"
+               asp-area=""
+               asp-controller="Opportunities"
+               asp-action="Index">Manage Opportunities</a>
+            <a class="dropdown-item"
+               asp-area=""
+               asp-controller="Applications"
+               asp-action="Index">Manage Applications</a>
+        }
+
     </div>
 </li>

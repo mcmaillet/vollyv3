@@ -8,6 +8,8 @@ namespace VollyV3.Areas.Identity
         Volunteer,
         [Display(Name = "Organization Administrator")]
         OrganizationAdministrator,
+        [Display(Name = "Is configured")]
+        IsConfigured,
         [Display(Name = "Platform Administrator")]
         PlatformAdministrator
     }

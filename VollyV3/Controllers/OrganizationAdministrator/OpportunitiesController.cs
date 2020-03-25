@@ -15,7 +15,7 @@ using VollyV3.Services.ImageManager;
 
 namespace VollyV3.Controllers.OrganizationAdministrator
 {
-    [Authorize(Roles = "OrganizationAdministrator")]
+    [Authorize(Roles = "OrganizationAdministrator", Policy = "IsConfigured")]
     public class OpportunitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,7 +34,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             VollyV3User user = await _userManager.GetUserAsync(HttpContext.User);
 
             var organizationAdministratorUser = _context.OrganizationAdministratorUsers.ToList();
-                
+
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.CreatedByUser)
                 .ThenInclude(u => u.Organization);
