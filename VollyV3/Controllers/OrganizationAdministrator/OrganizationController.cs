@@ -14,7 +14,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 {
     public class OrganizationController : Controller
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<VollyV3User> _userManager;
         public OrganizationController(
             ApplicationDbContext context,

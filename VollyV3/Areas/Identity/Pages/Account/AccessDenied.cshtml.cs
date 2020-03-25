@@ -10,7 +10,7 @@ namespace VollyV3.Areas.Identity.Pages.Account
     {
         public void OnGet()
         {
-            var test = "";
+            
         }
     }
 }
