@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VollyV3.Areas.Identity;
 using VollyV3.Authorization.Policies.Requirements;
 using VollyV3.Models;
 using VollyV3.Services;
@@ -60,9 +61,6 @@ namespace VollyV3
             //        };
             //    });
 
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
-
             services.AddMemoryCache();
 
             services.AddMvc(options =>
@@ -87,18 +85,23 @@ namespace VollyV3
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddHostedService<RoleSeedingService>();
-            services.AddHostedService<PlatformAdministratorSeedingService>();
-            services.AddHostedService<TestOrganizationAdministratorSeedingService>();
-            services.AddHostedService<TestVolunteerSeedingService>();
-
             services.AddSingleton<IImageManager, ImageManagerImpl>();
+
+            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("IsConfigured", policy =>
-                 policy.Requirements.Add(new IsConfiguredRequirement()));
+                 policy.RequireRole("IsConfigured"));
             });
+        }
+
+        private void AddHostedServices(IServiceCollection services)
+        {
+            services.AddHostedService<RoleSeedingService>();
+            services.AddHostedService<PlatformAdministratorSeedingService>();
+            services.AddHostedService<TestOrganizationAdministratorSeedingService>();
+            services.AddHostedService<TestVolunteerSeedingService>();
         }
 
         public void Configure(
