@@ -51,15 +51,15 @@ namespace VollyV3.Models.ViewModels.Components
             return ApplicationViewModel.FromApplication(application);
         }
 
-        private List<ApplicationOccurrence> UpdateOccurences(ApplicationDbContext context, Application application)
+        private List<OccurrenceApplication> UpdateOccurences(ApplicationDbContext context, Application application)
         {
-            List<ApplicationOccurrence> occurrenceApplications = OccurrenceIds.Select(o => new ApplicationOccurrence()
+            List<OccurrenceApplication> occurrenceApplications = OccurrenceIds.Select(o => new OccurrenceApplication()
             {
                 Application = application,
                 Occurrence = context.Occurrences.Find(o)
             }).ToList();
 
-            context.ApplicationsOccurrence.AddRange(occurrenceApplications);
+            context.OccurrenceApplications.AddRange(occurrenceApplications);
             context.SaveChangesAsync();
             return occurrenceApplications;
         }

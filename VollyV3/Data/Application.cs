@@ -11,7 +11,7 @@ namespace VollyV3.Data
         public int Id { get; set; }
         public virtual Opportunity Opportunity { get; set; }
         [JsonIgnore]
-        public virtual List<ApplicationOccurrence> Occurrences { get; set; }
+        public virtual List<OccurrenceApplication> Occurrences { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

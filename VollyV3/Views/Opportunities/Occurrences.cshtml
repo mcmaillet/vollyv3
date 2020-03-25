@@ -1,0 +1,29 @@
+﻿@model VollyV3.Models.Volly.OpportunityModel
+
+@{
+    ViewData["Title"] = "Occurrences";
+    Layout = "_Layout";
+}
+
+<div class="padded bg-default-dark">
+    <h2>@Model.Name</h2>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                Location: @Model.Address
+            </div>
+            <p>
+                @Model.Description
+            </p>
+        </div>
+    </div>
+
+    <div>
+        Add occurrences:
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>

@@ -21,7 +21,7 @@ namespace VollyV3.Models
         public DbSet<Application> Applications { get; set; }
         public DbSet<OpportunityImage> OpportunityImages { get; set; }
         public DbSet<Occurrence> Occurrences { get; set; }
-        public DbSet<ApplicationOccurrence> ApplicationsOccurrence { get; set; }
+        public DbSet<OccurrenceApplication> OccurrenceApplications { get; set; }
         //public DbSet<Company> Companies { get; set; }
         //public DbSet<VolunteerHours> VolunteerHours { get; set; }
         //public DbSet<UserCause> UserCauses { get; set; }
@@ -29,13 +29,13 @@ namespace VollyV3.Models
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationOccurrence>()
-                .HasKey(k => new { k.ApplicationId, k.OccurrenceId });
-            builder.Entity<ApplicationOccurrence>()
+            builder.Entity<OccurrenceApplication>()
+                .HasKey(k => new {  k.OccurrenceId, k.ApplicationId });
+            builder.Entity<OccurrenceApplication>()
                 .HasOne(ao => ao.Application)
                 .WithMany(ao => ao.Occurrences)
                 .HasForeignKey(ao => ao.ApplicationId);
-            builder.Entity<ApplicationOccurrence>()
+            builder.Entity<OccurrenceApplication>()
                 .HasOne(ao => ao.Occurrence)
                 .WithMany(ao => ao.Applications)
                 .HasForeignKey(ao => ao.OccurrenceId);

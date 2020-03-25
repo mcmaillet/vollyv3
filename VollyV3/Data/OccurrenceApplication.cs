@@ -1,10 +1,10 @@
 ﻿namespace VollyV3.Data
 {
-    public class ApplicationOccurrence
+    public class OccurrenceApplication
     {
-        public int ApplicationId { get; set; }
-        public virtual Application Application { get; set; }
         public int OccurrenceId { get; set; }
         public virtual Occurrence Occurrence { get; set; }
+        public int ApplicationId { get; set; }
+        public virtual Application Application { get; set; }
     }
 }

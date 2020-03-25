@@ -199,5 +199,27 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             TempData["Messages"] = $"\"{model.Name}\" successfully saved.";
             return RedirectToAction(nameof(Index));
         }
+        /*
+         * Occurrences
+         */
+        public IActionResult Occurrences(int id)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new OpportunityModel()
+            {
+                Name = opp.Name,
+                Description = opp.Description,
+                Address = opp.Address
+            });
+        }
+
     }
 }
