@@ -5,6 +5,9 @@
     Layout = "_Layout";
 }
 <div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
     <p>
         <a asp-action="Create">Create New</a>
     </p>

@@ -87,17 +87,36 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             }
             return View(model);
         }
-        //public async Task<IActionResult> Index()
-        //{
-        //    var user = await _userManager.GetUserAsync(HttpContext.User);
-        //    var organizationUser = _context.OrganizationAdministratorUsers
-        //        .Where(x => x.UserId == user.Id)
-        //        .Single();
-        //    var organization = _context.Organizations
-        //        .Where(x => x.Id == organizationUser.OrganizationId)
-        //        .Single();
+        /*
+         * Delete
+         */
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
 
-        //    return View();
-        //}
+            return View(new OpportunityModel()
+            {
+                Id = id,
+                Name = opp.Name,
+                Description = opp.Description
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(OpportunityModel model)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == model.Id)
+                .FirstOrDefault();
+
+           _context.Remove(opp);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Messages"] = $"\"{opp.Name}\" has been deleted.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
