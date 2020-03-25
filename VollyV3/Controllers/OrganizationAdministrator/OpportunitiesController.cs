@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using VollyV3.Data;
@@ -97,6 +96,11 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 .Where(x => x.Id == id)
                 .FirstOrDefault();
 
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(new OpportunityModel()
             {
                 Id = id,
@@ -111,12 +115,41 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 .Where(x => x.Id == model.Id)
                 .FirstOrDefault();
 
-           _context.Remove(opp);
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Remove(opp);
 
             await _context.SaveChangesAsync();
 
             TempData["Messages"] = $"\"{opp.Name}\" has been deleted.";
             return RedirectToAction(nameof(Index));
+        }
+        /*
+         * Details
+         */
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new OpportunityModel()
+            {
+                Name = opp.Name,
+                OpportunityType = opp.OpportunityType,
+                Address = opp.Address,
+                Description = opp.Description,
+                ImageUrl = opp.ImageUrl
+            });
         }
     }
 }
