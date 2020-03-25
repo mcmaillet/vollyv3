@@ -2,18 +2,18 @@
 @model VollyV3.Models.Volly.OpportunityModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     Layout = "_Layout";
 }
 
 <div class="padded bg-default-dark">
-    <h2>Create</h2>
+    <h2>Edit</h2>
 
     <h4>Opportunity</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
-            <form asp-action="Create" enctype="multipart/form-data">
+            <form asp-action="Edit" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Name" class="col-form-label"></label>
@@ -43,12 +43,7 @@
                     </p>
                 </div>
                 <div class="form-group">
-                    <label asp-for="ImageFile" class="col-form-label"></label>
-                    <input asp-for="ImageFile" class="form-control" />
-                    <span asp-validation-for="ImageFile" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-outline-primary" />
+                    <input type="submit" value="Edit" class="btn btn-outline-primary" />
                 </div>
             </form>
         </div>

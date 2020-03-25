@@ -151,5 +151,53 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 ImageUrl = opp.ImageUrl
             });
         }
+        /*
+         * Edit
+         */
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new OpportunityModel()
+            {
+                Id = id,
+                Name = opp.Name,
+                OpportunityType = opp.OpportunityType,
+                Description = opp.Description,
+                Address = opp.Address,
+                ExternalSignUpUrl = opp.ExternalSignUpUrl,
+                ImageUrl = opp.ImageUrl
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(OpportunityModel model)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == model.Id)
+                .FirstOrDefault();
+
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            opp.Name = model.Name;
+            opp.OpportunityType = model.OpportunityType;
+            opp.Description = model.Description;
+            opp.Address = model.Address;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Messages"] = $"\"{model.Name}\" successfully saved.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
