@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using VollyV3.Data;
 using VollyV3.Models;
+using VollyV3.Models.OrganizationAdministrator.Dto;
+using VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities;
 using VollyV3.Models.Volly;
 using VollyV3.Services.ImageManager;
 
@@ -202,6 +204,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         /*
          * Occurrences
          */
+        [HttpGet]
         public IActionResult Occurrences(int id)
         {
             var opp = _context.Opportunities
@@ -213,13 +216,52 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new OpportunityModel()
+            return View(new OccurrencesViewModel()
             {
-                Name = opp.Name,
-                Description = opp.Description,
-                Address = opp.Address
+                OpportunityId = opp.Id,
+                OpportunityName = opp.Name,
+                OpportunityDescription = opp.Description,
+                OpportunityAddress = opp.Address,
             });
         }
+        [HttpPost]
+        public async Task<IActionResult> Occurrences([FromBody] OccurrencePost occurrencePost)
+        {
+            if (!string.IsNullOrEmpty(occurrencePost.ApplicationDeadlineDate))
+            {
+                _context.Occurrences.Add(
+               new Occurrence()
+               {
+                   OpportunityId = occurrencePost.OpportunityId,
+                   StartTime = DateTime.Parse($"{occurrencePost.StartDate} {occurrencePost.StartTime}"),
+                   EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
+                   ApplicationDeadline = DateTime.Parse($"{occurrencePost.ApplicationDeadlineDate} 12:00am"),
+                   Openings = int.Parse(occurrencePost.Openings)
+               });
+            }
+            else
+            {
+                _context.Occurrences.Add(
+               new Occurrence()
+               {
+                   OpportunityId = occurrencePost.OpportunityId,
+                   StartTime = DateTime.Parse($"{occurrencePost.StartDate} {occurrencePost.StartTime}"),
+                   EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
+                   Openings = int.Parse(occurrencePost.Openings)
+               });
+            }
 
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        [HttpGet]
+        public IActionResult OccurrencesGet(int id)
+        {
+            return Ok(
+                _context.Occurrences
+                .Where(x => x.OpportunityId == id)
+                .ToList());
+        }
     }
 }

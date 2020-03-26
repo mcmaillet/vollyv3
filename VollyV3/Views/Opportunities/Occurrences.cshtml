@@ -1,4 +1,4 @@
-﻿@model VollyV3.Models.Volly.OpportunityModel
+﻿@model VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities.OccurrencesViewModel
 
 @{
     ViewData["Title"] = "Occurrences";
@@ -6,24 +6,199 @@
 }
 
 <div class="padded bg-default-dark">
-    <h2>@Model.Name</h2>
+    <h2>@Model.OpportunityName</h2>
 
     <div class="row">
         <div class="col-md-12">
             <div>
-                Location: @Model.Address
+                Location: @Model.OpportunityAddress
             </div>
             <p>
-                @Model.Description
+                @Model.OpportunityDescription
             </p>
         </div>
     </div>
 
-    <div>
-        Add occurrences:
+    <p>
+        <h2>Existing occurrences</h2>
+    </p>
+    <div class="row">
+        <div class="col-3">
+            Start time
+        </div>
+        <div class="col-3">
+            End time
+        </div>
+        <div class="col-3">
+            Openings
+        </div>
+        <div class="col-3">
+            Application Deadline
+        </div>
     </div>
+    <div id="existing-rows">
+
+    </div>
+    <br />
+    <p>
+        <h2>Add occurrences:</h2>
+    </p>
+
+    <div class="row text-right" ">
+        <div class="col-md-6">
+            <label for="start-date">Start Date</label>
+            <input type="text"
+                   id="start-date" />
+        </div>
+        <div class="col-md-6">
+            <label for="end-date">End Date</label>
+            <input type="text"
+                   id="end-date" />
+        </div>
+    </div>
+    <div class="row text-right">
+        <div class="col-md-6">
+            <label for="start-time">Start Time</label>
+            <input type="text"
+                   id="start-time" />
+        </div>
+        <div class="col-md-6">
+            <label for="end-time">End Time</label>
+            <input type="text"
+                   id="end-time" />
+        </div>
+    </div>
+    <div class="row text-right"">
+        <div class="col-md-6">
+            <label for="deadline-date">Application Deadline</label>
+            <input type="text"
+                   id="deadline-date" />
+        </div>
+        <div class="col-md-6">
+            <label for="openings">Openings (0 for no limit)</label>
+            <input type="number"
+                   min="0"
+                   value="0"
+                   id="openings" />
+        </div>
+    </div>
+
+    <button id="add"
+            class="btn btn-primary">
+        Add
+    </button>
 
     <div>
         <a asp-action="Index">Back to List</a>
     </div>
 </div>
+@section Scripts{
+    <script>
+        $(function () {
+            var refreshExistingOccurrences = function () {
+                $.ajax({
+                    url: '/Opportunities/OccurrencesGet/'+@Model.OpportunityId,
+                    timeout: 5000,
+                    async: true,
+                    cache: false,
+                    type: 'GET',
+                    success: function (response) {
+                        $("#existing-rows").empty();
+                        response.forEach(x => {
+                            var rowBuilder = "<div class=\"col-3\">"
+                                + x.startTime
+                                + "</div><div class=\"col-3\">"
+                                + x.endTime
+                                + "</div><div class=\"col-3\">"
+                                + x.openings
+                                + "</div><div class=\"col-3\">"
+                                + x.applicationDeadline
+                                +"</div>";
+                            $('#existing-rows').append("<div class=\"row\">"+rowBuilder+"</div>");
+                        });
+                    },
+                    error: function (e) {
+                        alert('Bad response. Check your logs.');
+                    }
+                });
+            };
+            var dateFormat = "mm/dd/yy";
+            var deadline = $("#deadline-date").datepicker({
+                minDate: 0
+            });
+            var from = $("#start-date")
+                .datepicker({
+                    defaultDate: 0,
+                    changeMonth: true,
+                    changeYear: true,
+                    numberOfMonths: 1,
+                    minDate: 0
+                })
+                .on("change", function () {
+                    to.datepicker("option", "minDate", getDate(this));
+                    deadline.datepicker("option", "maxDate", getDate(this));
+                });
+            var to = $("#end-date").datepicker({
+                defaultDate: 0,
+                changeMonth: true,
+                changeYear: true,
+                numberOfMonths: 1,
+                minDate: 0
+            })
+                .on("change", function () {
+                    from.datepicker("option", "maxDate", getDate(this));
+                });
+
+            function getDate(element) {
+                var date;
+                try {
+                    date = $.datepicker.parseDate(dateFormat, element.value);
+                } catch (error) {
+                    date = null;
+                }
+
+                return date;
+            }
+            $("#start-time").timepicker();
+            $("#end-time").timepicker();
+            $("#add").click(() => {
+                var data = {
+                    "OpportunityId": @Model.OpportunityId,
+                    "StartDate": $("#start-date").val(),
+                    "StartTime": $("#start-time").val(),
+                    "EndDate": $("#end-date").val(),
+                    "EndTime": $("#end-time").val(),
+                    "ApplicationDeadlineDate": $("#deadline-date").val(),
+                    "Openings": $("#openings").val()
+                };
+                $.ajax({
+                    url: '/Opportunities/Occurrences',
+                    timeout: 5000,
+                    async: true,
+                    cache: false,
+                    contentType: 'application/json',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        [
+                            "start-date",
+                            "start-time",
+                            "end-date",
+                            "end-time",
+                            "deadline-date",
+                        ].forEach(x => {
+                            $("#" + x).val('')
+                        });
+                        $("#openings").val(0);
+                        refreshExistingOccurrences();
+                    },
+                    error: function (e) {
+                        alert('Bad response. Check your logs.');
+                        console.log(e);
+                    }
+                });
+            });
+            refreshExistingOccurrences();
+        });
+    </script>
+}
