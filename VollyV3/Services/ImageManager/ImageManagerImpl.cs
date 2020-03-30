@@ -18,7 +18,7 @@ namespace VollyV3.Services.ImageManager
         private const int ImageResizeWidth = 1024;
         private const int ImageResizeHeight = 768;
 
-        public async Task<string> UploadImageAsync(IFormFile imageFile, string imageName)
+        public async Task<string> UploadOpportunityImageAsync(IFormFile imageFile, string imageName)
         {
             CloudStorageAccount storageAccount = new CloudStorageAccount(
                 new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(

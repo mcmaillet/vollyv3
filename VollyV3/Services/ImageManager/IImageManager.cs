@@ -8,6 +8,6 @@ namespace VollyV3.Services.ImageManager
 {
     public interface IImageManager
     {
-        Task<string> UploadImageAsync(IFormFile image, string imageName);
+        Task<string> UploadOpportunityImageAsync(IFormFile image, string imageName);
     }
 }

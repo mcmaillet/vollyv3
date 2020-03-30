@@ -69,7 +69,7 @@ namespace VollyV3.Data
 
         public async Task<OpportunityImage> UploadImage(IImageManager imageManager, ApplicationDbContext context, IFormFile imageFile)
         {
-            string imageUrl = await imageManager.UploadImageAsync(
+            string imageUrl = await imageManager.UploadOpportunityImageAsync(
                 imageFile, 
                 GetImageFileName(imageFile.FileName));
             OpportunityImage opportunityImage = new OpportunityImage()
