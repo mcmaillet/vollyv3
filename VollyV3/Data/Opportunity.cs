@@ -30,6 +30,10 @@ namespace VollyV3.Data
     }
     public class Opportunity
     {
+        private static readonly List<OpportunityType> OpportunityTypesRequiringOccurences = new List<OpportunityType>()
+    {
+        OpportunityType.Episodic
+    };
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -81,6 +85,11 @@ namespace VollyV3.Data
         private string GetImageFileName(string fileName)
         {
             return "oppimage" + Id + fileName;
+        }
+
+        public static bool RequiresOccurences(OpportunityType opportunityType)
+        {
+            return OpportunityTypesRequiringOccurences.Contains(opportunityType);
         }
     }
 }

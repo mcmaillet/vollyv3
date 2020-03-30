@@ -83,8 +83,11 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 opportunity.CreatedDateTime = DateTime.Now;
                 _context.Add(opportunity);
                 await _context.SaveChangesAsync();
+                if (Opportunity.RequiresOccurences(model.OpportunityType))
+                {
+                    return RedirectToAction(nameof(Occurrences), new { id = opportunity.Id });
+                }
                 return RedirectToAction(nameof(Index));
-                //return RedirectToAction(nameof(Create), "Occurrences", new { opportunityId = opportunity.Id });
             }
             return View(model);
         }
