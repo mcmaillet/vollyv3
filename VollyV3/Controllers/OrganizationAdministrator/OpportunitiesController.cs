@@ -161,7 +161,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 OpportunityType = opp.OpportunityType,
                 Address = opp.Address,
                 Description = opp.Description,
-                ImageUrl = opp.ImageUrl
+                ImageUrl = opp.ImageUrl,
+                ContactEmail=opp.ContactEmail
             });
         }
         /*
@@ -187,7 +188,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 Description = opp.Description,
                 Address = opp.Address,
                 ExternalSignUpUrl = opp.ExternalSignUpUrl,
-                ImageUrl = opp.ImageUrl
+                ImageUrl = opp.ImageUrl,
+                ContactEmail=opp.ContactEmail
             });
         }
         [HttpPost]

@@ -27,6 +27,7 @@ namespace VollyV3.Models.Volly
         [Display(Name = "Opportunity Type")]
         public OpportunityType OpportunityType { get; set; }
         [Display(Name = "Contact Email")]
+        [EmailAddress]
         public string ContactEmail { get; set; }
 
         public static OpportunityModel FromOpportunity(ApplicationDbContext dbContext, Opportunity opportunity)
