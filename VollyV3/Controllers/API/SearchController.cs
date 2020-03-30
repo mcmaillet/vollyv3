@@ -42,7 +42,6 @@ namespace VollyV3.Controllers.API
                 || o.OpportunityType == opportunitySearch.OpportunityType)
                 .ToList();
             return Ok(opportunityViews);
-            //return Ok(Sort(opportunityViews, opportunitySearch.Sort));
         }
         private static Func<Opportunity, bool> GetEligibleOpportunityPredicate(OpportunitySearch opportunitySearch)
         {

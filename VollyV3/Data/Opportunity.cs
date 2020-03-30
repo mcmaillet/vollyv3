@@ -47,6 +47,7 @@ namespace VollyV3.Data
         public virtual List<OpportunityImage> OpportunityImages { get; set; }
         public virtual List<Occurrence> Occurrences { get; set; }
         public DateTime CreatedDateTime { get; set; }
+        public string? ContactEmail { get; set; }
 
         public Opportunity Clone()
         {
@@ -63,14 +64,15 @@ namespace VollyV3.Data
                 ImageUrl = ImageUrl,
                 ExternalSignUpUrl = ExternalSignUpUrl,
                 OpportunityType = OpportunityType,
-                CreatedDateTime = DateTime.Now
+                CreatedDateTime = DateTime.Now,
+                ContactEmail = ContactEmail
             };
         }
 
         public async Task<OpportunityImage> UploadImage(IImageManager imageManager, ApplicationDbContext context, IFormFile imageFile)
         {
             string imageUrl = await imageManager.UploadOpportunityImageAsync(
-                imageFile, 
+                imageFile,
                 GetImageFileName(imageFile.FileName));
             OpportunityImage opportunityImage = new OpportunityImage()
             {

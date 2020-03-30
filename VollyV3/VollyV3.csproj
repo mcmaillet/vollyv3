@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20191201133303_AddOpportunitySupport.Designer.cs" />
     <Compile Remove="Migrations\20191201133557_AddOpportunitySupport.cs" />
     <Compile Remove="Migrations\20191201133557_AddOpportunitySupport.Designer.cs" />
+    <Compile Remove="Migrations\20200330051621_AddContactEmail.cs" />
+    <Compile Remove="Migrations\20200330051621_AddContactEmail.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

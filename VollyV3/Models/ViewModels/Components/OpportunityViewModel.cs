@@ -19,6 +19,7 @@ namespace VollyV3.Models.ViewModels.Components
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
         public OpportunityType OpportunityType { get; set; }
+        public string? ContactEmail { get; set; }
 
         public List<OccurrenceViewModel> OccurrenceViews { get; set; }
 
@@ -38,6 +39,7 @@ namespace VollyV3.Models.ViewModels.Components
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
                 OccurrenceViews = null,
+                ContactEmail = opportunity.ContactEmail
                 //opportunity.Occurrences
                 //    .Where(oc => oc.ApplicationDeadline > DateTime.Now &&
                 //    oc.Openings > oc.Applications.Count)

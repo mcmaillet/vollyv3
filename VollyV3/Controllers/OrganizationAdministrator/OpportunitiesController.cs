@@ -49,11 +49,12 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
             return View(opportunities);
         }
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             OpportunityModel model = new OpportunityModel
             {
-
+                ContactEmail = user.Email
             };
             return View(model);
         }
@@ -70,7 +71,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             "Openings," +
             "ImageFile," +
             "ExternalSignUpUrl," +
-            "OpportunityType"
+            "OpportunityType,"+
+            "ContactEmail"
             )] OpportunityModel model)
         {
             if (ModelState.IsValid)
@@ -80,6 +82,12 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 opportunity.CreatedByUser = _context.OrganizationAdministratorUsers.
                     Where(x => x.UserId == user.Id)
                     .FirstOrDefault();
+
+                if (string.IsNullOrEmpty(model.ContactEmail))
+                {
+                    opportunity.ContactEmail = user.Email;
+                }
+
                 opportunity.CreatedDateTime = DateTime.Now;
                 _context.Add(opportunity);
                 await _context.SaveChangesAsync();

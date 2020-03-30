@@ -26,6 +26,8 @@ namespace VollyV3.Models.Volly
         public string ExternalSignUpUrl { get; set; }
         [Display(Name = "Opportunity Type")]
         public OpportunityType OpportunityType { get; set; }
+        [Display(Name = "Contact Email")]
+        public string ContactEmail { get; set; }
 
         public static OpportunityModel FromOpportunity(ApplicationDbContext dbContext, Opportunity opportunity)
         {
@@ -38,6 +40,7 @@ namespace VollyV3.Models.Volly
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
+                ContactEmail = opportunity.ContactEmail
             };
         }
 
@@ -59,6 +62,7 @@ namespace VollyV3.Models.Volly
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
             opportunity.OpportunityType = OpportunityType;
+            opportunity.ContactEmail = ContactEmail;
             return opportunity;
         }
     }

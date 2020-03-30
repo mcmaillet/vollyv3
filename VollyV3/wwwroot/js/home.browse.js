@@ -24,6 +24,8 @@ function openOpportunityModal(opportunity) {
     $("#OpportunityModalOrganization").html(opportunity.organizationName);
     $("#OpportunityModalOrganizationUrl").attr("href", opportunity.organizationLink);
     $("#ModalAddressHref").attr("href", "https://www.google.com/maps/search/?api=1&query=" + opportunity.address);
+    $("#ModalContactEmail").attr("href", "mailto:" + opportunity.contactEmail);
+    $("#ModalContactEmail").html(opportunity.contactEmail);
     $("#ModalAddress").html(opportunity.address);
     $("#ModalDescription").html(opportunity.description);
     var opportunityType = opportunity.opportunityType;
