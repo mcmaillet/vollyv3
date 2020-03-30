@@ -14,7 +14,13 @@
                     {
                         int type = (int)opportunityType;
                         <li class="nav-item">
-                            <a class="nav-link opportunityType" id="@opportunityType" value="@type" data-toggle="tab" href="#home">@OpportunityName.MapDictionary.GetValueOrDefault(opportunityType, opportunityType.ToString())</a>
+                            <a class="nav-link opportunityType"
+                               id="@opportunityType"
+                               value="@type"
+                               data-toggle="tab"
+                               href="#home">
+                            @OpportunityName.MapDictionary.GetValueOrDefault(opportunityType, opportunityType.ToString())
+                            </a>
                         </li>
                     }
                 }
