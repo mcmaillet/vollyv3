@@ -19,7 +19,7 @@
                                value="@type"
                                data-toggle="tab"
                                href="#home">
-                            @OpportunityName.MapDictionary.GetValueOrDefault(opportunityType, opportunityType.ToString())
+                                @OpportunityName.MapDictionary.GetValueOrDefault(opportunityType, opportunityType.ToString())
                             </a>
                         </li>
                     }
@@ -156,6 +156,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCi84qEblX_oHY4fLUW8pjliIsrXZJs3eI&callback=initMap"></script>
 
 <script>
+    var baseUrl = "https://" + window.location.hostname + "/Browse/Details/";
     $('#applyForm').submit(function (e) {
         var $theForm = $(this);
         $('#VolunteerSubmit').prop('disabled', true);

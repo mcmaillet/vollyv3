@@ -16,7 +16,6 @@ function addOpportunityMarker(opportunity) {
 };
 
 function openOpportunityModal(opportunity) {
-    var baseUrl = "https://vollyapp.com/Opportunities/Details/";
     $("#OpportunityId").val(opportunity.id);
     $("#OpportunityModalTitle").html(opportunity.name);
     $("#OpportunityModalCategory").html(opportunity.categoryName);

@@ -1,36 +1,44 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.ViewModels.Components;
+using VollyV3.Services;
 
 namespace VollyV3.Controllers
 {
     public class BrowseController : Controller
     {
-        private readonly ApplicationDbContext _dbContext;
-        public BrowseController(ApplicationDbContext dbContext,
-            UserManager<VollyV3User> userManager,
-            SignInManager<VollyV3User> signInManager)
+        private readonly ApplicationDbContext _context;
+        private readonly IMemoryCache _memoryCache;
+        public BrowseController(
+            ApplicationDbContext context,
+            IMemoryCache memoryCache)
         {
-            _dbContext = dbContext;
+            _context = context;
+            _memoryCache = memoryCache;
         }
 
-        public IActionResult Index(int Id = -1)
+        public IActionResult Index(int? id)
         {
             MapViewModel mapModel = new MapViewModel
             {
-                CategoriesList = new SelectList(_dbContext.Categories
+                CategoriesList = new SelectList(_context.Categories
                     .OrderBy(c => c.Name)
                     .ToList(), "Id", "Name"),
 
-                CausesList = new SelectList(_dbContext.Causes
+                CausesList = new SelectList(_context.Causes
                     .OrderBy(c => c.Name)
                     .ToList(), "Id", "Name"),
 
-                OrganizationList = new SelectList(_dbContext.Organizations
+                OrganizationList = new SelectList(_context.Organizations
                     .Where(o => o.Opportunities.Count > 0)
                     .OrderBy(c => c.Name)
                     .AsNoTracking()
@@ -38,9 +46,24 @@ namespace VollyV3.Controllers
 
                 ApplyViewModel = new ApplyViewModel()
             };
-
-            ViewData["OpportunityId"] = Id;
+            ViewData["OpportunityId"] = id;
             return View(mapModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DetailsAsync(int id)
+        {
+            List<Opportunity> opportunities = await MemoryCacheImpl.GetAllOpportunities(_memoryCache, _context);
+            OpportunityViewModel opportunityView = opportunities
+                .Where(x => x.Id == id)
+                .Select(OpportunityViewModel.FromOpportunity)
+                .FirstOrDefault();
+
+            if (opportunityView == null)
+            {
+                return View(new OpportunityViewModel());
+            }
+            return View(opportunityView);
         }
     }
 }

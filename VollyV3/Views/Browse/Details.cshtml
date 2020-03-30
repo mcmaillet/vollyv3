@@ -1,0 +1,19 @@
+﻿@model VollyV3.Models.ViewModels.Components.OpportunityViewModel
+@{
+    ViewData["Title"] = Html.DisplayFor(model => model.Name);
+    Layout = "_Layout";
+}
+
+<script>
+    window.location.replace("/Browse?Id=@Model.Id");
+</script>
+
+@section OGp
+    {
+    <meta property="og:title" content="@Html.DisplayFor(model => model.Name)" />
+    <meta property="og:image" content="@Uri.EscapeUriString(Model.ImageUrl)" />
+    <meta property="og:description" content="@Html.DisplayFor(model => model.Description)" />
+    <meta property="og:site_name" content="Volly" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://volly.app/Browse/Details/@Model.Id" />
+}
