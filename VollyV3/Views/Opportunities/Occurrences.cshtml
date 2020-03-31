@@ -29,11 +29,14 @@
         <div class="col-3">
             End time
         </div>
-        <div class="col-3">
+        <div class="col-1">
             Openings
         </div>
         <div class="col-3">
             Application Deadline
+        </div>
+        <div class="col-2">
+
         </div>
     </div>
     <div id="existing-rows">
@@ -68,7 +71,7 @@
                    id="end-time" />
         </div>
     </div>
-    <div class="row text-right"">
+    <div class="row text-right" ">
         <div class="col-md-6">
             <label for="deadline-date">Application Deadline</label>
             <input type="text"
@@ -109,11 +112,12 @@
                                 + x.startTime
                                 + "</div><div class=\"col-3\">"
                                 + x.endTime
-                                + "</div><div class=\"col-3\">"
+                                + "</div><div class=\"col-1\">"
                                 + x.openings
                                 + "</div><div class=\"col-3\">"
                                 + x.applicationDeadline
-                                +"</div>";
+                                + "</div><div class=\"col-2\">"
+                                + "<a href=\"RemoveOccurrence?id="+x.id+"\">remove</a>";
                             $('#existing-rows').append("<div class=\"row\">"+rowBuilder+"</div>");
                         });
                     },

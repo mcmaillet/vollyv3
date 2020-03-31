@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using VollyV3.Data;
 
 namespace VollyV3.Models.Users
@@ -11,5 +12,6 @@ namespace VollyV3.Models.Users
         public int OrganizationId { get; set; }
         [JsonIgnore]
         public virtual Organization Organization { get; set; }
+        public IEnumerable<Opportunity> Opportunities { get; set; }
     }
 }

@@ -68,8 +68,8 @@ namespace VollyV3.Services.HostedServices
 
                     dbContext.OrganizationAdministratorUsers.Add(new OrganizationAdministratorUser()
                     {
-                        UserId = createdUser.Id,
-                        OrganizationId = newOrganization.Id
+                        User = createdUser,
+                        Organization = newOrganization
                     });
                     await dbContext.SaveChangesAsync();
                 }

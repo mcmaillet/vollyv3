@@ -19,7 +19,7 @@ namespace VollyV3.Services
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2);
 
                 List<Opportunity> opportunities = await context.Opportunities
-                    .Include(o => o.CreatedByUser)
+                    .Include(o => o.CreatedBy)
                     .ThenInclude(u => u.Organization)
                     .Include(o => o.Location)
                     .Include(o => o.Occurrences)

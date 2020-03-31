@@ -19,8 +19,7 @@ namespace VollyV3.Models.ViewModels.Components
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
         public OpportunityType OpportunityType { get; set; }
-        public string? ContactEmail { get; set; }
-
+        public string ContactEmail { get; set; }
         public List<OccurrenceViewModel> OccurrenceViews { get; set; }
 
         public static OpportunityViewModel FromOpportunity(Opportunity opportunity)
@@ -31,21 +30,19 @@ namespace VollyV3.Models.ViewModels.Components
                 Name = opportunity.Name,
                 Description = opportunity.Description,
                 Address = opportunity.Address,
-                OrganizationName = opportunity.CreatedByUser.Organization.Name,
-                OrganizationLink = opportunity.CreatedByUser.Organization.WebsiteLink,
+                OrganizationName = opportunity.CreatedBy.Organization.Name,
+                OrganizationLink = opportunity.CreatedBy.Organization.WebsiteLink,
                 Latitude = opportunity.Location?.Latitude,
                 Longitude = opportunity.Location?.Longitude,
                 ImageUrl = opportunity.ImageUrl,
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
-                OccurrenceViews = null,
+                OccurrenceViews = opportunity.Occurrences
+                .Where(x => x.ApplicationDeadline > DateTime.Now && (x.Openings == 0 || x.Openings > x.Applications.Count))
+                .OrderBy(x => x.StartTime)
+                .Select(OccurrenceViewModel.FromOccurrence)
+                .ToList(),
                 ContactEmail = opportunity.ContactEmail
-                //opportunity.Occurrences
-                //    .Where(oc => oc.ApplicationDeadline > DateTime.Now &&
-                //    oc.Openings > oc.Applications.Count)
-                //    .OrderBy(o => o.StartTime)
-                //    .Select(OccurrenceViewModel.FromOccurrence)
-                //    .ToList(),
             };
         }
     }

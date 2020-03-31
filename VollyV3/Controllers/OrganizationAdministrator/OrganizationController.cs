@@ -28,7 +28,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var organizationsAdministrating = _context.OrganizationAdministratorUsers
-                .Where(x => x.UserId == user.Id)
+                .Where(x => x.User.Id == user.Id)
                 .ToList();
 
             if (organizationsAdministrating.Count == 0)
@@ -59,8 +59,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
             _context.OrganizationAdministratorUsers.Add(new OrganizationAdministratorUser()
             {
-                UserId = user.Id,
-                OrganizationId = organization.Id
+                User = user,
+                Organization= organization
             });
             await _context.SaveChangesAsync();
 

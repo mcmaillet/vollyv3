@@ -22,15 +22,12 @@ namespace VollyV3.Models
         public DbSet<OpportunityImage> OpportunityImages { get; set; }
         public DbSet<Occurrence> Occurrences { get; set; }
         public DbSet<OccurrenceApplication> OccurrenceApplications { get; set; }
-        //public DbSet<Company> Companies { get; set; }
-        //public DbSet<VolunteerHours> VolunteerHours { get; set; }
-        //public DbSet<UserCause> UserCauses { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<OccurrenceApplication>()
-                .HasKey(k => new {  k.OccurrenceId, k.ApplicationId });
+                .HasKey(k => new { k.OccurrenceId, k.ApplicationId });
             builder.Entity<OccurrenceApplication>()
                 .HasOne(ao => ao.Application)
                 .WithMany(ao => ao.Occurrences)
@@ -39,25 +36,19 @@ namespace VollyV3.Models
                 .HasOne(ao => ao.Occurrence)
                 .WithMany(ao => ao.Applications)
                 .HasForeignKey(ao => ao.OccurrenceId);
-            //builder.Entity<Company>()
-            //    .HasIndex(c => c.CompanyCode)
-            //    .IsUnique();
-            //builder.Entity<UserCause>()
-            //   .HasKey(u => new { u.UserId, u.CauseId });
-            //builder.Entity<UserCause>()
-            //    .HasOne(uc => uc.User)
-            //    .WithMany(uc => uc.Causes)
-            //    .HasForeignKey(uc => uc.UserId);
-            //builder.Entity<UserCause>()
-            //    .HasOne(uc => uc.Cause)
-            //    .WithMany(uc => uc.Users)
-            //    .HasForeignKey(uc => uc.CauseId);
 
             builder.Entity<OrganizationAdministratorUser>()
                 .HasKey(x => new { x.UserId, x.OrganizationId });
 
-            builder.Entity<Organization>()
-                .HasKey(o => o.Id);
+            builder.Entity<Opportunity>()
+                .HasOne(x => x.CreatedBy)
+                .WithMany(x => x.Opportunities)
+                .HasForeignKey(x => new { x.CreatedByUserId, x.CreatedByOrganizationId });
+
+            builder.Entity<OrganizationAdministratorUser>()
+                .HasMany(x => x.Opportunities)
+                .WithOne(x => x.CreatedBy)
+                .HasForeignKey(x => new { x.CreatedByUserId, x.CreatedByOrganizationId });
         }
     }
 }

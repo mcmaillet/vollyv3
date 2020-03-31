@@ -41,13 +41,14 @@ namespace VollyV3.Data
         public virtual Location Location { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
-        public string CreatedByUserId { get; set; }
         public OpportunityType OpportunityType { get; set; }
-        public virtual OrganizationAdministratorUser CreatedByUser { get; set; }
+        public string CreatedByUserId { get; set; }
+        public int CreatedByOrganizationId { get; set; }
+        public virtual OrganizationAdministratorUser CreatedBy { get; set; }
         public virtual List<OpportunityImage> OpportunityImages { get; set; }
         public virtual List<Occurrence> Occurrences { get; set; }
         public DateTime CreatedDateTime { get; set; }
-        public string? ContactEmail { get; set; }
+        public string ContactEmail { get; set; }
 
         public Opportunity Clone()
         {

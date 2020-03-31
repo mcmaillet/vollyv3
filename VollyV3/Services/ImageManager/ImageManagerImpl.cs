@@ -15,8 +15,9 @@ namespace VollyV3.Services.ImageManager
         private static readonly string StorageName = Environment.GetEnvironmentVariable("storage_name");
         private static readonly string StorageApiKey = Environment.GetEnvironmentVariable("storage_api");
         private static readonly string ImageContainer = Environment.GetEnvironmentVariable("images_container");
-        private const int ImageResizeWidth = 1024;
-        private const int ImageResizeHeight = 768;
+        private const int ImageFixedWidth = 1024;
+        private const int ImageFixedHeight = 768;
+        private const double ImageAspectRatio = 4.0 / 3.0;
 
         public async Task<string> UploadOpportunityImageAsync(IFormFile imageFile, string imageName)
         {
@@ -34,25 +35,30 @@ namespace VollyV3.Services.ImageManager
             {
                 using (var image = Image.FromStream(imageFile.OpenReadStream(), true, true))
                 {
-                    using var newImage = new Bitmap(ImageResizeWidth, ImageResizeHeight);
+                    var imageWidth = ImageFixedWidth;
+                    var imageHeight = ImageFixedHeight;
+
+                    var widthOffset = 0;
+                    var heightOffset = 0;
+
+                    if ((double)image.Width / image.Height > ImageAspectRatio)
+                    {
+                        imageHeight = (int)Math.Round(image.Height * (double)ImageFixedWidth / image.Width);
+                        heightOffset = (int)Math.Abs((ImageFixedHeight - imageHeight) / 2);
+                    }
+                    else
+                    {
+                        imageWidth = (int)Math.Round(image.Width * (double)ImageFixedHeight / image.Height);
+                        widthOffset = (int)Math.Abs((ImageFixedWidth - imageWidth) / 2);
+                    }
+
+                    using var newImage = new Bitmap(ImageFixedWidth, ImageFixedHeight);
                     using (var graphics = Graphics.FromImage(newImage))
                     {
-                        var adjustedHeight = ImageResizeHeight;
-                        var adjustedWidth = ImageResizeWidth;
-
-                        if (image.Height > image.Width)
-                        {
-                            adjustedWidth = (int)Math.Round(ImageResizeWidth * ((double)ImageResizeHeight / image.Height));
-                        }
-                        else
-                        {
-                            adjustedHeight = (int)Math.Round(ImageResizeHeight * ((double)ImageResizeWidth / image.Width));
-                        }
-
                         graphics.DrawImage(
                             image,
-                            (ImageResizeWidth - adjustedWidth) / 2, (ImageResizeHeight - adjustedHeight) / 2,
-                            adjustedWidth, adjustedHeight
+                            widthOffset, heightOffset,
+                            imageWidth, imageHeight
                             );
                     }
                     newImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);

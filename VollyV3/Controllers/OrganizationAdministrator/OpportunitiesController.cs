@@ -36,15 +36,15 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
             var organizationAdministratorUser = _context.OrganizationAdministratorUsers
                 .Include(x => x.Organization)
-                .Where(x => x.UserId == user.Id)
+                .Where(x => x.User == user)
                 .Single();
 
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
-                .Include(o => o.CreatedByUser)
+                .Include(o => o.CreatedBy)
                 .ThenInclude(u => u.Organization);
 
             List<Opportunity> opportunities = await opportunitiesQueryable
-                .Where(x => x.CreatedByUser.Organization.Id == organizationAdministratorUser.Organization.Id)
+                .Where(x => x.CreatedBy.Organization.Id == organizationAdministratorUser.Organization.Id)
                 .ToListAsync();
 
             return View(opportunities);
@@ -79,8 +79,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
                 Opportunity opportunity = model.GetOpportunity(_context, _imageManager);
-                opportunity.CreatedByUser = _context.OrganizationAdministratorUsers.
-                    Where(x => x.UserId == user.Id)
+                opportunity.CreatedBy = _context.OrganizationAdministratorUsers.
+                    Where(x => x.User == user)
                     .FirstOrDefault();
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
@@ -162,7 +162,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 Address = opp.Address,
                 Description = opp.Description,
                 ImageUrl = opp.ImageUrl,
-                ContactEmail=opp.ContactEmail
+                ContactEmail = opp.ContactEmail
             });
         }
         /*
@@ -189,7 +189,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 Address = opp.Address,
                 ExternalSignUpUrl = opp.ExternalSignUpUrl,
                 ImageUrl = opp.ImageUrl,
-                ContactEmail=opp.ContactEmail
+                ContactEmail = opp.ContactEmail
             });
         }
         [HttpPost]
@@ -275,6 +275,16 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 _context.Occurrences
                 .Where(x => x.OpportunityId == id)
                 .ToList());
+        }
+        [HttpGet]
+        public async Task<IActionResult> RemoveOccurrenceAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var occurrence = _context.Occurrences
+                .Where(x => x.Id == id
+                && x.Opportunity.CreatedBy.User == user)
+                .ToList();
+            return Ok();
         }
     }
 }

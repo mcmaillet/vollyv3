@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using VollyV3.Data;
 using VollyV3.Models;
+using VollyV3.Models.Browse;
 using VollyV3.Models.ViewModels.Components;
 using VollyV3.Services;
 
@@ -28,26 +29,12 @@ namespace VollyV3.Controllers
 
         public IActionResult Index(int? id)
         {
-            MapViewModel mapModel = new MapViewModel
+            BrowseModel browseModel = new BrowseModel
             {
-                CategoriesList = new SelectList(_context.Categories
-                    .OrderBy(c => c.Name)
-                    .ToList(), "Id", "Name"),
-
-                CausesList = new SelectList(_context.Causes
-                    .OrderBy(c => c.Name)
-                    .ToList(), "Id", "Name"),
-
-                OrganizationList = new SelectList(_context.Organizations
-                    .Where(o => o.Opportunities.Count > 0)
-                    .OrderBy(c => c.Name)
-                    .AsNoTracking()
-                    .ToList(), "Id", "Name"),
-
-                ApplyViewModel = new ApplyViewModel()
+                ApplicationModel = new ApplicationModel()
             };
             ViewData["OpportunityId"] = id;
-            return View(mapModel);
+            return View(browseModel);
         }
 
         [HttpGet]
