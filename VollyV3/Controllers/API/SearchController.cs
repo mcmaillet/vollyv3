@@ -37,8 +37,8 @@ namespace VollyV3.Controllers.API
             List<OpportunityViewModel> opportunityViews = opportunities
                 .Where(GetEligibleOpportunityPredicate(opportunitySearch))
                 .Select(OpportunityViewModel.FromOpportunity)
-                .Where(o =>
-                opportunitySearch.OpportunityType == OpportunityType.All
+                .Where(o => 
+                opportunitySearch.OpportunityType == OpportunityType.All 
                 || o.OpportunityType == opportunitySearch.OpportunityType)
                 .ToList();
             return Ok(opportunityViews);

@@ -10,14 +10,12 @@ namespace VollyV3.Data
     {
         public int Id { get; set; }
         public virtual Opportunity Opportunity { get; set; }
-        [JsonIgnore]
-        public virtual List<OccurrenceApplication> Occurrences { get; set; }
+        public virtual Occurrence Occurrence { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Message { get; set; }
-        public DateTime DateTime { get; set; }
-        public string UserId { get; set; }
-        public virtual VollyV3User VollyV3User { get; set; }
+        public DateTime SubmittedDateTime { get; set; }
+        public virtual VollyV3User User { get; set; }
     }
 }

@@ -55,72 +55,70 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form asp-action="Apply" id="applyForm">
-                <div class="modal-body">
-                    <a target="resource window" id="OpportunityModalOrganizationUrl"><div id="OpportunityModalOrganization"></div></a>
-                    <div id="fb-share-wrap" class="share-wrap">
-                        <a target="resource window" id="fb-share">
-                            <img src="~/images/assets/fb-logo.png" />
-                            Share
-                        </a>
-                    </div>
-                    <div id="tw-share-wrap" class="share-wrap">
-                        <a target="resource window" id="tw-share">
-                            <img src="~/images/assets/tw-logo.png" />
-                            Tweet
-                        </a>
-                    </div>
-                    <div id="ln-share-wrap" class="share-wrap">
-                        Share Link: <a id="ln-share"></a>
-                    </div>
-                    <a id="ModalAddressHref" target="_blank"><div class="text-warning" id="ModalAddress"></div></a>
-                    <span class="badge badge-success" id="OpportunityModalCategory"></span>
-                    <span class="badge badge-warning" id="OpportunityModalCause"></span>
-                    <span class="badge badge-info" id="OpportunityModalTime"></span>
-                    <span class="badge badge-danger" id="OpportunityModalSpotsRemaining"></span>
-                    <br />
-                    <div id="ModalDescription" class="div-description"></div>
-                    <input asp-for="@Model.ApplicationModel.OpportunityId" type="hidden" class="form-control" id="OpportunityId" />
-                    <div>
-                        Have a question before applying?
-                        Contact the volunteer coordinator at <a id="ModalContactEmail" target="_blank"></a>
-                    </div>
-                    <div id="apply-now"> Apply Now:</div>
-                    <div class="form-group row apply-opportunity-row">
-                        <label asp-for="@Model.ApplicationModel.Name" class="col-form-label col-sm-2">Name</label>
-                        <input asp-for="@Model.ApplicationModel.Name" class="form-control col-sm-10" />
-                        <span asp-validation-for="@Model.ApplicationModel.Name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group row apply-opportunity-row">
-                        <label asp-for="@Model.ApplicationModel.Email" class="col-form-label col-sm-2">Email</label>
-                        <input asp-for="@Model.ApplicationModel.Email" class="form-control col-sm-10" />
-                        <span asp-validation-for="@Model.ApplicationModel.Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group row apply-opportunity-row">
-                        <label asp-for="@Model.ApplicationModel.PhoneNumber" class="col-form-label col-sm-2">Phone</label>
-                        <input asp-for="@Model.ApplicationModel.PhoneNumber" class="form-control col-sm-10" />
-                        <span asp-validation-for="@Model.ApplicationModel.PhoneNumber" class="text-danger"></span>
-                    </div>
-                    <div class="form-group" id="occurrencesSelect">
-                        <label asp-for="@Model.ApplicationModel.Occurrences" class="row apply-opportunity-row col-form-label">Select a time:</label>
-                        <div class="row apply-opportunity-row">
-                            <select asp-for="@Model.ApplicationModel.Occurrences" class="form-control" id="occurrencesInput" multiple="multiple"></select>
-                            <span asp-validation-for="@Model.ApplicationModel.Occurrences" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="@Model.ApplicationModel.Message" class="row apply-opportunity-row col-form-label">Message</label>
-                        <div class="row apply-opportunity-row">
-                            <textarea asp-for="@Model.ApplicationModel.Message" class="form-control col-sm-12" rows="4" placeholder="Send a custom message. Please state your availability if you cannot help out the whole time"></textarea>
-                            <span asp-validation-for="@Model.ApplicationModel.Message" class="text-danger"></span>
-                        </div>
+            <div class="modal-body">
+                <a target="resource window" id="OpportunityModalOrganizationUrl"><div id="OpportunityModalOrganization"></div></a>
+                <div id="fb-share-wrap" class="share-wrap">
+                    <a target="resource window" id="fb-share">
+                        <img src="~/images/assets/fb-logo.png" />
+                        Share
+                    </a>
+                </div>
+                <div id="tw-share-wrap" class="share-wrap">
+                    <a target="resource window" id="tw-share">
+                        <img src="~/images/assets/tw-logo.png" />
+                        Tweet
+                    </a>
+                </div>
+                <div id="ln-share-wrap" class="share-wrap">
+                    Share Link: <a id="ln-share"></a>
+                </div>
+                <a id="ModalAddressHref" target="_blank"><div class="text-warning" id="ModalAddress"></div></a>
+                <span class="badge badge-success" id="OpportunityModalCategory"></span>
+                <span class="badge badge-warning" id="OpportunityModalCause"></span>
+                <span class="badge badge-info" id="OpportunityModalTime"></span>
+                <span class="badge badge-danger" id="OpportunityModalSpotsRemaining"></span>
+                <br />
+                <div id="ModalDescription" class="div-description"></div>
+                <input asp-for="@Model.ApplicationModel.OpportunityId" type="hidden" class="form-control" id="OpportunityId" />
+                <div>
+                    Have a question before applying?
+                    Contact the volunteer coordinator at <a id="ModalContactEmail" target="_blank"></a>
+                </div>
+                <div id="apply-now"> Apply Now:</div>
+                <div class="form-group row apply-opportunity-row">
+                    <label asp-for="@Model.ApplicationModel.Name" class="col-form-label col-sm-2">Name</label>
+                    <input asp-for="@Model.ApplicationModel.Name" class="form-control col-sm-10" />
+                    <span asp-validation-for="@Model.ApplicationModel.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group row apply-opportunity-row">
+                    <label asp-for="@Model.ApplicationModel.Email" class="col-form-label col-sm-2">Email</label>
+                    <input asp-for="@Model.ApplicationModel.Email" class="form-control col-sm-10" />
+                    <span asp-validation-for="@Model.ApplicationModel.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group row apply-opportunity-row">
+                    <label asp-for="@Model.ApplicationModel.PhoneNumber" class="col-form-label col-sm-2">Phone</label>
+                    <input asp-for="@Model.ApplicationModel.PhoneNumber" class="form-control col-sm-10" />
+                    <span asp-validation-for="@Model.ApplicationModel.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group" id="occurrencesSelect">
+                    <label asp-for="@Model.ApplicationModel.Occurrences" class="row apply-opportunity-row col-form-label">Select a time:</label>
+                    <div class="row apply-opportunity-row">
+                        <select asp-for="@Model.ApplicationModel.Occurrences" class="form-control" id="occurrencesInput" multiple="multiple"></select>
+                        <span asp-validation-for="@Model.ApplicationModel.Occurrences" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="VolunteerSubmit">Volunteer</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="form-group">
+                    <label asp-for="@Model.ApplicationModel.Message" class="row apply-opportunity-row col-form-label">Message</label>
+                    <div class="row apply-opportunity-row">
+                        <textarea asp-for="@Model.ApplicationModel.Message" class="form-control col-sm-12" rows="4" placeholder="Send a custom message. Please state your availability if you cannot help out the whole time"></textarea>
+                        <span asp-validation-for="@Model.ApplicationModel.Message" class="text-danger"></span>
+                    </div>
                 </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" id="VolunteerSubmit">Volunteer</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -157,24 +155,34 @@
 
 <script>
     var baseUrl = "https://" + window.location.hostname + "/Browse/Details/";
-    $('#applyForm').submit(function (e) {
-        var $theForm = $(this);
+    $('#VolunteerSubmit').click(() => {
         $('#VolunteerSubmit').prop('disabled', true);
+        var data = {
+            "OpportunityId": $('#OpportunityId').val(),
+            "Occurrences": $("#occurrencesInput").val(),
+            "Name": $("#ApplicationModel_Name").val(),
+            "Email": $("#ApplicationModel_Email").val(),
+            "PhoneNumber": $("#ApplicationModel_PhoneNumber").val(),
+            "Message": $("#ApplicationModel_Message").val(),
+        };
         $.ajax({
-            type: $theForm.attr('method'),
-            url: $theForm.attr('action'),
-            data: $theForm.serialize(),
-            success: function (data) {
+            url: '/Browse/Apply',
+            timeout: 5000,
+            async: true,
+            cache: false,
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify(data),
+            success: () => {
+                $('#VolunteerSubmit').prop('disabled', false);
                 $('#OpportunityModal').modal('hide');
                 $('#ApplyModal').modal('show');
-                $theForm.trigger("reset");
-                $('#VolunteerSubmit').prop('disabled', false);
             },
-            error: function (data) {
+            error: response => {
+                console.log(response);
                 $('#VolunteerSubmit').prop('disabled', false);
             }
         });
-        return false;
     });
 </script>
 

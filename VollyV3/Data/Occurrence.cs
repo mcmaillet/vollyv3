@@ -26,7 +26,7 @@ namespace VollyV3.Data
         [JsonIgnore]
         public virtual Opportunity Opportunity { get; set; }
         [JsonIgnore]
-        public virtual List<OccurrenceApplication> Applications { get; set; }
+        public virtual List<Application> Applications { get; set; }
 
         public override string ToString()
         {

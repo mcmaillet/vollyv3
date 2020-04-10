@@ -19,12 +19,15 @@ namespace VollyV3.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memoryCache;
+        private readonly UserManager<VollyV3User> _userManager;
         public BrowseController(
             ApplicationDbContext context,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            UserManager<VollyV3User> userManager)
         {
             _context = context;
             _memoryCache = memoryCache;
+            _userManager = userManager;
         }
 
         public IActionResult Index(int? id)
@@ -51,6 +54,32 @@ namespace VollyV3.Controllers
                 return View(new OpportunityViewModel());
             }
             return View(opportunityView);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApplyAsync([FromBody] ApplicationModel application)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var opportunity = _context
+                .Opportunities
+                .Where(x => x.Id == int.Parse(application.OpportunityId))
+                .FirstOrDefault();
+            var occurrences = _context.Occurrences.Where(x => x.Opportunity == opportunity).ToList();
+            foreach (var occurrence in application.Occurrences)
+            {
+                _context.Applications.Add(new Application()
+                {
+                    Opportunity = opportunity,
+                    Occurrence = occurrences.Where(x => x.Id == int.Parse(occurrence)).FirstOrDefault(),
+                    Name = application.Name,
+                    Email = application.Email,
+                    PhoneNumber = application.PhoneNumber,
+                    Message = application.Message,
+                    User = user,
+                    SubmittedDateTime = DateTime.Now
+                });
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

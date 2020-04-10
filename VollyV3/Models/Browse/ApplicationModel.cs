@@ -9,7 +9,7 @@ namespace VollyV3.Models.Browse
 {
     public class ApplicationModel
     {
-        public int OpportunityId { get; set; }
+        public string OpportunityId { get; set; }
         [Required]
         public string Name { get; set; }
         [EmailAddress]
@@ -17,7 +17,7 @@ namespace VollyV3.Models.Browse
         public string Email { get; set; }
         [Phone]
         public string PhoneNumber { get; set; }
-        public SelectList Occurrences { get; set; }
+        public ICollection<string> Occurrences { get; set; }
         public string Message { get; set; }
     }
 }

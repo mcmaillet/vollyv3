@@ -38,7 +38,9 @@ namespace VollyV3.Models.ViewModels.Components
                 ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
                 OpportunityType = opportunity.OpportunityType,
                 OccurrenceViews = opportunity.Occurrences
-                .Where(x => x.ApplicationDeadline > DateTime.Now && (x.Openings == 0 || x.Openings > x.Applications.Count))
+                .Where(x =>
+                (x.ApplicationDeadline == DateTime.MinValue || x.ApplicationDeadline > DateTime.Now)
+                && (x.Openings == 0 || x.Openings > x.Applications.Count))
                 .OrderBy(x => x.StartTime)
                 .Select(OccurrenceViewModel.FromOccurrence)
                 .ToList(),

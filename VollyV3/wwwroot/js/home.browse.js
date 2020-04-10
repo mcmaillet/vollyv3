@@ -35,7 +35,6 @@ function openOpportunityModal(opportunity) {
         $("#occurrencesSelect").css("visibility", "hidden");
         $("#occurrencesSelect").css("position", "absolute");
     }
-    console.log(opportunity.occurrenceViews);
     $("#occurrencesInput").html(getOccurrenceSelectors(opportunity.occurrenceViews));
 
     $("#fb-share").attr("href", "https://www.facebook.com/sharer/sharer.php?u=" + baseUrl + opportunity.id);

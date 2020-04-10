@@ -21,21 +21,9 @@ namespace VollyV3.Models
         public DbSet<Application> Applications { get; set; }
         public DbSet<OpportunityImage> OpportunityImages { get; set; }
         public DbSet<Occurrence> Occurrences { get; set; }
-        public DbSet<OccurrenceApplication> OccurrenceApplications { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<OccurrenceApplication>()
-                .HasKey(k => new { k.OccurrenceId, k.ApplicationId });
-            builder.Entity<OccurrenceApplication>()
-                .HasOne(ao => ao.Application)
-                .WithMany(ao => ao.Occurrences)
-                .HasForeignKey(ao => ao.ApplicationId);
-            builder.Entity<OccurrenceApplication>()
-                .HasOne(ao => ao.Occurrence)
-                .WithMany(ao => ao.Applications)
-                .HasForeignKey(ao => ao.OccurrenceId);
 
             builder.Entity<OrganizationAdministratorUser>()
                 .HasKey(x => new { x.UserId, x.OrganizationId });
