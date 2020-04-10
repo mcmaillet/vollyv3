@@ -240,50 +240,55 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         [HttpPost]
         public async Task<IActionResult> Occurrences([FromBody] OccurrencePost occurrencePost)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (_context.Opportunities
+                .Where(x =>
+                x.Id == occurrencePost.OpportunityId
+                && x.CreatedBy.User == user
+            ).FirstOrDefault() == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            var newOccurrence = new Occurrence()
+            {
+                OpportunityId = occurrencePost.OpportunityId,
+                StartTime = DateTime.Parse($"{occurrencePost.StartDate} {occurrencePost.StartTime}"),
+                EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
+                Openings = int.Parse(occurrencePost.Openings)
+            };
             if (!string.IsNullOrEmpty(occurrencePost.ApplicationDeadlineDate))
             {
-                _context.Occurrences.Add(
-               new Occurrence()
-               {
-                   OpportunityId = occurrencePost.OpportunityId,
-                   StartTime = DateTime.Parse($"{occurrencePost.StartDate} {occurrencePost.StartTime}"),
-                   EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
-                   ApplicationDeadline = DateTime.Parse($"{occurrencePost.ApplicationDeadlineDate} 12:00am"),
-                   Openings = int.Parse(occurrencePost.Openings)
-               });
+                newOccurrence.ApplicationDeadline = DateTime.Parse($"{occurrencePost.ApplicationDeadlineDate} 12:00am");
             }
-            else
-            {
-                _context.Occurrences.Add(
-               new Occurrence()
-               {
-                   OpportunityId = occurrencePost.OpportunityId,
-                   StartTime = DateTime.Parse($"{occurrencePost.StartDate} {occurrencePost.StartTime}"),
-                   EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
-                   Openings = int.Parse(occurrencePost.Openings)
-               });
-            }
+
+            _context.Occurrences.Add(newOccurrence);
 
             await _context.SaveChangesAsync();
 
             return Ok();
         }
         [HttpGet]
-        public IActionResult OccurrencesGet(int id)
+        public IActionResult GetOccurrences(int id)
         {
             return Ok(
                 _context.Occurrences
                 .Where(x => x.OpportunityId == id)
                 .ToList());
         }
-        [HttpGet]
-        public async Task<IActionResult> RemoveOccurrenceAsync(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteOccurrence(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var occurrence = _context.Occurrences
-                .Where(x => x.Id == id
-                && x.Opportunity.CreatedBy.User == user)
-                .ToList();
+                .Where(x =>
+                x.Id == id
+                && x.Opportunity.CreatedBy.User == user
+                ).ToList();
+            if (occurrence.Count == 1)
+            {
+                _context.Remove(occurrence[0]);
+                await _context.SaveChangesAsync();
+            }
             return Ok();
         }
     }

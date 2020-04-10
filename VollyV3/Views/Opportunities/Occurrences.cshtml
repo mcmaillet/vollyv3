@@ -6,6 +6,9 @@
 }
 
 <div class="padded bg-default-dark">
+    <div class="text-right">
+        <a asp-action="Index">Back to List</a>
+    </div>
     <h2>@Model.OpportunityName</h2>
 
     <div class="row">
@@ -19,29 +22,6 @@
         </div>
     </div>
 
-    <p>
-        <h2>Existing occurrences</h2>
-    </p>
-    <div class="row">
-        <div class="col-3">
-            Start time
-        </div>
-        <div class="col-3">
-            End time
-        </div>
-        <div class="col-1">
-            Openings
-        </div>
-        <div class="col-3">
-            Application Deadline
-        </div>
-        <div class="col-2">
-
-        </div>
-    </div>
-    <div id="existing-rows">
-
-    </div>
     <br />
     <p>
         <h2>Add occurrences:</h2>
@@ -86,21 +66,57 @@
         </div>
     </div>
 
-    <button id="add"
-            class="btn btn-primary">
-        Add
-    </button>
+    <div class="text-right">
+        <button id="add"
+                class="btn btn-primary">
+            Add
+        </button>
+    </div>
 
-    <div>
-        <a asp-action="Index">Back to List</a>
+    <p>
+        <h2>Existing occurrences</h2>
+    </p>
+    <div class="row">
+        <div class="col-3">
+            Start time
+        </div>
+        <div class="col-3">
+            End time
+        </div>
+        <div class="col-1">
+            Openings
+        </div>
+        <div class="col-3">
+            Application Deadline
+        </div>
+        <div class="col-2">
+
+        </div>
+    </div>
+    <div id="existing-rows">
+
     </div>
 </div>
 @section Scripts{
     <script>
-        $(function () {
-            var refreshExistingOccurrences = function () {
+        var deleteOccurrence = function (e) {
                 $.ajax({
-                    url: '/Opportunities/OccurrencesGet/'+@Model.OpportunityId,
+                    url: '/Opportunities/DeleteOccurrence/'+e,
+                    timeout: 5000,
+                    async: true,
+                    cache: false,
+                    type: 'DELETE',
+                    success: function (response) {
+                        refreshExistingOccurrences();
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
+        };
+        var refreshExistingOccurrences = function () {
+                $.ajax({
+                    url: '/Opportunities/GetOccurrences/'+@Model.OpportunityId,
                     timeout: 5000,
                     async: true,
                     cache: false,
@@ -117,8 +133,9 @@
                                 + "</div><div class=\"col-3\">"
                                 + x.applicationDeadline
                                 + "</div><div class=\"col-2\">"
-                                + "<a href=\"RemoveOccurrence?id="+x.id+"\">remove</a>";
-                            $('#existing-rows').append("<div class=\"row\">"+rowBuilder+"</div>");
+                                + "<div class='btn-remove btn btn-danger btn-sm' onclick='deleteOccurrence(" + x.id + ")'>remove</div>"
+                                + "<br />";
+                            $('#existing-rows').append("<div class=\"row py-2\">"+rowBuilder+"</div>");
                         });
                     },
                     error: function (e) {
@@ -126,6 +143,7 @@
                     }
                 });
             };
+        $(function () {
             var dateFormat = "mm/dd/yy";
             var deadline = $("#deadline-date").datepicker({
                 minDate: 0
@@ -152,7 +170,6 @@
                 .on("change", function () {
                     from.datepicker("option", "maxDate", getDate(this));
                 });
-
             function getDate(element) {
                 var date;
                 try {
@@ -194,6 +211,9 @@
                             $("#" + x).val('')
                         });
                         $("#openings").val(0);
+                        $("#end-date").datepicker("option", "minDate", 0);
+                        $("#deadline-date").datepicker("option", "maxDate", null);
+                        $("#start-date").datepicker("option", "maxDate", null);
                         refreshExistingOccurrences();
                     },
                     error: function (e) {
