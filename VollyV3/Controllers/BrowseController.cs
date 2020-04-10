@@ -64,19 +64,27 @@ namespace VollyV3.Controllers
                 .Where(x => x.Id == int.Parse(application.OpportunityId))
                 .FirstOrDefault();
             var occurrences = _context.Occurrences.Where(x => x.Opportunity == opportunity).ToList();
-            foreach (var occurrence in application.Occurrences)
+            var baseApplication = new Application()
             {
-                _context.Applications.Add(new Application()
+                Opportunity = opportunity,
+                Name = application.Name,
+                Email = application.Email,
+                PhoneNumber = application.PhoneNumber,
+                Message = application.Message,
+                User = user,
+                SubmittedDateTime = DateTime.Now
+            };
+            if (occurrences.Count == 0)
+            {
+                _context.Applications.Add(baseApplication);
+            }
+            else
+            {
+                foreach (var occurrence in application.Occurrences)
                 {
-                    Opportunity = opportunity,
-                    Occurrence = occurrences.Where(x => x.Id == int.Parse(occurrence)).FirstOrDefault(),
-                    Name = application.Name,
-                    Email = application.Email,
-                    PhoneNumber = application.PhoneNumber,
-                    Message = application.Message,
-                    User = user,
-                    SubmittedDateTime = DateTime.Now
-                });
+                    baseApplication.Occurrence = occurrences.Where(x => x.Id == int.Parse(occurrence)).FirstOrDefault();
+                    _context.Applications.Add(baseApplication);
+                }
             }
             await _context.SaveChangesAsync();
             return Ok();
