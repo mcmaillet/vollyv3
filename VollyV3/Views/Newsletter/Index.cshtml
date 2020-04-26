@@ -8,9 +8,15 @@
         @TempData["Messages"]
     </div>
 
-    <a asp-action="Send">
-        Send newsletter
-    </a>
+    <br />
+
+    <div class="row">
+        <a asp-action="Send" class="btn btn-primary">
+            Send newsletter
+        </a>
+    </div>
+
+    <br />
 
     <input class="form-control" id="searchInput" type="text" placeholder="Search..">
     <table class="table table-bordered table-striped table-text table-dark table-hover" id="searchableList">

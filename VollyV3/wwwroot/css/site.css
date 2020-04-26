@@ -416,3 +416,7 @@ nav img.img-brand {
 .bg-default-dark {
     background-color: rgba(0,0,0,.95);
 }
+
+.display-none {
+    display: none;
+}

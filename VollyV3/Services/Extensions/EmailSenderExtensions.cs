@@ -13,8 +13,7 @@ namespace VollyV3.Services.Extensions
     {
         public static async Task<Response> SendNewsletterAsync(
             this IEmailSender emailSender,
-            string email,
-            string fullName,
+            string subject,
             string opportunityHtml)
         {
             var apikey = Environment.GetEnvironmentVariable("sendgrid_api_key");
@@ -24,9 +23,9 @@ namespace VollyV3.Services.Extensions
             var client = new SendGridClient(apikey);
 
             var msg = new SendGridMessage();
+            msg.SetSubject(subject);
             msg.SetFrom(new EmailAddress(infoFromEmail, infoFromName));
-            msg.AddTo(new EmailAddress(email, fullName));
-            msg.AddTo(new EmailAddress("maillet.mark.test@gmail.com", fullName + "asdfasdf"));
+            msg.AddTo(new EmailAddress("maillet.mark@gmail.com", subject +"asdfasdf"));
             msg.SetTemplateId(Environment.GetEnvironmentVariable("newsletter_template_id"));
             msg.SetTemplateData(new TemplateData
             {

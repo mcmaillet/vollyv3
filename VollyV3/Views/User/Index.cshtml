@@ -35,7 +35,11 @@
                             </td>
                             <td>
                                 <a asp-route-id="@item.Id"
-                                   asp-action="Delete">Delete</a>
+                                   asp-action="Details">Details</a>@if (item.LockoutEnd != null)
+                                {
+                                    <text> | <a asp-route-id="@item.Id"
+                                                asp-action="Unlock">Unlock</a></text>
+                                   }
                             </td>
                         </tr>
                     }

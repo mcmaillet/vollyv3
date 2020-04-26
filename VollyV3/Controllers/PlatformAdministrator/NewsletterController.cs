@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using VollyV3.Areas.Identity;
 using VollyV3.Controllers.Extensions;
@@ -22,6 +24,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
         private static readonly string opportunityUrl = "https://vollyv3.azurewebsites.net/Browse/Details/";
         private static readonly int TakeFromTopCount = 20;
         private static readonly int NumberOfOpportunitiesToInclude = 4;
+        private static readonly string DefaultNewsletterSubject = "This is a test subject";
 
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memory;
@@ -47,30 +50,47 @@ namespace VollyV3.Controllers.PlatformAdministrator
         // Send
         //
         [HttpGet]
-        public IActionResult Send()
-        {
-            return View(new SendViewModel());
-        }
-        [HttpPost]
         public async Task<IActionResult> SendAsync()
         {
-            var opportunities = await GetRandomRecentOpportunities(TakeFromTopCount, NumberOfOpportunitiesToInclude);
-            await CreateAndSendSendGridNewsletterAsync(opportunities);
+            return View(new SendViewModel()
+            {
+                Opportunities = await GetRandomRecentOpportunities(TakeFromTopCount, NumberOfOpportunitiesToInclude),
+                NewsletterSubject = DefaultNewsletterSubject
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendAsync(SendViewModel model)
+        {
+            if(model.OpportunityIds == null || model.OpportunityIds.Count == 0)
+            {
+                TempData["Messages"] = "No opportunities selected, no newsletters delivered.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var opportunities = await MemoryCacheImpl.GetAllOpportunities(_memory, _context);
+
+            var html = GenerateSendGridHtmlFromOpportunities(
+                opportunities
+                .Where(x=>model.OpportunityIds.Contains(x.Id))
+                .ToList());
+
+            var response = await _emailSender.SendNewsletterAsync(model.NewsletterSubject, html);
+
+            if (response.StatusCode.Equals(HttpStatusCode.Accepted)||
+                response.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                TempData["Messages"] = "Newsletter successfully sent";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<IActionResult> CreateAndSendSendGridNewsletterAsync(List<Opportunity> opportunities)
-        {
-            var html = await GenerateSendGridHtmlFromOpportunitiesAsync(opportunities);
 
-            await _emailSender.SendNewsletterAsync("maillet.mark@gmail.com", "test subject", html);
-
-            return Ok();
-        }
-        private async Task<string> GenerateSendGridHtmlFromOpportunitiesAsync(List<Opportunity> opportunities)
+        private string GenerateSendGridHtmlFromOpportunities(List<Opportunity> opportunities)
         {
-            ViewData["OpportunitiesHtml"] = GetOpportunitiesHtml(opportunities);
-            return await this.RenderViewAsync("NewsletterSendGrid");
+            return GetOpportunitiesHtml(opportunities);
+            //ViewData["OpportunitiesHtml"] = GetOpportunitiesHtml(opportunities);
+            //return await this.RenderEmailTemplateAsync("NewsletterSendGrid");
         }
 
         private string GetOpportunitiesHtml(List<Opportunity> opportunities)
@@ -116,7 +136,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             "<font color='#ffffff'>" + opportunity.Name + "<br/>" + "</font>" +
             "</h3>" +
             "<p><span style='color:#FFFFFF'>" + opportunity.Description + "</span><br />" +
-            "<a href='"+ opportunityUrl+"" + opportunity.Id + "' target='_blank'>" +
+            "<a href='" + opportunityUrl + "" + opportunity.Id + "' target='_blank'>" +
             "<span style='color:#EE82EE'>Sign up</span>" +
             "</a>" +
             "</p>" +

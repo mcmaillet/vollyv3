@@ -1,0 +1,34 @@
+﻿@model VollyV3User
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container bg-default-dark padded">
+    <div class="page-title">
+        @Model.Email
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-content">
+        <div class="page-text">
+            <h3>Available actions</h3>
+            <div class="row">
+                <a asp-route-id="@Model.Id"
+                   asp-action="Delete">Delete</a>
+            </div>
+            <div class="row">
+                <a asp-route-id="@Model.Id"
+                   asp-action="PasswordReset">Reset password</a>
+            </div>
+            @if (Model.LockoutEnd != null)
+            {
+                <text><div class="row">
+                        <text>
+                            | <a asp-route-id="@Model.Id"
+                                 asp-action="Unlock">Unlock</a>
+                        </text>
+                    </div>
+                </text>
+            }
+        </div>
+    </div>
+</div>

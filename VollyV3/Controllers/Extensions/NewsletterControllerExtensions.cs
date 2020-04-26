@@ -12,13 +12,20 @@ namespace VollyV3.Controllers.Extensions
 {
     public static class NewsletterControllerExtensions
     {
-        public static async Task<string> RenderViewAsync(
+        public static async Task<string> RenderEmailTemplateAsync(
             this Controller controller,
             string viewName)
         {
+            return await RenderViewAsync(controller, "EmailTemplate", viewName);
+        }
+        public static async Task<string> RenderViewAsync(
+        this Controller controller,
+        string templateName,
+        string viewName)
+        {
             using (var writer = new StringWriter())
             {
-                string ViewLocation = $"~/Views/EmailTemplate/{viewName}.cshtml";
+                string ViewLocation = $"~/Views/{templateName}/{viewName}.cshtml";
                 IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
                 ViewEngineResult viewResult = viewEngine.GetView(ViewLocation, ViewLocation, false);
 
