@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VollyV3.Areas.Identity;
@@ -9,9 +10,11 @@ using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.Users;
 using VollyV3.Models.ViewModels.OrganizationAdministrator;
+using VollyV3.Models.ViewModels.PlatformAdministrator;
 
-namespace VollyV3.Controllers.OrganizationAdministrator
+namespace VollyV3.Controllers
 {
+    [Authorize(Roles = nameof(Role.PlatformAdministrator) + "," + nameof(Role.OrganizationAdministrator))]
     public class OrganizationController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,6 +30,13 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isPlatformAdministrator = await _userManager.IsInRoleAsync(user, Role.PlatformAdministrator.ToString());
+            if (isPlatformAdministrator)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
             var organizationsAdministrating = _context.OrganizationAdministratorUsers
                 .Where(x => x.User.Id == user.Id)
                 .ToList();
@@ -37,12 +47,25 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             }
             return View();
         }
+        [Authorize(Roles = nameof(Role.PlatformAdministrator))]
+        public IActionResult Manage()
+        {
+            return View(
+                new ManageViewModel()
+                {
+                    Organizations = _context.Organizations.ToList()
+                }
+                );
+        }
+
         [HttpGet]
+        [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
         public IActionResult Setup()
         {
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
         public async Task<IActionResult> Setup(SetupViewModel model)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -60,7 +83,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             _context.OrganizationAdministratorUsers.Add(new OrganizationAdministratorUser()
             {
                 User = user,
-                Organization= organization
+                Organization = organization
             });
             await _context.SaveChangesAsync();
 
@@ -69,6 +92,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             return RedirectToAction(nameof(SetupConfirm));
         }
         [HttpGet]
+        [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
         public IActionResult SetupConfirm()
         {
             return View();

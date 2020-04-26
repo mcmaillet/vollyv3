@@ -1,0 +1,46 @@
+﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.Newsletters.IndexViewModel
+@{
+    ViewData["Title"] = "Newletters";
+}
+
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+
+    <a asp-action="Send">
+        Send newsletter
+    </a>
+
+    <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+    <table class="table table-bordered table-striped table-text table-dark table-hover" id="searchableList">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Contact
+                </th>
+                <th>
+                    Location
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#searchableList tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>

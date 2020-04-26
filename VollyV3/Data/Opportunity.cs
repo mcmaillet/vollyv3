@@ -28,7 +28,7 @@ namespace VollyV3.Data
             { OpportunityType.Donation, "Donation" }
         };
     }
-    public class Opportunity
+    public class Opportunity : IComparable
     {
         private static readonly List<OpportunityType> OpportunityTypesRequiringOccurrences = new List<OpportunityType>()
     {
@@ -95,6 +95,11 @@ namespace VollyV3.Data
         public static bool RequiresOccurrences(OpportunityType opportunityType)
         {
             return OpportunityTypesRequiringOccurrences.Contains(opportunityType);
+        }
+
+        public int CompareTo(object obj)
+        {
+            return Id.CompareTo(((Opportunity)obj).Id);
         }
     }
 }

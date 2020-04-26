@@ -10,7 +10,7 @@ body {
 
     body .blend {
         background-repeat: no-repeat;
-        background-image: url(/images/assets/navbar-bg.png);
+        background-image: url(/images/assets/main-bg-dark.png);
         background-color: #271f41 !important;
         background-size: 100% auto;
     }
