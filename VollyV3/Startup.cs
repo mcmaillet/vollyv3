@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using VollyV3.Models;
 using VollyV3.Services;
 using VollyV3.Services.HostedServices;
 using VollyV3.Services.ImageManager;
+using VollyV3.Services.SendGrid;
 
 namespace VollyV3
 {
@@ -46,20 +48,6 @@ namespace VollyV3
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            //services.AddAuthentication()
-            //    .AddCookie(cfg => cfg.SlidingExpiration = true)
-            //    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions =>
-            //    {
-            //        jwtBearerOptions.SaveToken = true;
-            //        jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = false,
-            //            ValidateAudience = false,
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(VollyConstants.BearerSecret)),
-            //            ClockSkew = TimeSpan.Zero
-            //        };
-            //    });
-
             services.AddMemoryCache();
 
             services.AddMvc(options =>
@@ -67,14 +55,7 @@ namespace VollyV3
                 options.EnableEndpointRouting = false;
             });
 
-            //services.AddProgressiveWebApp();
-
             services.AddSignalR();
-
-            //services.AddScoped<IAuthorizationHandler, OpportunityAuthorizationHandler>();
-
-            //services.AddCors(o =>
-            //    o.AddPolicy("MyPolicy", builder => { builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod(); }));
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -87,15 +68,30 @@ namespace VollyV3
 
             services.AddSingleton<IImageManager, ImageManagerImpl>();
 
-            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("IsConfigured", policy =>
                  policy.RequireRole("IsConfigured"));
             });
+
+            services.AddHttpClient("sendgrid", c =>
+            {
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                     "Bearer",
+                     Environment.GetEnvironmentVariable("sendgrid_api_key")
+                     );
+                c.BaseAddress = new Uri("https://api.sendgrid.com/v3/");
+            });
+
+            AddCustomTransients(services);
         }
 
+        private void AddCustomTransients(IServiceCollection services)
+        {
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<SendGridClientImpl>();
+        }
         private void AddHostedServices(IServiceCollection services)
         {
             services.AddHostedService<RoleSeedingService>();

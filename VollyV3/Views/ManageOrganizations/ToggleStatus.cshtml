@@ -1,0 +1,32 @@
+﻿@model VollyV3.Data.Organization
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <a asp-action="Index">Back to list</a><br />
+    <div>
+        <h1>@Model.Name</h1>
+        Address: @Model.Address <br />
+        Email: @Model.ContactEmail <br />
+        Phone: @Model.PhoneNumber <br />
+        URL: @Model.WebsiteLink <br />
+        Created: @Model.CreatedDateTime
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-text">
+        <h3>
+            Are you sure you want to @if (Model.Enabled)
+            {<text>disable</text> }
+        else
+        { <text>enable</text>} this organization?
+        </h3>
+    </div>
+    <form asp-action="ToggleStatus">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Toggle" class="btn btn-outline-danger" />
+    </form>
+</div>

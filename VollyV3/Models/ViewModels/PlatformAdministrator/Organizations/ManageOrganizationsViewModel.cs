@@ -7,7 +7,7 @@ using VollyV3.Data;
 
 namespace VollyV3.Models.ViewModels.PlatformAdministrator
 {
-    public class ManageViewModel
+    public class ManageOrganizationsViewModel
     {
         [Display(Name = "Organizations")]
         public IEnumerable<Organization> Organizations  { get; set; }

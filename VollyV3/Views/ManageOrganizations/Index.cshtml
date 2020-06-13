@@ -1,4 +1,4 @@
-﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.ManageViewModel
+﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.ManageOrganizationsViewModel
 @{
     ViewData["Title"] = "Manage";
 }
@@ -30,9 +30,18 @@
             @foreach (var item in Model.Organizations)
             {
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
+                    @if (item.Enabled)
+                    {
+                        <td>
+                            <text>@item.Name</text>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="text-danger">
+                            <text>@item.Name (not enabled)</text>
+                        </td>
+                    }
                     <td>
                         @Html.DisplayFor(modelItem => item.ContactEmail)
                     </td>
@@ -41,7 +50,7 @@
                     </td>
                     <td>
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Toggle Enabled Status</a>
+                        <a asp-action="ToggleStatus" asp-route-id="@item.Id">Toggle Enabled Status</a>
                     </td>
                 </tr>
             }

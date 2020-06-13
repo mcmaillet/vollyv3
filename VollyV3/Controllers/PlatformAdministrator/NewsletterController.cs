@@ -14,7 +14,7 @@ using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.ViewModels.PlatformAdministrator.Newsletters;
 using VollyV3.Services;
-using VollyV3.Services.Extensions;
+using VollyV3.Services.SendGrid;
 
 namespace VollyV3.Controllers.PlatformAdministrator
 {
@@ -29,26 +29,30 @@ namespace VollyV3.Controllers.PlatformAdministrator
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memory;
         private readonly IEmailSender _emailSender;
+        private readonly SendGridClientImpl _sendgridClient;
 
 
         public NewsletterController(
             ApplicationDbContext context,
             IMemoryCache memory,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            SendGridClientImpl sendgridClient
             )
         {
             _context = context;
             _memory = memory;
             _emailSender = emailSender;
+            _sendgridClient = sendgridClient;
         }
 
         public IActionResult Index()
         {
             return View(new IndexViewModel());
         }
-        //
-        // Send
-        //
+        /// <summary>
+        /// Send
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> SendAsync()
         {
@@ -61,7 +65,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpPost]
         public async Task<IActionResult> SendAsync(SendViewModel model)
         {
-            if(model.OpportunityIds == null || model.OpportunityIds.Count == 0)
+            if (model.OpportunityIds == null || model.OpportunityIds.Count == 0)
             {
                 TempData["Messages"] = "No opportunities selected, no newsletters delivered.";
                 return RedirectToAction(nameof(Index));
@@ -71,12 +75,12 @@ namespace VollyV3.Controllers.PlatformAdministrator
 
             var html = GenerateSendGridHtmlFromOpportunities(
                 opportunities
-                .Where(x=>model.OpportunityIds.Contains(x.Id))
+                .Where(x => model.OpportunityIds.Contains(x.Id))
                 .ToList());
 
-            var response = await _emailSender.SendNewsletterAsync(model.NewsletterSubject, html);
-
-            if (response.StatusCode.Equals(HttpStatusCode.Accepted)||
+            var response = await _sendgridClient.SendNewsletterAsync(html);
+            var res = await response.Body.ReadAsStringAsync();
+            if (response.StatusCode.Equals(HttpStatusCode.Accepted) ||
                 response.StatusCode.Equals(HttpStatusCode.OK))
             {
                 TempData["Messages"] = "Newsletter successfully sent";

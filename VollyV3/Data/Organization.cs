@@ -16,5 +16,6 @@ namespace VollyV3.Data
         public virtual Location Location { get; set; }
         public string ImageUrl { get; set; }
         public DateTime CreatedDateTime { get; set; }
+        public bool Enabled { get; set; }
     }
 }

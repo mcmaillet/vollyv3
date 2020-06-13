@@ -14,7 +14,7 @@ using VollyV3.Models.ViewModels.PlatformAdministrator;
 
 namespace VollyV3.Controllers
 {
-    [Authorize(Roles = nameof(Role.PlatformAdministrator) + "," + nameof(Role.OrganizationAdministrator))]
+    [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
     public class OrganizationController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,12 +31,6 @@ namespace VollyV3.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            var isPlatformAdministrator = await _userManager.IsInRoleAsync(user, Role.PlatformAdministrator.ToString());
-            if (isPlatformAdministrator)
-            {
-                return RedirectToAction(nameof(Manage));
-            }
-
             var organizationsAdministrating = _context.OrganizationAdministratorUsers
                 .Where(x => x.User.Id == user.Id)
                 .ToList();
@@ -46,16 +40,6 @@ namespace VollyV3.Controllers
                 return RedirectToAction(nameof(Setup));
             }
             return View();
-        }
-        [Authorize(Roles = nameof(Role.PlatformAdministrator))]
-        public IActionResult Manage()
-        {
-            return View(
-                new ManageViewModel()
-                {
-                    Organizations = _context.Organizations.ToList()
-                }
-                );
         }
 
         [HttpGet]

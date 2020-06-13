@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using VollyV3.Models;
+using VollyV3.Services.SendGrid;
 
 namespace VollyV3.Areas.Identity.Pages.Account
 {
@@ -16,10 +17,15 @@ namespace VollyV3.Areas.Identity.Pages.Account
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<VollyV3User> _userManager;
+        private readonly SendGridClientImpl _client;
 
-        public ConfirmEmailModel(UserManager<VollyV3User> userManager)
+        public ConfirmEmailModel(
+            UserManager<VollyV3User> userManager,
+            SendGridClientImpl client
+            )
         {
             _userManager = userManager;
+            _client = client;
         }
 
         [TempData]
@@ -42,7 +48,10 @@ namespace VollyV3.Areas.Identity.Pages.Account
             var result = await _userManager.ConfirmEmailAsync(user, code);
             StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
 
-
+            if (result.Succeeded)
+            {
+                await _client.AddUserToNewsletterAsync(user);
+            }
 
             return Page();
         }

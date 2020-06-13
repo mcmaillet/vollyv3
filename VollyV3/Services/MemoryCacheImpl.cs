@@ -21,6 +21,7 @@ namespace VollyV3.Services
                 List<Opportunity> opportunities = await context.Opportunities
                     .Include(o => o.CreatedBy)
                     .ThenInclude(u => u.Organization)
+                    .Where(x => x.CreatedBy.Organization.Enabled)
                     .Include(o => o.Location)
                     .Include(o => o.Occurrences)
                     .ThenInclude(o => o.Applications)

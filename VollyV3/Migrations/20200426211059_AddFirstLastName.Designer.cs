@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VollyV3.Models;
 
 namespace VollyV3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200426211059_AddFirstLastName")]
+    partial class AddFirstLastName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,9 +361,6 @@ namespace VollyV3.Migrations
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("Enabled")
-                        .HasColumnType("bit");
 
                     b.Property<string>("FullDescription")
                         .HasColumnType("nvarchar(max)");
