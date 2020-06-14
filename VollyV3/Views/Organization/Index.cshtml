@@ -1,9 +1,114 @@
-﻿@model VollyV3.Data.Organization
+﻿@model VollyV3.Models.ViewModels.OrganizationAdministrator.IndexViewModel
 @{
     ViewData["Title"] = "My organization";
 }
 
-<div class="padded bg-default-dark">
-    <h1>@Model.Name</h1>
-    
+<div class="bg-default-dark col-md-6 ml-auto mr-auto padded">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <h2>ID: @Model.Id</h2>
+    <h2>Created: @Model.Organization.CreatedDateTime</h2>
+    <h2>
+        Status: @if (Model.Organization.Enabled)
+        {
+            <text>Enabled</text>
+        }
+        else
+        {
+            <text>Disabled</text>
+        }
+    </h2>
+    <hr />
+    <div class="text-right">
+        <button id="enable-edit"
+                class="btn btn-outline-primary display-none">
+            Enable Editting
+        </button>
+        <a id="cancel-edit"
+           class="btn btn-outline-primary display-none"
+           asp-action="Index">
+            Cancel and discard changes
+        </a>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" asp-action="Edit" enctype="multipart/form-data">
+                <input type="hidden" name="Id" value="@Model.Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Organization.Name" class="col-form-label"></label>
+                    <input asp-for="Organization.Name" class="form-control" />
+                    <span asp-validation-for="Organization.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.ContactEmail" class="col-form-label"></label>
+                    <input asp-for="Organization.ContactEmail" class="form-control" />
+                    <span asp-validation-for="Organization.ContactEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.PhoneNumber" class="col-form-label"></label>
+                    <input asp-for="Organization.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Organization.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.Address" class="col-form-label"></label>
+                    <input asp-for="Organization.Address" class="form-control" />
+                    <span asp-validation-for="Organization.Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.WebsiteLink" class="col-form-label"></label>
+                    <input asp-for="Organization.WebsiteLink" class="form-control" />
+                    <span asp-validation-for="Organization.WebsiteLink" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.MissionStatement" class="col-form-label"></label>
+                    <textarea asp-for="Organization.MissionStatement" class="form-control"></textarea>
+                    <span asp-validation-for="Organization.MissionStatement" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.FullDescription" class="col-form-label"></label>
+                    <textarea asp-for="Organization.FullDescription" class="form-control"></textarea>
+                    <span asp-validation-for="Organization.FullDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group text-right">
+                    <input id="submit"
+                           type="submit"
+                           class="btn btn-success display-none" value="Save" />
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        (function () {
+            const setFormDisabledStatus = function (disabled) {
+                [
+                    'input',
+                    'textarea'
+                ].forEach(x => {
+                    $('form#edit-form ' + x).each((i, y) => {
+                        $(y).attr('disabled', disabled);
+                    });
+                });
+                if (disabled) {
+                    $('#enable-edit').removeClass('display-none');
+                    $('#cancel-edit').addClass('display-none');
+                    $('#submit').addClass('display-none');
+                } else {
+                    $('#submit').removeClass('display-none');
+                    $('#cancel-edit').removeClass('display-none');
+                    $('#enable-edit').addClass('display-none');
+                }
+            }
+            setFormDisabledStatus(true);
+            $('#enable-edit').click(() => {
+                setFormDisabledStatus(false);
+            });
+
+        })();
+    </script>
+}

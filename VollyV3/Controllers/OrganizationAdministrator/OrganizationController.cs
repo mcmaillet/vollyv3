@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
@@ -29,6 +30,10 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             _context = context;
             _userManager = userManager;
         }
+        /// <summary>
+        /// Index
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -52,9 +57,63 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             }
 
             var organization = organizationsAdministrating[MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN - 1].Organization;
-            return View(organization);
+            return View(new IndexViewModel()
+            {
+                Id = organization.Id,
+                Organization = organization
+            });
+        }
+        /// <summary>
+        /// Edit
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(IndexViewModel newVal)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var organizationAdministratorUsers = _context.OrganizationAdministratorUsers
+                .Where(x => x.OrganizationId == newVal.Id && x.UserId == user.Id)
+                .ToList();
+
+            if (organizationAdministratorUsers.Count != MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN)
+            {
+                TempData["Messages"] = $"You're only allowed to manage {MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN} organizations." +
+                    $" It looks like you're managing {organizationAdministratorUsers.Count}." +
+                    $" Contact the platform administrator.";
+                return RedirectToAction("Index", "Error");
+            }
+
+            var oldVal = _context.Organizations
+                .Where(x =>
+                x.Id == newVal.Id &&
+                x.Id == organizationAdministratorUsers[MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN - 1].OrganizationId)
+                .SingleOrDefault();
+
+            if (oldVal == null)
+            {
+                TempData["Messages"] = $"Failed to update organization. Id provided: {newVal.Id}";
+                return RedirectToAction("Index", "Error");
+            }
+
+            var organization = newVal.Organization;
+            oldVal.Name = organization.Name;
+            oldVal.ContactEmail = organization.ContactEmail;
+            oldVal.PhoneNumber = organization.PhoneNumber;
+            oldVal.Address = organization.Address;
+            oldVal.WebsiteLink = organization.WebsiteLink;
+            oldVal.MissionStatement = organization.MissionStatement;
+            oldVal.FullDescription = organization.FullDescription;
+
+            _context.SaveChanges();
+            
+            TempData["Messages"] = $"{newVal.Organization.Name} has been updated";
+            return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Setup
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Setup()
         {
