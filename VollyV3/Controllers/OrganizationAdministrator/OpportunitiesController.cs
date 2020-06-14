@@ -205,7 +205,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             }
 
             opp.Name = model.Name;
-            opp.OpportunityType = model.OpportunityType;
+            opp.ContactEmail = model.ContactEmail;
             opp.Description = model.Description;
             opp.Address = model.Address;
 
