@@ -6,3 +6,4 @@ VollyV3/wwwroot/lib/
 VollyV3/Properties/*
 Tests/obj
 Tests/bin
+*.csproj.user

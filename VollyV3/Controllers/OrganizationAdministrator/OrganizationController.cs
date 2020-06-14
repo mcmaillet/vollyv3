@@ -5,18 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.Users;
+using VollyV3.Models.ViewModels;
 using VollyV3.Models.ViewModels.OrganizationAdministrator;
-using VollyV3.Models.ViewModels.PlatformAdministrator;
 
-namespace VollyV3.Controllers
+namespace VollyV3.Controllers.OrganizationAdministrator
 {
     [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
     public class OrganizationController : Controller
     {
+        private const int MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN = 1;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<VollyV3User> _userManager;
         public OrganizationController(
@@ -33,23 +35,32 @@ namespace VollyV3.Controllers
 
             var organizationsAdministrating = _context.OrganizationAdministratorUsers
                 .Where(x => x.User.Id == user.Id)
+                .Include(x => x.Organization)
                 .ToList();
 
             if (organizationsAdministrating.Count == 0)
             {
                 return RedirectToAction(nameof(Setup));
             }
-            return View();
+
+            if (organizationsAdministrating.Count != MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN)
+            {
+                TempData["Messages"] = $"You're managing {organizationsAdministrating.Count} organizations." +
+                    $" We currently support only {MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN}." +
+                    $" Contact the platform administrator for resolution.";
+                return RedirectToAction("Index", "Error");
+            }
+
+            var organization = organizationsAdministrating[MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN - 1].Organization;
+            return View(organization);
         }
 
         [HttpGet]
-        [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
         public IActionResult Setup()
         {
             return View();
         }
         [HttpPost]
-        [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
         public async Task<IActionResult> Setup(SetupViewModel model)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -76,7 +87,6 @@ namespace VollyV3.Controllers
             return RedirectToAction(nameof(SetupConfirm));
         }
         [HttpGet]
-        [Authorize(Roles = nameof(Role.OrganizationAdministrator))]
         public IActionResult SetupConfirm()
         {
             return View();

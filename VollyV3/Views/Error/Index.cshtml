@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+<div class="padded bg-default-dark">
+    <hr />
+    <h2 class="text-danger">
+        You've reached this page due to an error. Contact the administrator.
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Error details
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @TempData["Messages"]
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
