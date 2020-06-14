@@ -46,10 +46,14 @@ namespace VollyV3.Controllers.PlatformAdministrator
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Details(string id)
+        public async Task<IActionResult> DetailsAsync(string id)
         {
-            return View(
-                _userManager.Users.SingleOrDefault(u => u.Id == id));
+            var user = _userManager.Users.SingleOrDefault(u => u.Id == id);
+            return View(new UserDetailsViewModel()
+            {
+                User = user,
+                Roles = await _userManager.GetRolesAsync(user)
+            });
         }
         /// <summary>
         /// PasswordReset
@@ -91,8 +95,13 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpGet]
         public IActionResult Unlock(string id)
         {
-            return View(
-                _userManager.Users.SingleOrDefault(u => u.Id == id));
+            var user = _userManager.Users.SingleOrDefault(u => u.Id == id);
+            if (user.LockoutEnd == null)
+            {
+                TempData["Messages"] = $"User {user.Email} is not locked.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
         }
         [HttpPost]
         public async Task<IActionResult> UnlockAsync(string id, IFormCollection collection)

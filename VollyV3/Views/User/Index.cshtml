@@ -5,6 +5,9 @@
 }
 
 <div class="small bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
     <div class="page-title padded">
         User Index
     </div>
@@ -39,7 +42,7 @@
                                 {
                                     <text> | <a asp-route-id="@item.Id"
                                                 asp-action="Unlock">Unlock</a></text>
-                                   }
+                                }
                             </td>
                         </tr>
                     }
