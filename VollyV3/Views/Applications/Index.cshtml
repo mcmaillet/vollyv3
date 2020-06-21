@@ -13,7 +13,7 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Opportunity.Name)
+                    Opportunity
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Occurrence.StartTime)
@@ -34,7 +34,11 @@
             {
                 <tr>
                     <td>
-                        @item.Opportunity.Name
+                        <a asp-controller="Opportunities"
+                           asp-action="Details"
+                           asp-route-id="@item.Opportunity.Id">
+                            @item.Opportunity.Name
+                        </a>
                     </td>
                     <td>
                         @item.Occurrence?.StartTime

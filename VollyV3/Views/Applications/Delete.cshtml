@@ -1,4 +1,4 @@
-﻿@model VollyV3.Models.Volly.OpportunityModel
+﻿@model VollyV3.Data.Application
 
 @{
     ViewData["Title"] = "Delete Application";
@@ -7,7 +7,7 @@
 
 <div class="container bg-default-dark padded">
     <div class="page-title">
-
+        @TempData["Messages"]
     </div>
     <div class="page-separator"></div>
     <div class="page-content">
@@ -16,13 +16,16 @@
             <div>
                 <dl class="dl-horizontal">
                     <dt>
-                        @Html.DisplayNameFor(model => model.Name)
+                        @Html.DisplayFor(model => model.Opportunity.Name)
                     </dt>
+                    <dd>
+                        @Model.Occurrence?.StartTime
+                    </dd>
                     <dd>
                         @Html.DisplayFor(model => model.Name)
                     </dd>
                     <dd>
-                        @Html.DisplayFor(model => model.Description)
+                        @Model.Email
                     </dd>
                 </dl>
 

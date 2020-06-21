@@ -1,0 +1,44 @@
+﻿@model VollyV3.Data.Application
+
+@{
+    ViewData["Title"] = "Application Details";
+    Layout = "_Layout";
+}
+
+<div class="container bg-default-dark padded">
+    <div class="page-title">
+        @TempData["Messages"]
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-content">
+        <div class="page-text">
+            <section>
+                <h2>
+                    <a asp-controller="Opportunities"
+                       asp-action="Details"
+                       asp-route-id="@Model.Opportunity.Id">
+                        @Model.Opportunity.Name
+                    </a>
+                </h2>
+                <h3>@Model.Opportunity.Address</h3>
+                <p>
+                    Start time: @Model.Occurrence?.StartTime
+                </p>
+                <p>
+                    Applicant: @Model.Name<br />
+                    Email: @Model.Email<br />
+                    Phone: @Model.PhoneNumber<br />
+                    Message: @Model.Message<br />
+                    Submitted at: @Model.SubmittedDateTime<br />
+                </p>
+            </section>
+            <section class="text-right text-danger">
+                <a asp-controller="Applications"
+                   asp-action="Delete"
+                   asp-route-id="@Model.Id">
+                    Delete
+                </a>
+            </section>
+        </div>
+    </div>
+</div>
