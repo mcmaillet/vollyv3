@@ -11,7 +11,6 @@ namespace VollyV3.Models
     public class VollyV3User : IdentityUser
     {
         public DateTime CreatedDateTime { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FullName { get; set; }
     }
 }

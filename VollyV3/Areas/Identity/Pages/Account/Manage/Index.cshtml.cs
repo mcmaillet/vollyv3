@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using VollyV3.Data;
 using VollyV3.Models;
 
 namespace VollyV3.Areas.Identity.Pages.Account.Manage
@@ -14,13 +17,16 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<VollyV3User> _userManager;
         private readonly SignInManager<VollyV3User> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<VollyV3User> userManager,
-            SignInManager<VollyV3User> signInManager)
+            SignInManager<VollyV3User> signInManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -33,21 +39,36 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Display(Name = "Full name")]
+            public string FullName { get; set; }
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            public IEnumerable<Application> Applications { get; set; }
         }
 
         private async Task LoadAsync(VollyV3User user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var applications = _context.Applications
+                .Include(x => x.Opportunity)
+                .ThenInclude(x => x.CreatedBy)
+                .ThenInclude(x => x.Organization)
+                .Include(x => x.Occurrence)
+                .Where(x => x.User == user)
+                .OrderBy(x => x.Opportunity.CreatedByOrganizationId)
+                .ThenBy(x => x.Opportunity.Id)
+                .ThenBy(x => x.SubmittedDateTime)
+                .ToList();
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                FullName = user.FullName,
+                PhoneNumber = phoneNumber,
+                Applications = applications
             };
         }
 
@@ -75,6 +96,12 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
             {
                 await LoadAsync(user);
                 return Page();
+            }
+
+            if (Input.FullName != user.FullName)
+            {
+                user.FullName = Input.FullName;
+                await _userManager.UpdateAsync(user);
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
