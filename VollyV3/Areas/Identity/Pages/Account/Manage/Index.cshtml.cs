@@ -29,6 +29,8 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
             _context = context;
         }
 
+        public string Id { get; set; }
+
         public string Username { get; set; }
 
         [TempData]
@@ -44,14 +46,25 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
-            public IEnumerable<Application> Applications { get; set; }
         }
+        public IEnumerable<Application> Applications { get; set; }
+        public IEnumerable<VolunteerHours> VolunteerHours { get; set; }
 
         private async Task LoadAsync(VollyV3User user)
         {
+            Id = user.Id;
+
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            var applications = _context.Applications
+
+            Username = userName;
+            Input = new InputModel
+            {
+                FullName = user.FullName,
+                PhoneNumber = phoneNumber
+            };
+
+            Applications = _context.Applications
                 .Include(x => x.Opportunity)
                 .ThenInclude(x => x.CreatedBy)
                 .ThenInclude(x => x.Organization)
@@ -62,14 +75,15 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
                 .ThenBy(x => x.SubmittedDateTime)
                 .ToList();
 
-            Username = userName;
-
-            Input = new InputModel
-            {
-                FullName = user.FullName,
-                PhoneNumber = phoneNumber,
-                Applications = applications
-            };
+            VolunteerHours = _context.VolunteerHours
+                 .Include(x => x.Opportunity)
+                 .ThenInclude(x => x.CreatedBy)
+                 .ThenInclude(x => x.Organization)
+                 .Where(x => x.User == user)
+                 .OrderBy(x => x.Opportunity.CreatedByOrganizationId)
+                 .ThenBy(x => x.Opportunity.Id)
+                 .ThenBy(x => x.DateTime)
+                 .ToList();
         }
 
         public async Task<IActionResult> OnGetAsync()

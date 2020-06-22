@@ -1,0 +1,43 @@
+﻿@model IEnumerable<VollyV3.Data.Application>
+@{
+    ViewData["Title"] = "Track volunteer hours";
+    Layout = "_Layout";
+}
+<div class="padded bg-default-dark">
+    <div class="page-title">
+        For which application?
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-content">
+        <div class="page-text">
+            <form asp-action="Track" method="post">
+                <table class="table table-hover table-dark full-width">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Organization</th>
+                            <th>Opportunity</th>
+                            <th>Address</th>
+                            <th>Start time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var application in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="radio" name="OpportunityId" value="@application.Opportunity.Id">
+                                </td>
+                                <td>@application.Opportunity.CreatedBy.Organization.Name</td>
+                                <td>@application.Opportunity.Name</td>
+                                <td>@application.Opportunity.Address</td>
+                                <td>@application.Occurrence?.StartTime</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <input class="btn" type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</div>

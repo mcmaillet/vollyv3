@@ -78,7 +78,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var application in Model.Input.Applications)
+                        @foreach (var application in Model.Applications)
                         {
                             <tr>
                                 <td>@application.Opportunity.CreatedBy.Organization.Name</td>
@@ -100,7 +100,36 @@
              id="hours"
              role="tabpanel" 
              aria-labelledby="hours-tab">
-
+            <div class="row">
+                <a class="btn btn-success"
+                   asp-controller="VolunteerHours">Track hours</a>
+                <table class="table table-hover table-dark full-width">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Opportunity</th>
+                            <th>Date + time</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var volunteerHours in Model.VolunteerHours)
+                        {
+                            <tr>
+                                <td>@volunteerHours.Opportunity.CreatedBy.Organization.Name</td>
+                                <td>
+                                    <a target="_blank"
+                                       asp-controller="Browse"
+                                       asp-action="Details"
+                                       asp-route-id="@volunteerHours.Opportunity.Id">@volunteerHours.Opportunity.Name</a>
+                                </td>
+                                <td>@volunteerHours.DateTime</td>
+                                <td>@volunteerHours.Hours</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

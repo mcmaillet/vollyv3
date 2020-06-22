@@ -12,11 +12,15 @@
     <div class="page-separator"></div>
     <div class="page-content">
         <div class="page-text">
+            <section class="text-right">
+                <a asp-action="Index">Back to list</a>
+            </section>
             <section>
                 <h2>
                     <a asp-controller="Opportunities"
                        asp-action="Details"
-                       asp-route-id="@Model.Opportunity.Id">
+                       asp-route-id="@Model.Opportunity.Id"
+                       asp-route-returnurl="Applications/Index">
                         @Model.Opportunity.Name
                     </a>
                 </h2>
@@ -32,7 +36,7 @@
                     Submitted at: @Model.SubmittedDateTime<br />
                 </p>
             </section>
-            <section class="text-right text-danger">
+            <section class="text-right">
                 <a asp-controller="Applications"
                    asp-action="Delete"
                    asp-route-id="@Model.Id">

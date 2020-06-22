@@ -72,7 +72,38 @@ namespace VollyV3.Controllers
                 .Where(x => x.Id == int.Parse(application.OpportunityId))
                 .FirstOrDefault();
             var occurrences = _context.Occurrences.Where(x => x.Opportunity == opportunity).ToList();
-            var baseApplication = new Application()
+
+            if (occurrences.Count == 0)
+            {
+                _context.Applications.Add(GetBaseApplication(application,
+                    opportunity,
+                    user));
+            }
+            else
+            {
+
+                var applications = application.Occurrences
+                    .Select(occurrence => occurrences.Where(x => x.Id == int.Parse(occurrence)).FirstOrDefault())
+                    .Select(x =>
+                    {
+                        var baseApplication = GetBaseApplication(application,
+                            opportunity,
+                            user);
+                        baseApplication.Occurrence = x;
+                        return baseApplication;
+                    })
+                    .ToList();
+                _context.Applications.AddRange(applications);
+            }
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        private Application GetBaseApplication(ApplicationModel application,
+            Opportunity opportunity,
+            VollyV3User user)
+        {
+            return new Application()
             {
                 Opportunity = opportunity,
                 Name = application.Name,
@@ -82,20 +113,6 @@ namespace VollyV3.Controllers
                 User = user,
                 SubmittedDateTime = DateTime.Now
             };
-            if (occurrences.Count == 0)
-            {
-                _context.Applications.Add(baseApplication);
-            }
-            else
-            {
-                foreach (var occurrence in application.Occurrences)
-                {
-                    baseApplication.Occurrence = occurrences.Where(x => x.Id == int.Parse(occurrence)).FirstOrDefault();
-                    _context.Applications.Add(baseApplication);
-                }
-            }
-            await _context.SaveChangesAsync();
-            return Ok();
         }
     }
 }
