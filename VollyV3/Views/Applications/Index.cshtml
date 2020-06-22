@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<VollyV3.Data.Application>
 
 @{
-    ViewData["Title"] = "Opportunities";
+    ViewData["Title"] = "Applications";
     Layout = "_Layout";
 }
 <div class="padded bg-default-dark">
@@ -34,11 +34,7 @@
             {
                 <tr>
                     <td>
-                        <a asp-controller="Opportunities"
-                           asp-action="Details"
-                           asp-route-id="@item.Opportunity.Id">
-                            @item.Opportunity.Name
-                        </a>
+                        @item.Opportunity.Name
                     </td>
                     <td>
                         @item.Occurrence?.StartTime

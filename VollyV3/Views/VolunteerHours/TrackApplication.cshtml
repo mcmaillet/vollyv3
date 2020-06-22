@@ -1,0 +1,23 @@
+﻿@model VollyV3.Data.Application
+@{
+    ViewData["Title"] = "Track volunteer hours";
+    Layout = "_Layout";
+}
+<div class="padded bg-default-dark">
+    <section>
+        <h1>@Model.Opportunity.CreatedBy.Organization.Name</h1>
+        <h2>@Model.Opportunity.Name</h2>
+        <h3>@Model.Opportunity.Address</h3>
+        <h4>@Model.Occurrence?.StartTime</h4>
+    </section>
+    <section>
+        <form asp-action="TrackApplication">
+            <input name="Id" type="hidden" value="@Model.Id" />
+            How many hours would you like to add?
+            <input type="number" name="Hours" value="1.0" step="0.1" min="0" />
+            <input type="submit"
+                   class="btn btn-secondary"
+                   value="Submit" />
+        </form>
+    </section>
+</div>

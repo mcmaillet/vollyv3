@@ -1,16 +1,125 @@
-﻿@model VollyV3.Data.Opportunity
+﻿@model VollyV3.Models.ViewModels.Volunteer.VolunteerHours.TrackViewModel
 @{
-    ViewData["Title"] = "Track additional volunteer hours";
+    ViewData["Title"] = "Track volunteer hours";
     Layout = "_Layout";
 }
-<div class="padded bg-default-dark">
+
+<div class="bg-default-dark padded">
     <div class="text-danger">
         @TempData["Messages"]
     </div>
-    <div class="page-separator"></div>
-    <div class="page-content">
-        <div class="page-text">
-            
+    <div class="text-right">
+        <a class="btn btn-outline-primary"
+           asp-area="Identity"
+           asp-page="/Account/Manage/Index">Back to your account</a>
+    </div>
+    <hr />
+    <ul class="nav nav-pills nav-fill"
+        role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active"
+               id="applications-tab"
+               data-toggle="tab"
+               href="#applications"
+               role="tab"
+               aria-controls="home" aria-selected="true">By Application</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="organizations-tab"
+               data-toggle="tab"
+               href="#organizations"
+               role="tab"
+               aria-controls="profile" aria-selected="false">By Organization</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="external-tab"
+               data-toggle="tab"
+               href="#external"
+               role="tab"
+               aria-controls="contact" aria-selected="false">External</a>
+        </li>
+    </ul>
+    <hr />
+    <div class="tab-content">
+        <div class="tab-pane fade show active"
+             id="applications"
+             role="tabpanel"
+             aria-labelledby="applications-tab">
+            <h3>
+                For which application?
+            </h3>
+            <hr />
+            <form asp-action="TrackApplication" method="get">
+                <table class="table table-hover table-dark full-width">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Organization</th>
+                            <th>Opportunity</th>
+                            <th>Address</th>
+                            <th>Start time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var application in Model.Applications)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="radio" name="Id" value="@application.Id">
+                                </td>
+                                <td>@application.Opportunity.CreatedBy.Organization.Name</td>
+                                <td>@application.Opportunity.Name</td>
+                                <td>@application.Opportunity.Address</td>
+                                <td>@application.Occurrence?.StartTime</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <input class="btn btn-secondary" type="submit" value="Submit" />
+            </form>
+        </div>
+        <div class="tab-pane fade"
+             id="organizations"
+             role="tabpanel"
+             aria-labelledby="organizations-tab">
+            <h3>
+                For which organization?
+            </h3>
+            <hr />
+            <form asp-action="TrackOrganization" method="get">
+                <table class="table table-hover table-dark full-width">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Organization</th>
+                            <th>Address</th>
+                            <th>Website</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var organization in Model.Organizations)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="radio" name="Id" value="@organization.Id">
+                                </td>
+                                <td>@organization.Name</td>
+                                <td>@organization.Address</td>
+                                <td>@organization.WebsiteLink</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <input class="btn btn-secondary" type="submit" value="Submit" />
+            </form>
+        </div>
+        <div class="tab-pane fade"
+             id="external"
+             role="tabpanel"
+             aria-labelledby="external-tab">
+            Coming soon.
         </div>
     </div>
 </div>

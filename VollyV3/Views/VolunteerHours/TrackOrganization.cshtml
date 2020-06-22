@@ -1,0 +1,56 @@
+﻿@model VollyV3.Data.Organization
+@{
+    ViewData["Title"] = "Track volunteer hours";
+    Layout = "_Layout";
+}
+<div class="padded bg-default-dark">
+    <section>
+        <h1>@Model.Name</h1>
+        <h2>@Model.Address</h2>
+        <h3>@Model.ContactEmail</h3>
+        <h3>@Model.PhoneNumber</h3>
+        <h3>@Model.WebsiteLink</h3>
+        <p>
+            @Model.FullDescription
+        </p>
+    </section>
+    <section>
+        <form asp-action="TrackOrganization">
+            <input name="Id" type="hidden" value="@Model.Id" />
+            <div class="text-right">
+                <label for="Hours">
+                    How many hours would you like to add?
+                </label>
+                <input type="number"
+                       id="Hours" name="Hours"
+                       value="1.0" step="0.1" min="0" />
+                <br />
+                <label for="StartDate">Start Date</label>
+                <input type="text"
+                       name="StartDate" id="StartDate" />
+                <br />
+                <label for="StartTime">Start Time</label>
+                <input type="text"
+                       name="StartTime" id="StartTime" />
+                <br />
+                <input type="submit"
+                       class="btn btn-secondary"
+                       value="Submit" />
+            </div>
+        </form>
+    </section>
+</div>
+@section Scripts{
+    <script>
+        $(function () {
+            $("#StartDate")
+                .datepicker({
+                    defaultDate: 0,
+                    changeMonth: true,
+                    changeYear: true,
+                    numberOfMonths: 1,
+                });
+            $("#StartTime").timepicker();
+        });
+    </script>
+}

@@ -82,12 +82,7 @@
                         {
                             <tr>
                                 <td>@application.Opportunity.CreatedBy.Organization.Name</td>
-                                <td>
-                                    <a target="_blank"
-                                       asp-controller="Browse"
-                                       asp-action="Details"
-                                       asp-route-id="@application.Opportunity.Id">@application.Opportunity.Name</a>
-                                </td>
+                                <td>@application.Opportunity.Name</td>
                                 <td>@application.Opportunity.Address</td>
                                 <td>@application.Occurrence?.StartTime</td>
                             </tr>
@@ -98,11 +93,14 @@
         </div>
         <div class="tab-pane fade"
              id="hours"
-             role="tabpanel" 
+             role="tabpanel"
              aria-labelledby="hours-tab">
-            <div class="row">
+            <section>
                 <a class="btn btn-success"
-                   asp-controller="VolunteerHours">Track hours</a>
+                   asp-controller="VolunteerHours">Manage hours</a>
+            </section>
+            <br />
+            <section>
                 <table class="table table-hover table-dark full-width">
                     <thead>
                         <tr>
@@ -116,12 +114,18 @@
                         @foreach (var volunteerHours in Model.VolunteerHours)
                         {
                             <tr>
-                                <td>@volunteerHours.Opportunity.CreatedBy.Organization.Name</td>
                                 <td>
-                                    <a target="_blank"
-                                       asp-controller="Browse"
-                                       asp-action="Details"
-                                       asp-route-id="@volunteerHours.Opportunity.Id">@volunteerHours.Opportunity.Name</a>
+                                    @if (volunteerHours.Opportunity != null)
+                                    {
+                                        <text>@volunteerHours.Opportunity.CreatedBy.Organization.Name</text>
+                                    }
+                                    else if (volunteerHours.Organization != null)
+                                    {
+                                        <text>@volunteerHours.Organization.Name</text>
+                                    }
+                                </td>
+                                <td>
+                                    @volunteerHours.Opportunity?.Name
                                 </td>
                                 <td>@volunteerHours.DateTime</td>
                                 <td>@volunteerHours.Hours</td>
@@ -129,7 +133,7 @@
                         }
                     </tbody>
                 </table>
-            </div>
+            </section>
         </div>
     </div>
 </div>
