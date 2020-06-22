@@ -1,4 +1,6 @@
-﻿namespace VollyV3.Data
+﻿using System;
+
+namespace VollyV3.Data
 {
     public static class GlobalConstants
     {

@@ -114,19 +114,8 @@
                         @foreach (var volunteerHours in Model.VolunteerHours)
                         {
                             <tr>
-                                <td>
-                                    @if (volunteerHours.Opportunity != null)
-                                    {
-                                        <text>@volunteerHours.Opportunity.CreatedBy.Organization.Name</text>
-                                    }
-                                    else if (volunteerHours.Organization != null)
-                                    {
-                                        <text>@volunteerHours.Organization.Name</text>
-                                    }
-                                </td>
-                                <td>
-                                    @volunteerHours.Opportunity?.Name
-                                </td>
+                                <td>@volunteerHours.Organization?.Name</td>
+                                <td>@volunteerHours.Opportunity?.Name</td>
                                 <td>@volunteerHours.DateTime</td>
                                 <td>@volunteerHours.Hours</td>
                             </tr>

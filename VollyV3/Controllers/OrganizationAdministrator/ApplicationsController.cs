@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
 
 namespace VollyV3.Controllers.OrganizationAdministrator
 {
-    [Authorize(Roles = "OrganizationAdministrator", Policy = "IsConfigured")]
+    [Authorize(Roles = nameof(Role.OrganizationAdministrator), Policy = "IsConfigured")]
     public class ApplicationsController : Controller
     {
         private readonly ApplicationDbContext _context;

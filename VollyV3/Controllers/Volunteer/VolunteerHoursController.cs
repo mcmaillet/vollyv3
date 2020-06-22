@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CsvHelper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
+using VollyV3.Models.CSVModels;
 using VollyV3.Models.ViewModels.Volunteer.VolunteerHours;
 
 namespace VollyV3.Controllers.Volunteer
@@ -154,7 +159,80 @@ namespace VollyV3.Controllers.Volunteer
             var user = await _userManager.GetUserAsync(HttpContext.User);
             return View(_context.VolunteerHours
                 .Where(x => x.User == user)
+                .Include(x => x.Opportunity)
+                .Include(x => x.Organization)
+                .OrderBy(x => x.Organization.Id)
+                .ThenBy(x => x.Opportunity.Id)
+                .ThenBy(x => x.DateTime)
                 .ToList());
+        }
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var volunteerHours = _context.VolunteerHours
+                .Where(x => x.Id == id && x.User == user)
+                .Include(x => x.Organization)
+                .Include(x => x.Opportunity)
+                .SingleOrDefault();
+            if (volunteerHours == null)
+            {
+                TempData["Messages"] = "Hours not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(volunteerHours);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(int id, IFormCollection form)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var volunteerHours = _context.VolunteerHours
+                .Where(x => x.Id == id && x.User == user)
+                .Include(x => x.Organization)
+                .Include(x => x.Opportunity)
+                .SingleOrDefault();
+            if (volunteerHours == null)
+            {
+                TempData["Messages"] = "Hours not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            var hours = volunteerHours.Hours;
+            _context.Remove(volunteerHours);
+            _context.SaveChanges();
+            TempData["Messages"] = $"{hours} hours deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ExportAsync()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            List<VolunteerHoursCSVModel> hours = _context.VolunteerHours
+                .Where(x => x.User == user)
+                .Include(x => x.Opportunity)
+                .Include(x => x.Organization)
+                .Include(x=>x.User)
+                .AsNoTracking()
+                .AsEnumerable()
+                .Select(VolunteerHoursCSVModel.FromVolunteerHours)
+                .ToList();
+
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            CsvWriter csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+            csvWriter.Configuration.RegisterClassMap<VolunteerHoursCSVModelMap>();
+            csvWriter.WriteRecords(hours);
+            writer.Flush();
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(
+                stream,
+                "application/octet-stream",
+                String.Format("VolunteerHours_{0}.csv", DateTime.Today.ToShortDateString()));
         }
     }
 }

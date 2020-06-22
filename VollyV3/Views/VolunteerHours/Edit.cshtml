@@ -4,28 +4,43 @@
     Layout = "_Layout";
 }
 
-    <div class="bg-default-dark padded">
-        <div class="text-danger">
-            @TempData["Messages"]
-        </div>
-        <div class="text-right">
-            <a class="btn btn-outline-primary"
-               asp-area="Identity"
-               asp-page="/Account/Manage/Index">Back to your account</a>
-        </div>
-        <hr />
-        <section>
-            <a asp-action="Track"
-               class="btn btn-success">Track hours</a>
-        </section>
-        <br />
-        <section>
-            <a asp-action="Edit"
-               class="btn btn-success">Edit hours</a>
-        </section>
-        <br />
-        <section>
-            <a asp-action="Export"
-               class="btn btn-success">Export hours</a>
-        </section>
+<div class="bg-default-dark padded">
+    <div class="text-danger">
+        @TempData["Messages"]
     </div>
+    <div class="text-right">
+        <a class="btn btn-outline-primary"
+           asp-area="Identity"
+           asp-page="/Account/Manage/Index">Back to your account</a>
+    </div>
+    <hr />
+    <section>
+        <table class="table table-hover table-dark full-width">
+            <thead>
+                <tr>
+                    <th>Organization</th>
+                    <th>Opportunity</th>
+                    <th>Date + time</th>
+                    <th>Hours</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var volunteerHours in Model)
+                {
+                    <tr>
+                        <td>@volunteerHours.Organization?.Name</td>
+                        <td>@volunteerHours.Opportunity?.Name</td>
+                        <td>@volunteerHours.DateTime</td>
+                        <td>@volunteerHours.Hours</td>
+                        <td>
+                            <a asp-action="Delete"
+                               asp-route-id="@volunteerHours.Id"
+                               class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</div>
