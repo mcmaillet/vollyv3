@@ -1,61 +1,107 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Your profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
 <div class="bg-default-dark padded">
-    <h4>@ViewData["Title"]</h4>
     <partial name="_StatusMessage" model="Model.StatusMessage" />
-    <div class="row">
-        <div class="col-md-6">
-            <form id="profile-form" method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Username"></label>(cannot be updated)
-                    <input asp-for="Username" class="form-control" disabled />
+    <ul class="nav nav-pills nav-fill"
+        role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active"
+               id="profile-tab"
+               data-toggle="tab"
+               href="#profile"
+               role="tab"
+               aria-controls="home" aria-selected="true">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="applications-tab"
+               data-toggle="tab"
+               href="#applications"
+               role="tab"
+               aria-controls="profile" aria-selected="false">Applications</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="hours-tab"
+               data-toggle="tab"
+               href="#hours"
+               role="tab"
+               aria-controls="contact" aria-selected="false">Hours</a>
+        </li>
+    </ul>
+    <hr />
+    <div class="tab-content">
+        <div class="tab-pane fade show active"
+             id="profile"
+             role="tabpanel"
+             aria-labelledby="profile-tab">
+            <div class="row">
+                <div class="col-md-6">
+                    <form id="profile-form" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Username"></label>(cannot be updated)
+                            <input asp-for="Username" class="form-control" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.FullName"></label>
+                            <input asp-for="Input.FullName" class="form-control" />
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.PhoneNumber"></label>
+                            <input asp-for="Input.PhoneNumber" class="form-control" />
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Input.FullName"></label>
-                    <input asp-for="Input.FullName" class="form-control" />
-                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.PhoneNumber"></label>
-                    <input asp-for="Input.PhoneNumber" class="form-control" />
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                </div>
-                <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
-<hr />
-<div class="bg-default-dark padded">
-    <div class="row">
-        <h4>Manage applications</h4>
-        <table class="table table-hover table-dark full-width">
-            <thead>
-                <tr>
-                    <th>Organization</th>
-                    <th>Opportunity</th>
-                    <th>Address</th>
-                    <th>Start time</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var application in Model.Input.Applications)
-                {
-                    <tr>
-                        <td>@application.Opportunity.CreatedBy.Organization.Name</td>
-                        <td>@application.Opportunity.Name</td>
-                        <td>@application.Opportunity.Address</td>
-                        <td>@application.Occurrence?.StartTime</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="tab-pane fade"
+             id="applications"
+             role="tabpanel"
+             aria-labelledby="applications-tab">
+            <div class="row">
+                <table class="table table-hover table-dark full-width">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Opportunity</th>
+                            <th>Address</th>
+                            <th>Start time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var application in Model.Input.Applications)
+                        {
+                            <tr>
+                                <td>@application.Opportunity.CreatedBy.Organization.Name</td>
+                                <td>
+                                    <a target="_blank"
+                                       asp-controller="Browse"
+                                       asp-action="Details"
+                                       asp-route-id="@application.Opportunity.Id">@application.Opportunity.Name</a>
+                                </td>
+                                <td>@application.Opportunity.Address</td>
+                                <td>@application.Occurrence?.StartTime</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane fade"
+             id="hours"
+             role="tabpanel" 
+             aria-labelledby="hours-tab">
+
+        </div>
     </div>
 </div>
 @section Scripts {

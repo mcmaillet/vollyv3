@@ -30,11 +30,19 @@ namespace VollyV3.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int? id)
+        public async Task<IActionResult> IndexAsync(int? id)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var application = new ApplicationModel();
+            if (user != null)
+            {
+                application.Email = user.Email;
+                application.Name = user.FullName;
+                application.PhoneNumber = user.PhoneNumber;
+            }
             BrowseModel browseModel = new BrowseModel
             {
-                ApplicationModel = new ApplicationModel()
+                ApplicationModel = application
             };
             ViewData["OpportunityId"] = id;
             return View(browseModel);
