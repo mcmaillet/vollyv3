@@ -17,13 +17,14 @@ namespace VollyV3.Models.ViewModels.Components
 
         public static OccurrenceViewModel FromOccurrence(Occurrence occurrence)
         {
+            var openingsCount = occurrence.Openings - occurrence.Applications.Count;
             return new OccurrenceViewModel
             {
                 Id = occurrence.Id,
                 StartTime = ChronoHelper.ConvertFromUtc(occurrence.StartTime),
                 EndTime = ChronoHelper.ConvertFromUtc(occurrence.EndTime),
                 ApplicationDeadline = ChronoHelper.ConvertFromUtc(occurrence.ApplicationDeadline),
-                Openings = occurrence.Openings - occurrence.Applications.Count
+                Openings = openingsCount > 0 ? openingsCount : 0
             };
         }
     }

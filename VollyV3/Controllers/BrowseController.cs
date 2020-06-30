@@ -55,7 +55,7 @@ namespace VollyV3.Controllers
             OpportunityViewModel opportunityView = opportunities
                 .Where(x => x.Id == id)
                 .Select(OpportunityViewModel.FromOpportunity)
-                .FirstOrDefault();
+                .SingleOrDefault();
 
             if (opportunityView == null)
             {

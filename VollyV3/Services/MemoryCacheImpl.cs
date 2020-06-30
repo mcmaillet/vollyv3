@@ -36,7 +36,9 @@ namespace VollyV3.Services
                         && (oc.Openings == 0 || oc.Openings > oc.Applications.Count)
                         ).ToList();
                 }
-                return opportunities;
+                return opportunities
+                .Where(x => x.OpportunityType != OpportunityType.Episodic || x.Occurrences.Count > 0)
+                .ToList();
             });
         }
     }

@@ -28,7 +28,7 @@ function openOpportunityModal(opportunity) {
     $("#ModalAddress").html(opportunity.address);
     $("#ModalDescription").html(opportunity.description);
     var opportunityType = opportunity.opportunityType;
-    if (opportunityType === 1 || opportunityType === 3) {
+    if (opportunityType === 1) {
         $("#occurrencesSelect").css("visibility", "visible");
         $("#occurrencesSelect").css("position", "relative");
     } else {
@@ -73,7 +73,7 @@ function getSplit(breakline) {
 
 function appendOpportunityPanel(opportunity, marker) {
     var dateTimeStringWrapper = "";
-    if (opportunity.opportunityType == 1) {
+    if (opportunity.opportunityType === 1) {
         var dateTimeString = "Multiple Shifts";
         if (opportunity.occurrenceViews) {
             if (opportunity.occurrenceViews.length === 1) {
@@ -124,8 +124,12 @@ function getOccurrenceSelectors(occurrences) {
             var occurrence = occurrences[i];
             element = element + "<option value='" + occurrence.id +
                 "'" + selected +
-                ">" + prettyFormatDateTimes(occurrence.startTime, occurrence.endTime, false) +
-                " (" + occurrence.openings + " spots remaining) </option>";
+                ">" + prettyFormatDateTimes(occurrence.startTime, occurrence.endTime, false);
+            if (occurrence.openings && occurrence.openings > 0) {
+                element = element +
+                    " (" + occurrence.openings + " spot" + (occurrence.openings === 1 ? "" : "s") + " remaining) ";
+            }
+            element = element + "</option>";
         }
     }
     return element;

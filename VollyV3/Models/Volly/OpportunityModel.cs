@@ -47,7 +47,7 @@ namespace VollyV3.Models.Volly
 
         public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
         {
-            string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
+            string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
                 "opp" + Id + ImageFile.FileName
                 ).Result;
