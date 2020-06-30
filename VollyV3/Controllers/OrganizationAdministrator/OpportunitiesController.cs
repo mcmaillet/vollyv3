@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Caching.Memory;
 using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.OrganizationAdministrator.Dto;
@@ -124,25 +126,62 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(OpportunityModel model)
         {
-            var opp = _context.Opportunities
+            var opportunity = _context.Opportunities
                 .Where(x => x.Id == model.Id)
-                .FirstOrDefault();
+                .SingleOrDefault();
 
-            if (opp == null)
+            if (opportunity == null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            _context.Remove(opp);
+            var volunteerHours = _context.VolunteerHours
+                .Where(x => x.Opportunity == opportunity)
+                .ToList();
+            if (volunteerHours.Count > 0)
+            {
+                TempData["Messages"] = $"\"{opportunity.Name}\" has volunteer hours logged against it and cannot be deleted.";
+                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Archive), new { opportunity.Id });
+            }
+            _context.Remove(opportunity);
 
             await _context.SaveChangesAsync();
 
-            TempData["Messages"] = $"\"{opp.Name}\" has been deleted.";
+            TempData["Messages"] = $"\"{opportunity.Name}\" has been deleted.";
             return RedirectToAction(nameof(Index));
         }
-        /*
-         * Details
-         */
+        /// <summary>
+        /// Archive
+        /// </summary>
+        /// <param name="opportunity"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Archive(int id)
+        {
+            var opportunity = _context.Opportunities
+                .Where(x => x.Id == id)
+                .SingleOrDefault();
+            return View(opportunity);
+        }
+        [HttpPost]
+        public IActionResult Archive(int id, IFormCollection form)
+        {
+            var opportunity = _context.Opportunities
+                .Where(x => x.Id == id)
+                .SingleOrDefault();
+            opportunity.IsArchived = true;
+
+            _context.Update(opportunity);
+
+            TempData["Messages"] = $"Opportunity '{opportunity.Name}' has been archived.";
+            return RedirectToAction(nameof(Index));
+        }
+        /// <summary>
+        /// Details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Details(int id)
         {

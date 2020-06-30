@@ -49,6 +49,7 @@ namespace VollyV3.Data
         public virtual List<Occurrence> Occurrences { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public string ContactEmail { get; set; }
+        public bool IsArchived { get; set; }
 
         public Opportunity Clone()
         {
@@ -66,7 +67,8 @@ namespace VollyV3.Data
                 ExternalSignUpUrl = ExternalSignUpUrl,
                 OpportunityType = OpportunityType,
                 CreatedDateTime = DateTime.Now,
-                ContactEmail = ContactEmail
+                ContactEmail = ContactEmail,
+                IsArchived = IsArchived
             };
         }
 
