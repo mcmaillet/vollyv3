@@ -143,6 +143,7 @@ function initMap() {
         zoom: 10
     });
     $('#nothingFoundAlert').hide();
+    $('#loader').show();
     $('#searchNearMe').click(function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -222,14 +223,16 @@ function filter(opportunityType) {
         dataType: "json",
         success: function (opportunities) {
             clearOpportunities();
+            $('#loader').show();
             if (opportunities.length === 0) {
+                $('#loader').hide();
                 $('#nothingFoundAlert').show();
             } else {
                 $('#nothingFoundAlert').hide();
                 addOpportunityMarkers(opportunities);
             }
         }
-    });
+    }).then(() => $('#loader').hide());
 }
 
 $("#causes-a").click(function (e) {
