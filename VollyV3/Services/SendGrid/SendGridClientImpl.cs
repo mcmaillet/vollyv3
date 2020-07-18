@@ -4,6 +4,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -26,6 +27,7 @@ namespace VollyV3.Services.SendGrid
             _client = httpClientFactory.CreateClient("sendgrid");
             _memoryCache = memoryCache;
         }
+
         public async Task<Response> SendNewsletterAsync(
            string opportunityHtml)
         {
@@ -41,24 +43,17 @@ namespace VollyV3.Services.SendGrid
             var msg = new SendGridMessage();
             msg.SetFrom(new EmailAddress(infoFromEmail, infoFromName));
             msg.SetTemplateId(Environment.GetEnvironmentVariable("newsletter_template_id"));
-            msg.Personalizations = new List<Personalization>()
-            {
-                new Personalization()
+
+            msg.Personalizations = (await GetAllNewsletterContactsAsync())
+                .Select(x => new Personalization()
                 {
-                    Tos=new List<EmailAddress>(){
-                        new EmailAddress("maillet.mark@gmail.com","Mark")
+                    Tos = new List<EmailAddress>(){
+                        new EmailAddress(x.email, GetFirstNameOrEmpty(x))
                     },
-                    TemplateData=templateData
-                },
-                new Personalization()
-                {
-                    Tos=new List<EmailAddress>(){
-                        new EmailAddress("maillet.mark.test@gmail.com","Mark Maillet")
-                    },
-                    TemplateData=templateData
+                    TemplateData = templateData
                 }
-            };
-            
+                ).ToList();
+
             msg.SetAsm(int.Parse(Environment.GetEnvironmentVariable("volly_newsletter_unsubscribe_id")));
 
             return await client.SendEmailAsync(msg);
@@ -68,6 +63,19 @@ namespace VollyV3.Services.SendGrid
             [JsonProperty("opportunity_html")]
             public string OpportunityHtml { get; set; }
         }
+        private string GetFirstNameOrEmpty(Contacts.Result result)
+        {
+            if (string.IsNullOrWhiteSpace(result.first_name))
+            {
+                return "";
+            }
+            return result.first_name;
+        }
+        /// <summary>
+        /// Add User(s) to segment(s)
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<HttpResponseMessage> AddUserToNewsletterAsync(VollyV3User user)
         {
             return await AddUsersToSegmentsAsync(
@@ -113,12 +121,30 @@ namespace VollyV3.Services.SendGrid
 
             return await _client.SendAsync(request);
         }
-
+        /// <summary>
+        /// Get all JSON
+        /// </summary>
+        /// <returns></returns>
         public async Task<CustomFields> GetAllCustomFields()
         {
             return JsonConvert.DeserializeObject<CustomFields>(
                 await SendGridCache.GetAllCustomFieldsJson(_memoryCache, _client)
                 );
+        }
+
+        public async Task<Contacts> GetAllContacts()
+        {
+            return JsonConvert.DeserializeObject<Contacts>(
+                await SendGridCache.GetAllContactsJson(_memoryCache, _client)
+                );
+        }
+
+        public async Task<List<Contacts.Result>> GetAllNewsletterContactsAsync()
+        {
+            var allContacts = await GetAllContacts();
+            return allContacts.result
+                .Where(x => x.custom_fields.volly_newsletter == "Yes")
+                .ToList();
         }
     }
 }
