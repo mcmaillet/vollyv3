@@ -22,6 +22,7 @@ namespace VollyV3.Models
         public DbSet<OpportunityImage> OpportunityImages { get; set; }
         public DbSet<Occurrence> Occurrences { get; set; }
         public DbSet<VolunteerHours> VolunteerHours { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

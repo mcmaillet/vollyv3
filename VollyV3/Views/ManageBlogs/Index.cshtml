@@ -1,0 +1,52 @@
+﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.Blogs.ManageBlogsViewModel
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <a asp-action="Add"
+       class="btn btn-success">Add</a>
+    <br />
+    <br />
+    <section>
+        <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+        <table class="table table-bordered table-striped table-text table-dark table-hover" id="searchableList">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        URL
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Blogs)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Url</td>
+                        <td><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#searchableList tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<VollyV3.Data.Blog>
+@{
+    ViewData["Title"] = "View affiliated blogs";
+}
+
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <section>
+        <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+        <table class="table table-bordered table-striped table-text table-dark table-hover" id="searchableList">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        URL
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>
+                            <a class="link"
+                               href="@item.Url"
+                               target="_blank">@item.Url</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#searchableList tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>

@@ -1,0 +1,31 @@
+﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.Blogs.AddBlogViewModel
+@{
+    ViewData["Title"] = "Add new blog";
+}
+
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <section>
+        <form asp-action="Add">
+            <div class="form-group">
+                <label asp-for="Name">Name: </label>
+                <input class="form-control"
+                       asp-for="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Url">URL: </label>
+                <input class="form-control"
+                       asp-for="Url" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+            <input class="btn btn-primary"
+                   type="submit" value="Submit" />
+        </form>
+    </section>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

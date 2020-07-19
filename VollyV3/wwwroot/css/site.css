@@ -465,3 +465,11 @@ nav img.img-brand {
         transform: rotate(360deg);
     }
 }
+
+.link {
+    color: #0ff;
+}
+
+    .link:hover {
+        color: #0cc;
+    }

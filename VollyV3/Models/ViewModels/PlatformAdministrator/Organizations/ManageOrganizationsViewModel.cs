@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VollyV3.Data;
 
-namespace VollyV3.Models.ViewModels.PlatformAdministrator
+namespace VollyV3.Models.ViewModels.PlatformAdministrator.Organizations
 {
     public class ManageOrganizationsViewModel
     {

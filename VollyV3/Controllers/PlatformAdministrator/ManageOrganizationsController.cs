@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VollyV3.Areas.Identity;
 using VollyV3.Models;
-using VollyV3.Models.ViewModels.PlatformAdministrator;
+using VollyV3.Models.ViewModels.PlatformAdministrator.Organizations;
 
 namespace VollyV3.Controllers.PlatformAdministrator
 {

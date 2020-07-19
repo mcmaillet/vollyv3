@@ -1,4 +1,4 @@
-﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.ManageOrganizationsViewModel
+﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.Organizations.ManageOrganizationsViewModel
 @{
     ViewData["Title"] = "Manage";
 }
@@ -7,55 +7,56 @@
     <div class="text-danger">
         @TempData["Messages"]
     </div>
-
-    <input class="form-control" id="searchInput" type="text" placeholder="Search..">
-    <table class="table table-bordered table-striped table-text table-dark table-hover" id="organizationList">
-        <thead>
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Contact
-                </th>
-                <th>
-                    Location
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Organizations)
-            {
+    <section>
+        <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+        <table class="table table-bordered table-striped table-text table-dark table-hover" id="organizationList">
+            <thead>
                 <tr>
-                    @if (item.Enabled)
-                    {
-                        <td>
-                            <text>@item.Name</text>
-                        </td>
-                    }
-                    else
-                    {
-                        <td class="text-danger">
-                            <text>@item.Name (not enabled)</text>
-                        </td>
-                    }
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ContactEmail)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Address)
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="ToggleStatus" asp-route-id="@item.Id">Toggle Enabled Status</a>
-                    </td>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Contact
+                    </th>
+                    <th>
+                        Location
+                    </th>
+                    <th>
+                        Actions
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Organizations)
+                {
+                    <tr>
+                        @if (item.Enabled)
+                        {
+                            <td>
+                                <text>@item.Name</text>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-danger">
+                                <text>@item.Name (not enabled)</text>
+                            </td>
+                        }
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ContactEmail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="ToggleStatus" asp-route-id="@item.Id">Toggle Enabled Status</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 </div>
 <script>
     $(document).ready(function () {
