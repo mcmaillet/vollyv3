@@ -1,5 +1,6 @@
 .vs/
 appsettings.json
+appsettings.Development.json
 VollyV3/bin/
 VollyV3/obj/
 VollyV3/wwwroot/lib/

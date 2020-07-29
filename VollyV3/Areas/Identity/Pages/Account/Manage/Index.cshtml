@@ -75,6 +75,7 @@
                             <th>Opportunity</th>
                             <th>Address</th>
                             <th>Start time</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,6 +86,8 @@
                                 <td>@application.Opportunity.Name</td>
                                 <td>@application.Opportunity.Address</td>
                                 <td>@application.Occurrence?.StartTime</td>
+                                <td><a asp-action="CancelApplication"
+                                       class="btn btn-danger"></a></td>
                             </tr>
                         }
                     </tbody>
