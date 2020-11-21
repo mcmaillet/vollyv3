@@ -39,6 +39,7 @@ namespace VollyV3.Data
         public string Description { get; set; }
         public string Address { get; set; }
         public virtual Location Location { get; set; }
+        public virtual Category Category { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
         public OpportunityType OpportunityType { get; set; }
@@ -63,6 +64,7 @@ namespace VollyV3.Data
                     Longitude = Location.Longitude,
                     Latitude = Location.Latitude
                 },
+                Category = Category,
                 ImageUrl = ImageUrl,
                 ExternalSignUpUrl = ExternalSignUpUrl,
                 OpportunityType = OpportunityType,

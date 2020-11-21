@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Caching.Memory;
@@ -13,7 +14,6 @@ using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.OrganizationAdministrator.Dto;
 using VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities;
-using VollyV3.Models.Volly;
 using VollyV3.Services.ImageManager;
 
 namespace VollyV3.Controllers.OrganizationAdministrator
@@ -42,40 +42,42 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 .Single();
 
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
+                .Include(o => o.Category)
                 .Include(o => o.CreatedBy)
                 .ThenInclude(u => u.Organization);
 
-            List<Opportunity> opportunities = await opportunitiesQueryable
+            List<Opportunity> opportunities = opportunitiesQueryable
                 .Where(x => x.CreatedBy.Organization.Id == organizationAdministratorUser.Organization.Id)
-                .ToListAsync();
+                .ToList();
 
-            return View(opportunities);
+            return View(opportunities.Select(x => new OpportunityIndexViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Category = x.Category?.Name,
+                ImageUrl = x.ImageUrl,
+                OpportunityType = x.OpportunityType
+            }).ToList());
         }
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> CreateAsync()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            OpportunityModel model = new OpportunityModel
+
+            return View(new OpportunityCreateViewModel()
             {
-                ContactEmail = user.Email
-            };
-            return View(model);
+                ContactEmail = user.Email,
+                Categories = new SelectList(_context.Categories
+                .OrderBy(c => c.Name)
+                .ToList(), "Id", "Name")
+            });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind(
-            "Id," +
-            "Name," +
-            "Description," +
-            "Address," +
-            "DateTime," +
-            "EndDateTime," +
-            "ApplicationDeadline," +
-            "Openings," +
-            "ImageFile," +
-            "ExternalSignUpUrl," +
-            "OpportunityType,"+
-            "ContactEmail"
-            )] OpportunityModel model)
+        public async Task<IActionResult> Create(OpportunityCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -101,9 +103,11 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             }
             return View(model);
         }
-        /*
-         * Delete
-         */
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(int id)
         {
@@ -116,7 +120,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new OpportunityModel()
+            return View(new OpportunityDeleteViewModel()
             {
                 Id = id,
                 Name = opp.Name,
@@ -124,7 +128,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             });
         }
         [HttpPost]
-        public async Task<IActionResult> DeleteAsync(OpportunityModel model)
+        public async Task<IActionResult> DeleteAsync(OpportunityDeleteViewModel model)
         {
             var opportunity = _context.Opportunities
                 .Where(x => x.Id == model.Id)
@@ -187,6 +191,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         {
             var opp = _context.Opportunities
                 .Where(x => x.Id == id)
+                .Include(x => x.Category)
                 .FirstOrDefault();
 
             if (opp == null)
@@ -194,24 +199,28 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new OpportunityModel()
+            return View(new OpportunityDetailsViewModel()
             {
                 Name = opp.Name,
                 OpportunityType = opp.OpportunityType,
                 Address = opp.Address,
                 Description = opp.Description,
+                Category = opp.Category?.Name,
                 ImageUrl = opp.ImageUrl,
                 ContactEmail = opp.ContactEmail
             });
         }
-        /*
-         * Edit
-         */
+        /// <summary>
+        /// Edit
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(int id)
         {
             var opp = _context.Opportunities
                 .Where(x => x.Id == id)
+                .Include(x => x.Category)
                 .FirstOrDefault();
 
             if (opp == null)
@@ -219,20 +228,24 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new OpportunityModel()
+            return View(new OpportunityEditViewModel()
             {
                 Id = id,
                 Name = opp.Name,
                 OpportunityType = opp.OpportunityType,
                 Description = opp.Description,
                 Address = opp.Address,
+                CategoryId = opp.Category?.Id,
+                Categories = new SelectList(_context.Categories
+                .OrderBy(c => c.Name)
+                .ToList(), "Id", "Name"),
                 ExternalSignUpUrl = opp.ExternalSignUpUrl,
                 ImageUrl = opp.ImageUrl,
                 ContactEmail = opp.ContactEmail
             });
         }
         [HttpPost]
-        public async Task<IActionResult> EditAsync(OpportunityModel model)
+        public async Task<IActionResult> EditAsync(OpportunityEditViewModel model)
         {
             var opp = _context.Opportunities
                 .Where(x => x.Id == model.Id)
@@ -247,6 +260,10 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             opp.ContactEmail = model.ContactEmail;
             opp.Description = model.Description;
             opp.Address = model.Address;
+            opp.Category = model.CategoryId == null ? null
+                : _context.Categories
+                .Where(x => x.Id == model.CategoryId)
+                .SingleOrDefault();
 
             await _context.SaveChangesAsync();
 

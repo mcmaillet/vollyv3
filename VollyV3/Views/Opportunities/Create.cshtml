@@ -1,5 +1,5 @@
 ﻿@using VollyV3.Data
-@model VollyV3.Models.Volly.OpportunityModel
+@model VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities.OpportunityCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -34,6 +34,14 @@
                     <label asp-for="Address" class="col-form-label"></label>
                     <input asp-for="Address" class="form-control" />
                     <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="col-form-label"></label>
+                    <select asp-for="CategoryId" class="form-control"
+                            asp-items="@Model?.Categories">
+                        <option value="">Select a category</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="OpportunityType" class="col-form-label"></label>

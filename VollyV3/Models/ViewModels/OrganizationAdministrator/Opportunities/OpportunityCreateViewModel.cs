@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using VollyV3.Data;
 using VollyV3.Services;
 using VollyV3.Services.ImageManager;
 
-namespace VollyV3.Models.Volly
+namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
 {
-    public class OpportunityModel
+    public class OpportunityCreateViewModel
     {
         public int Id { get; set; }
         [Required]
@@ -19,6 +18,9 @@ namespace VollyV3.Models.Volly
         [Required]
         [Display(Name = "Where does the volunteering occur? Enter Address or simply write the city name if there are multiple locations.")]
         public string Address { get; set; }
+        [Display(Name = "Choose a category")]
+        public int? CategoryId { get; set; }
+        public SelectList Categories { get; set; }
         public string ImageUrl { get; set; }
         [Display(Name = "Upload an image for this event")]
         public IFormFile ImageFile { get; set; }
@@ -29,22 +31,6 @@ namespace VollyV3.Models.Volly
         [Display(Name = "Contact Email")]
         [EmailAddress]
         public string ContactEmail { get; set; }
-
-        public static OpportunityModel FromOpportunity(ApplicationDbContext dbContext, Opportunity opportunity)
-        {
-            return new OpportunityModel()
-            {
-                Id = opportunity.Id,
-                Name = opportunity.Name,
-                Description = opportunity.Description,
-                Address = opportunity.Address,
-                ImageUrl = opportunity.ImageUrl,
-                ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
-                OpportunityType = opportunity.OpportunityType,
-                ContactEmail = opportunity.ContactEmail
-            };
-        }
-
         public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
         {
             string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
@@ -56,6 +42,7 @@ namespace VollyV3.Models.Volly
             opportunity.Name = Name;
             opportunity.Description = Description;
             opportunity.Address = Address;
+            opportunity.Category = context.Categories.Find(CategoryId) ?? null;
             if (imageUrl != null)
             {
                 opportunity.ImageUrl = imageUrl;

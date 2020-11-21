@@ -1,4 +1,4 @@
-﻿@model VollyV3.Models.Volly.OpportunityModel
+﻿@model VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities.OpportunityDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -16,6 +16,10 @@
 
             <div>
                 Location: @Model.Address
+            </div>
+
+            <div>
+                Category: @Model.Category
             </div>
             <p>
                 @Model.Description
