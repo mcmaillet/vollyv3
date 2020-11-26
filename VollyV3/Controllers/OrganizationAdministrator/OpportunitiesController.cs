@@ -36,10 +36,11 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            var organizationAdministratorUser = _context.OrganizationAdministratorUsers
+            var organizationsManagedByUser = _context.OrganizationAdministratorUsers
                 .Include(x => x.Organization)
                 .Where(x => x.User == user)
-                .Single();
+                .Select(x=>x.OrganizationId)
+                .ToList();
 
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.Category)
@@ -47,7 +48,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 .ThenInclude(u => u.Organization);
 
             List<Opportunity> opportunities = opportunitiesQueryable
-                .Where(x => x.CreatedBy.Organization.Id == organizationAdministratorUser.Organization.Id)
+                .Where(x => organizationsManagedByUser.Contains(x.CreatedBy.Organization.Id))
+                .OrderByDescending(x => x.Id)
                 .ToList();
 
             return View(opportunities.Select(x => new OpportunityIndexViewModel()
@@ -247,23 +249,12 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         [HttpPost]
         public async Task<IActionResult> EditAsync(OpportunityEditViewModel model)
         {
-            var opp = _context.Opportunities
-                .Where(x => x.Id == model.Id)
-                .FirstOrDefault();
+            var opp = model.GetOpportunity(_context, _imageManager);
 
             if (opp == null)
             {
                 return RedirectToAction(nameof(Index));
             }
-
-            opp.Name = model.Name;
-            opp.ContactEmail = model.ContactEmail;
-            opp.Description = model.Description;
-            opp.Address = model.Address;
-            opp.Category = model.CategoryId == null ? null
-                : _context.Categories
-                .Where(x => x.Id == model.CategoryId)
-                .SingleOrDefault();
 
             await _context.SaveChangesAsync();
 

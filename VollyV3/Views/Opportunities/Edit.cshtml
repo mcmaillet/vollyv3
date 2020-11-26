@@ -37,7 +37,7 @@
                 <div class="form-group">
                     <label asp-for="CategoryId" class="col-form-label"></label>
                     <select asp-for="CategoryId" class="form-control"
-                            asp-items="@Model?.Categories" >
+                            asp-items="@Model?.Categories">
                         <option value="">Select a category</option>
                     </select>
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -48,6 +48,11 @@
                            disabled="disabled"
                            class="form-control"
                            value="@Model.OpportunityType" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="col-form-label"></label>
+                    <input asp-for="ImageFile" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Save" class="btn btn-outline-primary" />

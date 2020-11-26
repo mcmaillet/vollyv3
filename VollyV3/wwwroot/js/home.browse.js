@@ -2,17 +2,21 @@
 var markers = [];
 
 function addOpportunityMarker(opportunity) {
-    var marker = map.addMarker({
-        lat: opportunity.latitude,
-        lng: opportunity.longitude,
-        title: opportunity.name,
-        infoWindow: { content: opportunity.name },
-        click: function (e) {
-            openOpportunityModal(opportunity);
-        }
-    });
-    markers.push(marker);
-    return marker;
+    console.log(opportunity.latitude);
+    console.log(opportunity.longitude);
+    if (opportunity.latitude && opportunity.longitude) {
+        var marker = map.addMarker({
+            lat: opportunity.latitude,
+            lng: opportunity.longitude,
+            title: opportunity.name,
+            infoWindow: { content: opportunity.name },
+            click: function (e) {
+                openOpportunityModal(opportunity);
+            }
+        });
+        markers.push(marker);
+        return marker;
+    }
 };
 
 function openOpportunityModal(opportunity) {
@@ -76,10 +80,13 @@ function appendOpportunityPanel(opportunity, marker) {
     if (opportunity.opportunityType === 1) {
         var dateTimeString = "Multiple Shifts";
         if (opportunity.occurrenceViews) {
+            console.log('here');
             if (opportunity.occurrenceViews.length === 1) {
+                console.log('here');
                 var firstOccurrence = opportunity.occurrenceViews[0];
                 dateTimeString = prettyFormatDateTimes(firstOccurrence.startTime, firstOccurrence.endtime, true);
             } else if (opportunity.occurrenceViews.length === 0) {
+                console.log('there');
                 dateTimeString = "Ongoing";
             }
         }
@@ -101,13 +108,16 @@ function appendOpportunityPanel(opportunity, marker) {
     $("#opportunity-" + opportunity.id).click(function (e) {
         openOpportunityModal(opportunity);
     });
-    $("#opportunity-" + opportunity.id)
-        .hover(function (e) {
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-        }, function (e) {
-            marker.setAnimation(null);
-        });
 
+    if (marker) {
+        $("#opportunity-" + opportunity.id)
+            .hover(function (e) {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+            }, function (e) {
+                marker.setAnimation(null);
+            });
+    }
+    
     if ($("#InitialOpportunity").html() == opportunity.id) {
         openOpportunityModal(opportunity);
     }

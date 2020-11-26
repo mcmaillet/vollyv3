@@ -67,3 +67,17 @@
     #opportunityList div.result-card.hide {
         opacity: 0 !important;
     }
+
+.result-datetime {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background-color: #6db5ff;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+    margin-left: 15px;
+    margin-right: 15px;
+    color: #000;
+}

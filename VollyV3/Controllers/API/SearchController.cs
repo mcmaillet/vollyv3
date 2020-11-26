@@ -37,23 +37,14 @@ namespace VollyV3.Controllers.API
             List<OpportunityViewModel> opportunityViews = opportunities
                 .Where(GetEligibleOpportunityPredicate(opportunitySearch))
                 .Select(OpportunityViewModel.FromOpportunity)
-                .Where(o => 
-                opportunitySearch.OpportunityType == OpportunityType.All 
-                || o.OpportunityType == opportunitySearch.OpportunityType)
+                .OrderByDescending(x => x.Id)
                 .ToList();
             return Ok(opportunityViews);
         }
         private static Func<Opportunity, bool> GetEligibleOpportunityPredicate(OpportunitySearch opportunitySearch)
         {
-            return o => true;
-            //return o =>
-            //    (opportunitySearch.CauseIds == null || o.Organization.Cause != null &&
-            //     opportunitySearch.CauseIds.Contains(o.Organization.Cause.Id)) &&
-            //    (opportunitySearch.CategoryIds == null ||
-            //     opportunitySearch.CategoryIds.Contains(o.Category.Id)) &&
-            //    (opportunitySearch.OrganizationIds == null ||
-            //     opportunitySearch.OrganizationIds.Contains(o.Organization.Id)) &&
-            //    (opportunitySearch.OpportunityType == OpportunityType.All || opportunitySearch.OpportunityType == o.OpportunityType);
+            return o => opportunitySearch.OpportunityType == OpportunityType.All
+                || o.OpportunityType == opportunitySearch.OpportunityType;
         }
         private List<OpportunityViewModel> Sort(List<OpportunityViewModel> opportunityViews, int sort)
         {
