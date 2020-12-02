@@ -39,7 +39,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             var organizationsManagedByUser = _context.OrganizationAdministratorUsers
                 .Include(x => x.Organization)
                 .Where(x => x.User == user)
-                .Select(x=>x.OrganizationId)
+                .Select(x => x.OrganizationId)
                 .ToList();
 
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
@@ -52,14 +52,21 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 .OrderByDescending(x => x.Id)
                 .ToList();
 
-            return View(opportunities.Select(x => new OpportunityIndexViewModel()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Category = x.Category?.Name,
-                ImageUrl = x.ImageUrl,
-                OpportunityType = x.OpportunityType
-            }).ToList());
+            return GetIndexViewResult(opportunities);
+        }
+        public virtual ViewResult GetIndexViewResult(List<Opportunity> opportunities)
+        {
+
+            return View(opportunities
+                .Select(opportunity => new OpportunityIndexViewModel()
+                {
+                    Id = opportunity.Id,
+                    Name = opportunity.Name,
+                    Category = opportunity.Category?.Name,
+                    ImageUrl = opportunity.ImageUrl,
+                    OpportunityType = opportunity.OpportunityType
+                })
+                .ToList());
         }
         /// <summary>
         /// Create

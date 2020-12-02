@@ -1,0 +1,40 @@
+﻿@model VollyV3.Data.Opportunity
+
+@{
+    ViewData["Title"] = "Archive Opportunity";
+    Layout = "_Layout";
+}
+
+<div class="container bg-default-dark padded">
+    <section>
+        <h2>This opportunity has volunteer hours logged against it. Would you like to archive it?</h2>
+    </section>
+    <section>
+        <h3>@Model.Name</h3>
+        <h4>@Model.ContactEmail</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    Type: @Model.OpportunityType
+                </div>
+
+                <div>
+                    Location: @Model.Address
+                </div>
+                <p>
+                    @Model.Description
+                </p>
+            </div>
+            <div class="col-md-6">
+                <img class="img-fluid" src="@Model.ImageUrl" />
+            </div>
+        </div>
+    </section>
+    <section>
+        <form asp-action="Archive">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Archive" class="btn btn-outline-danger" />
+            <a asp-action="Index">Back to List</a>
+        </form>
+    </section>
+</div>

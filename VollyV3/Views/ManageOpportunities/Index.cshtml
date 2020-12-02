@@ -1,0 +1,79 @@
+﻿@model IEnumerable<VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities.OpportunityIndexViewModel>
+
+@{
+    ViewData["Title"] = "Opportunities";
+    Layout = "_Layout";
+}
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+    <table class="table table-bordered table-striped table-text table-dark table-hover" id="opportunityList">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrganizationName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ImageUrl)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OpportunityType)
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrganizationName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    <img class="img-fluid thumbnail-img" src="@item.ImageUrl" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OpportunityType)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>@if (item.OpportunityType == VollyV3.Data.OpportunityType.Episodic)
+                    {
+                        <text> | <a asp-action="Occurrences" asp-route-id="@item.Id">Manage occurrences</a></text>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#opportunityList tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
