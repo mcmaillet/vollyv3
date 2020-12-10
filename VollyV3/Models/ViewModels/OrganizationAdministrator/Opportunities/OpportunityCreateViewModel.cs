@@ -43,10 +43,7 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
             opportunity.Description = Description;
             opportunity.Address = Address;
             opportunity.Category = context.Categories.Find(CategoryId) ?? null;
-            if (imageUrl != null)
-            {
-                opportunity.ImageUrl = imageUrl;
-            }
+            opportunity.ImageUrl = imageUrl;
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
             opportunity.OpportunityType = OpportunityType;

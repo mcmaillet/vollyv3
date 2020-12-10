@@ -148,8 +148,8 @@ namespace VollyV3.Controllers.PlatformAdministrator
                     .FirstOrDefault();
 
                 Opportunity opportunity = model.GetOpportunity(_context, _imageManager);
-                opportunity.CreatedBy = _context.OrganizationAdministratorUsers.
-                    Where(x => x.User == user && x.Organization == organization)
+                opportunity.CreatedBy = _context.OrganizationAdministratorUsers
+                    .Where(x => x.User == user && x.Organization == organization)
                     .FirstOrDefault();
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
