@@ -1,19 +1,28 @@
-﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities.OpportunityEditViewModel
+﻿@using VollyV3.Data
+@model VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities.OpportunityCreateViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
     Layout = "_Layout";
 }
 
 <div class="padded bg-default-dark">
-    <h2>Edit</h2>
+    <h2>Create</h2>
 
     <h4>Opportunity</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
-            <form asp-action="Edit" enctype="multipart/form-data">
+            <form asp-action="Create" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="OrganizationId" class="col-form-label"></label>
+                    <select asp-for="OrganizationId" class="form-control"
+                            asp-items="@Model?.Organizations">
+                        <option value="">Select an organization</option>
+                    </select>
+                    <span asp-validation-for="OrganizationId" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="Name" class="col-form-label"></label>
                     <input asp-for="Name" class="form-control" />
@@ -43,11 +52,16 @@
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="OpportunityType" class="col-form-label"></label> (Cannot be updated)
-                    <input type="text"
-                           disabled="disabled"
-                           class="form-control"
-                           value="@Model.OpportunityType" />
+                    <label asp-for="OpportunityType" class="col-form-label"></label>
+                    <select asp-for="OpportunityType" class="form-control"
+                            asp-items="Html.GetEnumSelectList<OpportunityType>()"></select>
+                    <span asp-validation-for="OpportunityType" class="text-danger"></span>
+                    <p>
+                        Episodic: Volunteer Opportunities that have a set date<br />
+                        On-going: Opportunities that need a volunteer to commit on a consistent basis<br />
+                        Group: Opportunities that require a large group of people typically from a single company<br />
+                        Donations: Seek out non-monetary donations such as food/supplies/etc.
+                    </p>
                 </div>
                 <div class="form-group">
                     <label asp-for="ImageFile" class="col-form-label"></label>
@@ -55,7 +69,7 @@
                     <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-outline-primary" />
+                    <input type="submit" value="Create" class="btn btn-outline-primary" />
                 </div>
             </form>
         </div>

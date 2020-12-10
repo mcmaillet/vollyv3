@@ -8,7 +8,8 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        if (User.IsInRole(Enum.GetName(typeof(Role), Role.OrganizationAdministrator)))
+        if (User.IsInRole(Enum.GetName(typeof(Role), Role.OrganizationAdministrator))
+            && !User.IsInRole(Enum.GetName(typeof(Role), Role.PlatformAdministrator)))
         {
             <partial name="NavigationBar/_OrganizationAdministratorMenu" />
         }

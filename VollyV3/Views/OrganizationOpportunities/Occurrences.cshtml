@@ -101,7 +101,7 @@
     <script>
         var deleteOccurrence = function (e) {
                 $.ajax({
-                    url: '/Opportunities/DeleteOccurrence/'+e,
+                    url: '/OrganizationOpportunities/DeleteOccurrence/'+e,
                     timeout: 5000,
                     async: true,
                     cache: false,
@@ -116,7 +116,7 @@
         };
         var refreshExistingOccurrences = function () {
                 $.ajax({
-                    url: '/Opportunities/GetOccurrences/'+@Model.OpportunityId,
+                    url: '/OrganizationOpportunities/GetOccurrences/'+@Model.OpportunityId,
                     timeout: 5000,
                     async: true,
                     cache: false,
@@ -193,7 +193,7 @@
                     "Openings": $("#openings").val()
                 };
                 $.ajax({
-                    url: '/Opportunities/Occurrences',
+                    url: '/OrganizationOpportunities/Occurrences',
                     timeout: 5000,
                     async: true,
                     cache: false,

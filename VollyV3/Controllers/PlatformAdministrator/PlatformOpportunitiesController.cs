@@ -3,35 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Caching.Memory;
+using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.OrganizationAdministrator.Dto;
-using VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities;
+using VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities;
 using VollyV3.Services.ImageManager;
 
-namespace VollyV3.Controllers.OrganizationAdministrator
+namespace VollyV3.Controllers.PlatformAdministrator
 {
-    [Authorize(Roles = "OrganizationAdministrator", Policy = "IsConfigured")]
-    public class OpportunitiesController : Controller
+    [Authorize(Roles = nameof(Role.PlatformAdministrator))]
+    public class PlatformOpportunitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<VollyV3User> _userManager;
         private readonly IImageManager _imageManager;
-        public OpportunitiesController(ApplicationDbContext context,
+        public PlatformOpportunitiesController(ApplicationDbContext context,
             UserManager<VollyV3User> userManager,
             IImageManager imageManager)
         {
+
             _context = context;
             _userManager = userManager;
             _imageManager = imageManager;
         }
+        /// <summary>
+        /// Index
+        /// </summary>
+        /// <param name="opportunities"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -54,13 +59,14 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
             return GetIndexViewResult(opportunities);
         }
-        public virtual ViewResult GetIndexViewResult(List<Opportunity> opportunities)
+        public ViewResult GetIndexViewResult(List<Opportunity> opportunities)
         {
 
             return View(opportunities
                 .Select(opportunity => new OpportunityIndexViewModel()
                 {
                     Id = opportunity.Id,
+                    OrganizationName = opportunity.CreatedBy?.Organization?.Name,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,
                     ImageUrl = opportunity.ImageUrl,
@@ -69,18 +75,63 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 .ToList());
         }
         /// <summary>
+        /// Details
+        /// </summary>
+        /// <param name="opportunity"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == id)
+                .Include(x => x.Category)
+                .Include(x => x.CreatedBy)
+                .ThenInclude(x => x.Organization)
+                .FirstOrDefault();
+
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return GetDetailsViewResult(opp);
+        }
+        public ViewResult GetDetailsViewResult(Opportunity opportunity)
+        {
+            return View(new OpportunityDetailsViewModel()
+            {
+                OrganizationName = opportunity.CreatedBy?.Organization?.Name,
+                Name = opportunity.Name,
+                OpportunityType = opportunity.OpportunityType,
+                Address = opportunity.Address,
+                Description = opportunity.Description,
+                Category = opportunity.Category?.Name,
+                ImageUrl = opportunity.ImageUrl,
+                ContactEmail = opportunity.ContactEmail
+            });
+        }
+        /// <summary>
         /// Create
         /// </summary>
+        /// <param name="user"></param>
         /// <returns></returns>
+        [HttpGet]
         public async Task<IActionResult> CreateAsync()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
+            return GetCreateViewResult(user);
+        }
+        public ViewResult GetCreateViewResult(VollyV3User user)
+        {
             return View(new OpportunityCreateViewModel()
             {
                 ContactEmail = user.Email,
                 Categories = new SelectList(_context.Categories
                 .OrderBy(c => c.Name)
+                .ToList(), "Id", "Name"),
+                Organizations = new SelectList(_context.Organizations
+                .OrderBy(x => x.Name)
                 .ToList(), "Id", "Name")
             });
         }
@@ -91,9 +142,14 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
+
+                var organization = _context.Organizations
+                    .Where(x => x.Id == model.OrganizationId)
+                    .FirstOrDefault();
+
                 Opportunity opportunity = model.GetOpportunity(_context, _imageManager);
                 opportunity.CreatedBy = _context.OrganizationAdministratorUsers.
-                    Where(x => x.User == user)
+                    Where(x => x.User == user && x.Organization == organization)
                     .FirstOrDefault();
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
@@ -102,15 +158,72 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 }
 
                 opportunity.CreatedDateTime = DateTime.Now;
+
                 _context.Add(opportunity);
+
                 await _context.SaveChangesAsync();
+
                 if (Opportunity.RequiresOccurrences(model.OpportunityType))
                 {
                     return RedirectToAction(nameof(Occurrences), new { id = opportunity.Id });
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(model);
+        }
+        /// <summary>
+        /// Edit
+        /// </summary>
+        /// <param name="opportunity"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var opportunity = _context.Opportunities
+                .Where(x => x.Id == id)
+                .Include(x => x.Category)
+                .Include(x => x.CreatedBy)
+                .ThenInclude(x => x.Organization)
+                .FirstOrDefault();
+
+            if (opportunity == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new OpportunityEditViewModel()
+            {
+                Id = opportunity.Id,
+                OrganizationName = opportunity.CreatedBy?.Organization?.Name,
+                Name = opportunity.Name,
+                OpportunityType = opportunity.OpportunityType,
+                Description = opportunity.Description,
+                Address = opportunity.Address,
+                CategoryId = opportunity.Category?.Id,
+                Categories = new SelectList(_context.Categories
+              .OrderBy(c => c.Name)
+              .ToList(), "Id", "Name"),
+                ExternalSignUpUrl = opportunity.ExternalSignUpUrl,
+                ImageUrl = opportunity.ImageUrl,
+                ContactEmail = opportunity.ContactEmail
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(OpportunityEditViewModel model)
+        {
+            var opp = model.GetOpportunity(_context, _imageManager);
+
+            if (opp == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Messages"] = $"\"{model.Name}\" successfully saved.";
+            return RedirectToAction(nameof(Index));
         }
         /// <summary>
         /// Delete
@@ -122,6 +235,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         {
             var opp = _context.Opportunities
                 .Where(x => x.Id == id)
+                .Include(x => x.CreatedBy)
+                .ThenInclude(x => x.Organization)
                 .FirstOrDefault();
 
             if (opp == null)
@@ -132,6 +247,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             return View(new OpportunityDeleteViewModel()
             {
                 Id = id,
+                OrganizationName = opp.CreatedBy?.Organization?.Name,
                 Name = opp.Name,
                 Description = opp.Description
             });
@@ -150,13 +266,25 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
             var volunteerHours = _context.VolunteerHours
                 .Where(x => x.Opportunity == opportunity)
-                .ToList();
-            if (volunteerHours.Count > 0)
+                .Count();
+
+            if (volunteerHours > 0)
             {
                 TempData["Messages"] = $"\"{opportunity.Name}\" has volunteer hours logged against it and cannot be deleted.";
                 return RedirectToAction(nameof(Index));
                 //return RedirectToAction(nameof(Archive), new { opportunity.Id });
             }
+
+            var applications = _context.Applications
+                .Where(x => x.Opportunity == opportunity)
+                .Count();
+
+            if (applications > 0)
+            {
+                TempData["Messages"] = $"\"{opportunity.Name}\" has applications and cannot be deleted.";
+                return RedirectToAction(nameof(Index));
+            }
+
             _context.Remove(opportunity);
 
             await _context.SaveChangesAsync();
@@ -165,112 +293,10 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             return RedirectToAction(nameof(Index));
         }
         /// <summary>
-        /// Archive
+        /// Occurrences
         /// </summary>
-        /// <param name="opportunity"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        [HttpGet]
-        public IActionResult Archive(int id)
-        {
-            var opportunity = _context.Opportunities
-                .Where(x => x.Id == id)
-                .SingleOrDefault();
-            return View(opportunity);
-        }
-        [HttpPost]
-        public IActionResult Archive(int id, IFormCollection form)
-        {
-            var opportunity = _context.Opportunities
-                .Where(x => x.Id == id)
-                .SingleOrDefault();
-            opportunity.IsArchived = true;
-
-            _context.Update(opportunity);
-
-            TempData["Messages"] = $"Opportunity '{opportunity.Name}' has been archived.";
-            return RedirectToAction(nameof(Index));
-        }
-        /// <summary>
-        /// Details
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Details(int id)
-        {
-            var opp = _context.Opportunities
-                .Where(x => x.Id == id)
-                .Include(x => x.Category)
-                .FirstOrDefault();
-
-            if (opp == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(new OpportunityDetailsViewModel()
-            {
-                Name = opp.Name,
-                OpportunityType = opp.OpportunityType,
-                Address = opp.Address,
-                Description = opp.Description,
-                Category = opp.Category?.Name,
-                ImageUrl = opp.ImageUrl,
-                ContactEmail = opp.ContactEmail
-            });
-        }
-        /// <summary>
-        /// Edit
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var opp = _context.Opportunities
-                .Where(x => x.Id == id)
-                .Include(x => x.Category)
-                .FirstOrDefault();
-
-            if (opp == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(new OpportunityEditViewModel()
-            {
-                Id = id,
-                Name = opp.Name,
-                OpportunityType = opp.OpportunityType,
-                Description = opp.Description,
-                Address = opp.Address,
-                CategoryId = opp.Category?.Id,
-                Categories = new SelectList(_context.Categories
-                .OrderBy(c => c.Name)
-                .ToList(), "Id", "Name"),
-                ExternalSignUpUrl = opp.ExternalSignUpUrl,
-                ImageUrl = opp.ImageUrl,
-                ContactEmail = opp.ContactEmail
-            });
-        }
-        [HttpPost]
-        public async Task<IActionResult> EditAsync(OpportunityEditViewModel model)
-        {
-            var opp = model.GetOpportunity(_context, _imageManager);
-
-            if (opp == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            await _context.SaveChangesAsync();
-
-            TempData["Messages"] = $"\"{model.Name}\" successfully saved.";
-            return RedirectToAction(nameof(Index));
-        }
-        /*
-         * Occurrences
-         */
         [HttpGet]
         public IActionResult Occurrences(int id)
         {

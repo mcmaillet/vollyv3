@@ -1,0 +1,28 @@
+﻿@model VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities.OpportunityDeleteViewModel
+
+@{
+    ViewData["Title"] = "Delete Opportunity";
+    Layout = "_Layout";
+}
+
+<div class="container bg-default-dark padded">
+    <div class="page-title">
+
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-content">
+        <div class="page-text">
+            <h2>Are you sure you want to delete this opportunity?</h2>
+            <h3>@Model.Name</h3>
+            <small>with @Model.OrganizationName</small>
+            <hr />
+            <p>@Model.Description</p>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Delete" class="btn btn-outline-danger" />
+                <a asp-action="Index">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

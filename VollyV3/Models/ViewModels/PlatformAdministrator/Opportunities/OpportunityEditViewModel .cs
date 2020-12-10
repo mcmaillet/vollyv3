@@ -10,6 +10,8 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
     public class OpportunityEditViewModel
     {
         public int Id { get; set; }
+        [Display(Name = "Organization (cannot be updated)")]
+        public string OrganizationName { get; set; }
         [Required]
         [Display(Name = "Title of Event")]
         public string Name { get; set; }
@@ -33,7 +35,7 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         public string ContactEmail { get; set; }
         public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
         {
-            string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
+            string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
                 "opp" + Id + ImageFile.FileName
                 ).Result;

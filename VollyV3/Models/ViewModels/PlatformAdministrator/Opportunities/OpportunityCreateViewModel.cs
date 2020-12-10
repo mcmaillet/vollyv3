@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.ComponentModel.DataAnnotations;
 using VollyV3.Data;
 using VollyV3.Services;
@@ -9,7 +10,10 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
 {
     public class OpportunityCreateViewModel
     {
-        public int Id { get; set; }
+        [Required]
+        [Display(Name = "Organization")]
+        public int OrganizationId { get; set; }
+        public SelectList Organizations { get; set; }
         [Required]
         [Display(Name = "Title of Event")]
         public string Name { get; set; }
@@ -35,23 +39,21 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         {
             string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                "opp" + Id + ImageFile.FileName
+                $"opp_{DateTime.Now}_{new Random().Next(999999)}"
                 ).Result;
 
-            Opportunity opportunity = context.Opportunities.Find(Id) ?? new Opportunity();
-            opportunity.Name = Name;
-            opportunity.Description = Description;
-            opportunity.Address = Address;
-            opportunity.Category = context.Categories.Find(CategoryId) ?? null;
-            if (imageUrl != null)
+            return new Opportunity
             {
-                opportunity.ImageUrl = imageUrl;
-            }
-            opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
-            opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
-            opportunity.OpportunityType = OpportunityType;
-            opportunity.ContactEmail = ContactEmail;
-            return opportunity;
+                Name = Name,
+                Description = Description,
+                Address = Address,
+                Category = context.Categories.Find(CategoryId) ?? null,
+                ExternalSignUpUrl = ExternalSignUpUrl,
+                Location = GoogleLocator.GetLocationFromAddress(Address),
+                OpportunityType = OpportunityType,
+                ContactEmail = ContactEmail,
+                ImageUrl = imageUrl
+            };
         }
     }
 }

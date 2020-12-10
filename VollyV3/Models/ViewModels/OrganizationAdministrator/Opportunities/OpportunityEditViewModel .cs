@@ -33,12 +33,12 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         public string ContactEmail { get; set; }
         public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
         {
-            string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
+            string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                "opp" + Id + ImageFile.FileName
+                $"opp_{Id}_{ImageFile.FileName}"
                 ).Result;
 
-            var opportunity = context.Opportunities.Find(Id) ?? new Opportunity();
+            var opportunity = context.Opportunities.Find(Id);
             opportunity.Name = Name;
             opportunity.Description = Description;
             opportunity.Address = Address;
