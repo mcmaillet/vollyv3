@@ -39,6 +39,7 @@ namespace VollyV3.Data
         public string Description { get; set; }
         public string Address { get; set; }
         public virtual Location Location { get; set; }
+        public virtual int? CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }

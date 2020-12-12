@@ -37,7 +37,6 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var organizationsManagedByUser = _context.OrganizationAdministratorUsers
-                .Include(x => x.Organization)
                 .Where(x => x.User == user)
                 .Select(x => x.OrganizationId)
                 .ToList();
@@ -87,9 +86,9 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
-                Opportunity opportunity = model.GetOpportunity(_context, _imageManager);
-                opportunity.CreatedBy = _context.OrganizationAdministratorUsers.
-                    Where(x => x.User == user)
+                Opportunity opportunity = model.GetOpportunity(_imageManager);
+                opportunity.CreatedBy = _context.OrganizationAdministratorUsers
+                    .Where(x => x.User == user)
                     .FirstOrDefault();
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
