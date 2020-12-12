@@ -35,7 +35,7 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         [Display(Name = "Contact Email")]
         [EmailAddress]
         public string ContactEmail { get; set; }
-        public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
+        public Opportunity GetOpportunity(IImageManager imageManager)
         {
             string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
@@ -47,7 +47,7 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
                 Name = Name,
                 Description = Description,
                 Address = Address,
-                Category = context.Categories.Find(CategoryId) ?? null,
+                CategoryId = CategoryId,
                 ExternalSignUpUrl = ExternalSignUpUrl,
                 Location = GoogleLocator.GetLocationFromAddress(Address),
                 OpportunityType = OpportunityType,
