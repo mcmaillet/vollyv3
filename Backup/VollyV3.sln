@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VollyV3", "VollyV3\VollyV3.csproj", "{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{7691C3EC-127C-46DA-A228-B3F71797991E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ED5A1F2-6472-463C-B0B0-FD45CED1F5C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7691C3EC-127C-46DA-A228-B3F71797991E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7691C3EC-127C-46DA-A228-B3F71797991E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7691C3EC-127C-46DA-A228-B3F71797991E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7691C3EC-127C-46DA-A228-B3F71797991E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {73DED469-3225-4DFE-BC87-46409D93A247}
+	EndGlobalSection
+EndGlobal
