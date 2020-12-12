@@ -13,7 +13,7 @@ namespace VollyV3.Services.ImageManager
     public class ImageManagerImpl : IImageManager
     {
         private static readonly string StorageName = Environment.GetEnvironmentVariable("storage_name");
-        private static readonly string StorageApiKey = Environment.GetEnvironmentVariable("storage_api");
+        private static readonly string StorageApiKey = Environment.GetEnvironmentVariable("storage_api_key");
         private static readonly string ImageContainer = Environment.GetEnvironmentVariable("images_container");
         private const int ImageFixedWidth = 1024;
         private const int ImageFixedHeight = 768;

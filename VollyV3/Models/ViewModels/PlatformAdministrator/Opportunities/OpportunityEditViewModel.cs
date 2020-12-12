@@ -5,11 +5,13 @@ using VollyV3.Data;
 using VollyV3.Services;
 using VollyV3.Services.ImageManager;
 
-namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
+namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
 {
     public class OpportunityEditViewModel
     {
         public int Id { get; set; }
+        [Display(Name = "Organization (cannot be updated)")]
+        public string OrganizationName { get; set; }
         [Required]
         [Display(Name = "Title of Event")]
         public string Name { get; set; }
@@ -35,14 +37,14 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         {
             string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                $"opp_{Id}_{ImageFile.FileName}"
+                "opp" + Id + ImageFile.FileName
                 ).Result;
 
             var opportunity = context.Opportunities.Find(Id);
             opportunity.Name = Name;
             opportunity.Description = Description;
             opportunity.Address = Address;
-            opportunity.Category = context.Categories.Find(CategoryId) ?? null;
+            opportunity.CategoryId = CategoryId;
             if (imageUrl != null)
             {
                 opportunity.ImageUrl = imageUrl;

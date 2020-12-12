@@ -147,7 +147,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                     .Where(x => x.Id == model.OrganizationId)
                     .FirstOrDefault();
 
-                Opportunity opportunity = model.GetOpportunity(_context, _imageManager);
+                Opportunity opportunity = model.GetOpportunity(_imageManager);
                 opportunity.CreatedBy = _context.OrganizationAdministratorUsers
                     .Where(x => x.User == user && x.Organization == organization)
                     .FirstOrDefault();

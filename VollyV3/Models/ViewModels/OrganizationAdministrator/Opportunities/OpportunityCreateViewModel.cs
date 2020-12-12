@@ -31,24 +31,25 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         [Display(Name = "Contact Email")]
         [EmailAddress]
         public string ContactEmail { get; set; }
-        public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
+        public Opportunity GetOpportunity(IImageManager imageManager)
         {
             string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
                 "opp" + Id + ImageFile.FileName
                 ).Result;
 
-            Opportunity opportunity = context.Opportunities.Find(Id) ?? new Opportunity();
-            opportunity.Name = Name;
-            opportunity.Description = Description;
-            opportunity.Address = Address;
-            opportunity.Category = context.Categories.Find(CategoryId) ?? null;
-            opportunity.ImageUrl = imageUrl;
-            opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
-            opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
-            opportunity.OpportunityType = OpportunityType;
-            opportunity.ContactEmail = ContactEmail;
-            return opportunity;
+            return new Opportunity
+            {
+                Name = Name,
+                Description = Description,
+                Address = Address,
+                CategoryId = CategoryId,
+                ImageUrl = imageUrl,
+                ExternalSignUpUrl = ExternalSignUpUrl,
+                Location = GoogleLocator.GetLocationFromAddress(Address),
+                OpportunityType = OpportunityType,
+                ContactEmail = ContactEmail
+            };
         }
     }
 }

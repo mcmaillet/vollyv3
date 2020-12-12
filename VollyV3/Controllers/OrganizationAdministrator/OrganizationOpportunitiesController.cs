@@ -86,7 +86,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
-                Opportunity opportunity = model.GetOpportunity(_context, _imageManager);
+                Opportunity opportunity = model.GetOpportunity(_imageManager);
                 opportunity.CreatedBy = _context.OrganizationAdministratorUsers
                     .Where(x => x.User == user)
                     .FirstOrDefault();
