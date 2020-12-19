@@ -1,0 +1,72 @@
+﻿@model IEnumerable<VollyV3.Data.Application>
+
+@{
+    ViewData["Title"] = "Applications";
+    Layout = "_Layout";
+}
+<div class="padded bg-default-dark">
+    <div class="text-danger">
+        @TempData["Messages"]
+    </div>
+    <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+    <table class="table table-bordered table-striped table-text table-dark table-hover" id="applicationList">
+        <thead>
+            <tr>
+                <th>
+                    Organization
+                </th>
+                <th>
+                    Opportunity
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Occurrence.StartTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Opportunity.CreatedBy?.Organization?.Name
+                    </td>
+                    <td>
+                        @item.Opportunity.Name
+                    </td>
+                    <td>
+                        @item.Occurrence?.StartTime
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                    <td>
+                        @item.PhoneNumber
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#applicationList tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
