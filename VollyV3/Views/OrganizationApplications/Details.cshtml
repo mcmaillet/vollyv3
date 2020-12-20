@@ -20,7 +20,7 @@
                     <a asp-controller="Opportunities"
                        asp-action="Details"
                        asp-route-id="@Model.Opportunity.Id"
-                       asp-route-returnurl="Applications/Index">
+                       asp-route-returnurl="OrganizationApplications/Index">
                         @Model.Opportunity.Name
                     </a>
                 </h2>
@@ -37,7 +37,7 @@
                 </p>
             </section>
             <section class="text-right">
-                <a asp-controller="Applications"
+                <a asp-controller="OrganizationApplications"
                    asp-action="Delete"
                    asp-route-id="@Model.Id">
                     Delete

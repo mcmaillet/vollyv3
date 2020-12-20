@@ -14,12 +14,12 @@ using VollyV3.Models;
 namespace VollyV3.Controllers.OrganizationAdministrator
 {
     [Authorize(Roles = nameof(Role.OrganizationAdministrator), Policy = "IsConfigured")]
-    public class ApplicationsController : Controller
+    public class OrganizationApplicationsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<VollyV3User> _userManager;
 
-        public ApplicationsController(
+        public OrganizationApplicationsController(
            ApplicationDbContext context,
            UserManager<VollyV3User> userManager
            )
