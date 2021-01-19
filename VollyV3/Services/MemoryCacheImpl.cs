@@ -11,7 +11,7 @@ namespace VollyV3.Services
 {
     public class MemoryCacheImpl
     {
-        public static async Task<List<Opportunity>> GetAllOpportunities(IMemoryCache memoryCache,
+        public static async Task<List<Opportunity>> GetOpportunitiesAcceptingApplications(IMemoryCache memoryCache,
             ApplicationDbContext context)
         {
             return await memoryCache.GetOrCreateAsync(GlobalConstants.OpportunityCacheKey, async entry =>
@@ -19,22 +19,27 @@ namespace VollyV3.Services
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2);
 
                 List<Opportunity> opportunities = await context.Opportunities
-                    .Include(o => o.CreatedBy)
-                    .ThenInclude(u => u.Organization)
-                    .Where(x => x.CreatedBy.Organization.Enabled)
-                    .Include(o => o.Location)
-                    .Include(o => o.Occurrences)
-                    .ThenInclude(o => o.Applications)
-                    .AsNoTracking()
-                    .ToListAsync();
+                .Where(x => !x.IsArchived)
+
+                .Include(o => o.CreatedBy)
+                .ThenInclude(u => u.Organization)
+
+                .Where(x => x.CreatedBy.Organization.Enabled)
+
+                .Include(o => o.Location)
+                .Include(o => o.Occurrences)
+                .ThenInclude(o => o.Applications)
+
+                .AsNoTracking()
+                .ToListAsync();
 
                 foreach (Opportunity opportunity in opportunities)
                 {
                     opportunity.Occurrences = opportunity.Occurrences
                         .Where(oc =>
                         (oc.ApplicationDeadline == DateTime.MinValue || oc.ApplicationDeadline > DateTime.Now)
-                        && (oc.Openings == 0 && opportunity.OpportunityType == OpportunityType.Episodic
-                        || oc.Openings > oc.Applications.Count)
+                        && (oc.Openings == 0 && opportunity.OpportunityType == OpportunityType.Episodic || oc.Openings > oc.Applications.Count)
+                        && (oc.EndTime > DateTime.Now)
                         ).ToList();
                 }
                 return opportunities

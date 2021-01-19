@@ -33,7 +33,7 @@ namespace VollyV3.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            List<Opportunity> opportunities = await MemoryCacheImpl.GetAllOpportunities(_memoryCache, _context);
+            List<Opportunity> opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memoryCache, _context);
             List<OpportunityViewModel> opportunityViews = opportunities
                 .Where(GetEligibleOpportunityPredicate(opportunitySearch))
                 .Select(OpportunityViewModel.FromOpportunity)

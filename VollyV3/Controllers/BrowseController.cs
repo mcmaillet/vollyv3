@@ -51,7 +51,7 @@ namespace VollyV3.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailsAsync(int id)
         {
-            List<Opportunity> opportunities = await MemoryCacheImpl.GetAllOpportunities(_memoryCache, _context);
+            List<Opportunity> opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memoryCache, _context);
             OpportunityViewModel opportunityView = opportunities
                 .Where(x => x.Id == id)
                 .Select(OpportunityViewModel.FromOpportunity)

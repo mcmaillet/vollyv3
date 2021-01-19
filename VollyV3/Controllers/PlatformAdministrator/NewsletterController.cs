@@ -71,7 +71,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 return RedirectToAction(nameof(Index));
             }
 
-            var opportunities = await MemoryCacheImpl.GetAllOpportunities(_memory, _context);
+            var opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memory, _context);
 
             var html = GenerateSendGridHtmlFromOpportunities(
                 opportunities
@@ -168,7 +168,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             int takeFromTopCount,
             int numberOfOpportunitiesToInclude)
         {
-            var opportunities = await MemoryCacheImpl.GetAllOpportunities(_memory, _context);
+            var opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memory, _context);
 
             opportunities.Sort();
             opportunities.Reverse();
