@@ -2,8 +2,6 @@
 var markers = [];
 
 function addOpportunityMarker(opportunity) {
-    console.log(opportunity.latitude);
-    console.log(opportunity.longitude);
     if (opportunity.latitude && opportunity.longitude) {
         var marker = map.addMarker({
             lat: opportunity.latitude,
