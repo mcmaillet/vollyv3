@@ -10,8 +10,6 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         public string OrganizationName { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
-        [Display(Name = "Image")]
-        public string ImageUrl { get; set; }
         [Display(Name = "Type")]
         public OpportunityType OpportunityType { get; set; }
     }

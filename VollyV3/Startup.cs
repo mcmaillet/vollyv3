@@ -1,17 +1,14 @@
 using System;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VollyV3.Areas.Identity;
 using VollyV3.Models;
-using VollyV3.Services;
+using VollyV3.Services.EmailSender;
 using VollyV3.Services.HostedServices;
 using VollyV3.Services.ImageManager;
 using VollyV3.Services.SendGrid;
@@ -89,10 +86,10 @@ namespace VollyV3
 
         private void AddCustomTransients(IServiceCollection services)
         {
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSenderExtended, EmailSender>();
             services.AddTransient<SendGridClientImpl>();
         }
-        private void AddHostedServices(IServiceCollection services)
+        private void AddHostedSeedingServices(IServiceCollection services)
         {
             services.AddHostedService<RoleSeedingService>();
             services.AddHostedService<PlatformAdministratorSeedingService>();

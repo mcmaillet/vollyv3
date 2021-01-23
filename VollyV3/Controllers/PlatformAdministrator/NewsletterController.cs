@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Caching.Memory;
@@ -14,6 +13,7 @@ using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.ViewModels.PlatformAdministrator.Newsletters;
 using VollyV3.Services;
+using VollyV3.Services.EmailSender;
 using VollyV3.Services.SendGrid;
 
 namespace VollyV3.Controllers.PlatformAdministrator
@@ -28,14 +28,14 @@ namespace VollyV3.Controllers.PlatformAdministrator
 
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memory;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSenderExtended _emailSender;
         private readonly SendGridClientImpl _sendgridClient;
 
 
         public NewsletterController(
             ApplicationDbContext context,
             IMemoryCache memory,
-            IEmailSender emailSender,
+            IEmailSenderExtended emailSender,
             SendGridClientImpl sendgridClient
             )
         {

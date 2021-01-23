@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using VollyV3.Models;
 using Microsoft.AspNetCore.Identity;
+using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Areas.Identity.Pages.Account
 {
@@ -14,9 +14,9 @@ namespace VollyV3.Areas.Identity.Pages.Account
     public class RegisterConfirmationModel : PageModel
     {
         private readonly UserManager<VollyV3User> _userManager;
-        private readonly IEmailSender _sender;
+        private readonly IEmailSenderExtended _sender;
 
-        public RegisterConfirmationModel(UserManager<VollyV3User> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<VollyV3User> userManager, IEmailSenderExtended sender)
         {
             _userManager = userManager;
             _sender = sender;

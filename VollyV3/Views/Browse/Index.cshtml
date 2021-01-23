@@ -146,6 +146,26 @@
     </div>
 </div>
 
+<div class="modal fade" id="ErrorModal" tabindex="-1" role="dialog" aria-labelledby="ErrorModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ErrorModalTitle">There was an error</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <br />
+                <h4>Sorry, your application may not have been processed! Contact the administrator.</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div hidden="hidden" id="InitialOpportunity">@ViewData["OpportunityId"]</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
@@ -177,10 +197,15 @@
             contentType: 'application/json',
             type: 'POST',
             data: JSON.stringify(data),
-            success: () => {
+            success: response => {
+                console.log(response);
                 $('#VolunteerSubmit').prop('disabled', false);
                 $('#OpportunityModal').modal('hide');
-                $('#ApplyModal').modal('show');
+                if (response !== 202 && response !== 200) {
+                    $('#ErrorModal').modal('show');
+                } else {
+                    $('#ApplyModal').modal('show');
+                }
             },
             error: response => {
                 console.log(response);

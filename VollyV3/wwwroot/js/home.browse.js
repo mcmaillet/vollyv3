@@ -78,13 +78,10 @@ function appendOpportunityPanel(opportunity, marker) {
     if (opportunity.opportunityType === 1) {
         var dateTimeString = "Multiple Shifts";
         if (opportunity.occurrenceViews) {
-            console.log('here');
             if (opportunity.occurrenceViews.length === 1) {
-                console.log('here');
                 var firstOccurrence = opportunity.occurrenceViews[0];
                 dateTimeString = prettyFormatDateTimes(firstOccurrence.startTime, firstOccurrence.endtime, true);
             } else if (opportunity.occurrenceViews.length === 0) {
-                console.log('there');
                 dateTimeString = "Ongoing";
             }
         }

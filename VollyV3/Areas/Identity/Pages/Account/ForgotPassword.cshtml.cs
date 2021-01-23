@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using VollyV3.Models;
+using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Areas.Identity.Pages.Account
 {
@@ -18,9 +18,9 @@ namespace VollyV3.Areas.Identity.Pages.Account
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<VollyV3User> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSenderExtended _emailSender;
 
-        public ForgotPasswordModel(UserManager<VollyV3User> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<VollyV3User> userManager, IEmailSenderExtended emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using VollyV3.Models;
+using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Areas.Identity.Pages.Account
 {
@@ -23,13 +23,13 @@ namespace VollyV3.Areas.Identity.Pages.Account
         private readonly SignInManager<VollyV3User> _signInManager;
         private readonly UserManager<VollyV3User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSenderExtended _emailSender;
 
         public RegisterModel(
             UserManager<VollyV3User> userManager,
             SignInManager<VollyV3User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender
+            IEmailSenderExtended emailSender
             )
         {
             _userManager = userManager;

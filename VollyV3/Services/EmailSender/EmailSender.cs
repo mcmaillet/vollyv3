@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using VollyV3.Data;
 
-namespace VollyV3.Services
+namespace VollyV3.Services.EmailSender
 {
-    public class EmailSender : IEmailSender
+    public class EmailSender : IEmailSenderExtended
     {
         private static readonly string FromEmail = Environment.GetEnvironmentVariable("from_email");
         private static readonly string SendgridApiKey = Environment.GetEnvironmentVariable("sendgrid_api_key");
+        private static readonly string ApplicationsCCEmail = Environment.GetEnvironmentVariable("applications_cc_email");
 
         public async Task SendEmailAsync(string email, string subject, string message)
         {
@@ -56,6 +57,52 @@ namespace VollyV3.Services
                 PlainTextContent = messageText
             };
             await client.SendEmailAsync(sendGridMessage);
+        }
+
+        async Task<HttpStatusCode> IEmailSenderExtended.SendEmailApplicationConfirmationAsync(
+            string applicantName, string applicantEmail,
+            string organizationContactEmail,
+            string subject, string htmlMessage)
+        {
+            var client = new SendGridClient(SendgridApiKey);
+
+            SendGridMessage sendGridMessage = new SendGridMessage()
+            {
+                From = new EmailAddress(FromEmail, "Volly Team"),
+                Subject = subject,
+                HtmlContent = htmlMessage,
+                PlainTextContent = htmlMessage
+            };
+
+            if (!string.IsNullOrEmpty(applicantEmail))
+            {
+                sendGridMessage.AddTo(new EmailAddress(applicantEmail.ToLower().Trim(), applicantName));
+
+                var ccEmails = new HashSet<string>();
+
+                if (!string.IsNullOrWhiteSpace(organizationContactEmail)
+                    && !organizationContactEmail.ToLower().Trim().Equals(applicantEmail.ToLower().Trim())
+                    )
+                {
+                    ccEmails.Add(organizationContactEmail.ToLower().Trim());
+                }
+
+                if (!string.IsNullOrWhiteSpace(ApplicationsCCEmail)
+                    && !ApplicationsCCEmail.ToLower().Trim().Equals(applicantEmail.ToLower().Trim())
+                    )
+                {
+                    ccEmails.Add(ApplicationsCCEmail.ToLower().Trim());
+                }
+
+                foreach (var email in ccEmails)
+                {
+                    sendGridMessage.AddCc(new EmailAddress(email));
+                }
+            }
+
+            var result = await client.SendEmailAsync(sendGridMessage);
+
+            return result.StatusCode;
         }
     }
 }

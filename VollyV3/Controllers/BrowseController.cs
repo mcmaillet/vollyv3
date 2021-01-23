@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,29 +13,32 @@ using VollyV3.Models;
 using VollyV3.Models.Browse;
 using VollyV3.Models.ViewModels.Components;
 using VollyV3.Services;
+using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Controllers
 {
     public class BrowseController : Controller
     {
-        private static readonly string ApplicationsCCEmail = Environment.GetEnvironmentVariable("applications_cc_email");
-
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memoryCache;
         private readonly UserManager<VollyV3User> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSenderExtended _emailSender;
         public BrowseController(
             ApplicationDbContext context,
             IMemoryCache memoryCache,
             UserManager<VollyV3User> userManager,
-            IEmailSender emailSender)
+            IEmailSenderExtended emailSender)
         {
             _context = context;
             _memoryCache = memoryCache;
             _userManager = userManager;
             _emailSender = emailSender;
         }
-
+        /// <summary>
+        /// Index
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> IndexAsync(int? id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -53,7 +56,11 @@ namespace VollyV3.Controllers
             ViewData["OpportunityId"] = id;
             return View(browseModel);
         }
-
+        /// <summary>
+        /// Details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> DetailsAsync(int id)
         {
@@ -69,14 +76,19 @@ namespace VollyV3.Controllers
             }
             return View(opportunityView);
         }
+        /// <summary>
+        /// Apply
+        /// </summary>
+        /// <param name="application"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> ApplyAsync([FromBody] ApplicationModel application)
+        public async Task<HttpStatusCode> ApplyAsync([FromBody] ApplicationModel application)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var opportunity = _context
                 .Opportunities
                 .Where(x => x.Id == int.Parse(application.OpportunityId))
-                .FirstOrDefault();
+                .SingleOrDefault();
             var occurrences = _context.Occurrences.Where(x => x.Opportunity == opportunity).ToList();
 
             if (occurrences.Count == 0)
@@ -87,7 +99,6 @@ namespace VollyV3.Controllers
             }
             else
             {
-
                 var applications = application.Occurrences
                     .Select(occurrence => occurrences.Where(x => x.Id == int.Parse(occurrence)).FirstOrDefault())
                     .Select(x =>
@@ -101,36 +112,43 @@ namespace VollyV3.Controllers
                     .ToList();
                 _context.Applications.AddRange(applications);
             }
-            _context.SaveChanges();
 
-            var emailMessageForApplications = GetEmailMessageForApplications(application, opportunity, occurrences);
-            if (!string.IsNullOrWhiteSpace(opportunity.ContactEmail))
+            var result = _context.SaveChanges();
+
+            if (result <= 0)
             {
-                await _emailSender.SendEmailAsync(opportunity.ContactEmail, "Application submitted", emailMessageForApplications);
+                return HttpStatusCode.BadRequest;
             }
-            await _emailSender.SendEmailAsync(ApplicationsCCEmail, "Application submitted", emailMessageForApplications);
 
-            await _emailSender.SendEmailAsync(application.Email, "Application received", $"<p>We have received your application.</p>{emailMessageForApplications}");
-
-            return Ok();
+            return await _emailSender.SendEmailApplicationConfirmationAsync(
+                    application.Name, application.Email,
+                    opportunity.ContactEmail,
+                    $"Application submitted for '{opportunity.Name}'",
+                    ComposeEmailMessageForApplications(application, opportunity, occurrences)
+                    );
         }
 
-        private string GetEmailMessageForApplications(ApplicationModel application,
+        private static string ComposeEmailMessageForApplications(ApplicationModel application,
             Opportunity opportunity,
             IEnumerable<Occurrence> occurrences)
         {
             List<string> occurrenceStrings = occurrences
-                .Select(o => ToOccurrenceTimeString().Invoke(o))
-                .ToList();
-            return $"<p>New application(s) for: {opportunity.Name}</p><p>{application.GetEmailMessage()}</p><p>{string.Join("</p><p>", occurrenceStrings)}</p>";
+                .Select(o =>
+                o.StartTime.ToShortDateString() + " " + o.StartTime.ToShortTimeString()
+                + " --> "
+                + o.EndTime.ToShortDateString() + " " + o.EndTime.ToShortTimeString()
+                ).ToList();
+
+            return
+                $"<p>Received application: {application.GetEmailMessage()}</p>" +
+                $"<p>{opportunity.Description}</p>" +
+                $"<p><b>Address: {opportunity.Address}</b></p>" +
+                $"<p><b>Times: <p>{string.Join("</p><p>", occurrenceStrings)}</p></b></p>" +
+                $"";
+
         }
 
-        private static Func<Occurrence, string> ToOccurrenceTimeString()
-        {
-            return o => o.StartTime.ToShortDateString() + " " + o.StartTime.ToShortTimeString() +
-            " --> " + o.EndTime.ToShortDateString() + " " + o.EndTime.ToShortTimeString();
-        }
-        private Application GetBaseApplication(ApplicationModel application,
+        private static Application GetBaseApplication(ApplicationModel application,
                 Opportunity opportunity,
                 VollyV3User user)
         {

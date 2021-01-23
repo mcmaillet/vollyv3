@@ -6,11 +6,11 @@ using System.Text.Encodings.Web;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using VollyV3.Models;
+using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Areas.Identity.Pages.Account.Manage
 {
@@ -18,12 +18,12 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<VollyV3User> _userManager;
         private readonly SignInManager<VollyV3User> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSenderExtended _emailSender;
 
         public EmailModel(
             UserManager<VollyV3User> userManager,
             SignInManager<VollyV3User> signInManager,
-            IEmailSender emailSender)
+            IEmailSenderExtended emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;

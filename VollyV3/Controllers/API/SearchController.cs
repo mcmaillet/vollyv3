@@ -24,6 +24,7 @@ namespace VollyV3.Controllers.API
             _context = context;
             _memoryCache = memoryCache;
         }
+
         [HttpPost]
         [Route("/api/Search/Opportunities")]
         public async Task<IActionResult> Search([FromBody] OpportunitySearch opportunitySearch)
@@ -45,30 +46,6 @@ namespace VollyV3.Controllers.API
         {
             return o => opportunitySearch.OpportunityType == OpportunityType.All
                 || o.OpportunityType == opportunitySearch.OpportunityType;
-        }
-        private List<OpportunityViewModel> Sort(List<OpportunityViewModel> opportunityViews, int sort)
-        {
-            switch (sort)
-            {
-                case 1:
-                    return opportunityViews.OrderBy(o =>
-                    {
-                        OccurrenceViewModel firstOcc = o.OccurrenceViews[0];
-                        return firstOcc.StartTime;
-                    }).ToList();
-                case 2:
-                    return opportunityViews.OrderBy(o => o.OrganizationName).ToList();
-                case 3:
-                    return opportunityViews.OrderBy(o => o.OccurrenceViews.Sum(occ => occ.Openings)).ToList();
-                case 4:
-                    return opportunityViews.OrderBy(o =>
-                    {
-                        OccurrenceViewModel firstOcc = o.OccurrenceViews[0];
-                        return firstOcc.EndTime - firstOcc.StartTime;
-                    }).ToList();
-                default:
-                    return opportunityViews;
-            }
         }
     }
 }

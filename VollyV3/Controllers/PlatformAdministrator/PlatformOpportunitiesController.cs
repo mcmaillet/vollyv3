@@ -35,32 +35,17 @@ namespace VollyV3.Controllers.PlatformAdministrator
         /// <summary>
         /// Index
         /// </summary>
-        /// <param name="opportunities"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            var organizationsManagedByUser = _context.OrganizationAdministratorUsers
-                .Include(x => x.Organization)
-                .Where(x => x.User == user)
-                .Select(x => x.OrganizationId)
-                .ToList();
-
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.Category)
                 .Include(o => o.CreatedBy)
                 .ThenInclude(u => u.Organization);
 
             List<Opportunity> opportunities = opportunitiesQueryable
-                .Where(x => organizationsManagedByUser.Contains(x.CreatedBy.Organization.Id))
                 .OrderByDescending(x => x.Id)
                 .ToList();
-
-            return GetIndexViewResult(opportunities);
-        }
-        public ViewResult GetIndexViewResult(List<Opportunity> opportunities)
-        {
 
             return View(opportunities
                 .Select(opportunity => new OpportunityIndexViewModel()
@@ -69,7 +54,6 @@ namespace VollyV3.Controllers.PlatformAdministrator
                     OrganizationName = opportunity.CreatedBy?.Organization?.Name,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,
-                    ImageUrl = opportunity.ImageUrl,
                     OpportunityType = opportunity.OpportunityType
                 })
                 .ToList());
@@ -77,7 +61,6 @@ namespace VollyV3.Controllers.PlatformAdministrator
         /// <summary>
         /// Details
         /// </summary>
-        /// <param name="opportunity"></param>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Details(int id)
@@ -113,7 +96,6 @@ namespace VollyV3.Controllers.PlatformAdministrator
         /// <summary>
         /// Create
         /// </summary>
-        /// <param name="user"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> CreateAsync()

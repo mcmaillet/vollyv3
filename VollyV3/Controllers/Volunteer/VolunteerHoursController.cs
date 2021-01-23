@@ -150,6 +150,15 @@ namespace VollyV3.Controllers.Volunteer
             return RedirectToAction(nameof(Index));
         }
         /// <summary>
+        /// TrackExternal
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult TrackExternal()
+        {
+            return View();
+        }
+        /// <summary>
         /// Edit
         /// </summary>
         /// <returns></returns>
