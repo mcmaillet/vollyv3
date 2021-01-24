@@ -13,7 +13,7 @@ namespace VollyV3.Services.EmailSender
         private static readonly string FromEmail = Environment.GetEnvironmentVariable("from_email");
         private static readonly string SendgridApiKey = Environment.GetEnvironmentVariable("sendgrid_api_key");
         private static readonly string ApplicationsCCEmail = Environment.GetEnvironmentVariable("applications_cc_email");
-        private static readonly bool SendApplicationsCCEmailFeature = bool.TryParse(Environment.GetEnvironmentVariable("send_applications_cc_email"), out bool result) && result;
+        private static readonly bool SendApplicationsCCOrganizationEmailFeature = bool.TryParse(Environment.GetEnvironmentVariable("send_applications_cc_organization_email"), out bool result) && result;
 
         public async Task SendEmailAsync(string email, string subject, string message)
         {
@@ -81,7 +81,7 @@ namespace VollyV3.Services.EmailSender
 
                 var ccEmails = new HashSet<string>();
 
-                if (SendApplicationsCCEmailFeature)
+                if (SendApplicationsCCOrganizationEmailFeature)
                 {
                     if (!string.IsNullOrWhiteSpace(organizationContactEmail)
                     && !organizationContactEmail.ToLower().Trim().Equals(applicantEmail.ToLower().Trim())
