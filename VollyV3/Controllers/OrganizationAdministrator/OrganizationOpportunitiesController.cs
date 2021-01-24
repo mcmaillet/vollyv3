@@ -144,7 +144,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             }
 
             var volunteerHours = _context.VolunteerHours
-                .Where(x => x.Opportunity == opportunity)
+                .Where(x => x.OpportunityId == opportunity.Id)
                 .ToList();
             if (volunteerHours.Count > 0)
             {

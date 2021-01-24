@@ -7,8 +7,10 @@ namespace VollyV3.Data
     {
         public int Id { get; set; }
         public virtual VollyV3User User { get; set; }
-        public virtual Opportunity Opportunity { get; set; }
-        public virtual Organization Organization { get; set; }
+        public int? OpportunityId { get; set; }
+        public string OpportunityName { get; set; }
+        public int? OrganizationId { get; set; }
+        public string OrganizationName { get; set; }
         public DateTime? DateTime { get; set; }
         public double Hours { get; set; }
 

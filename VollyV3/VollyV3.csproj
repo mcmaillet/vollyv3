@@ -21,6 +21,8 @@
     <Compile Remove="Migrations\20200330051621_AddContactEmail.Designer.cs" />
     <Compile Remove="Migrations\20200331050339_RemoveOppOrgId.cs" />
     <Compile Remove="Migrations\20200331050339_RemoveOppOrgId.Designer.cs" />
+    <Compile Remove="Migrations\20210124003049_UpdateVolunteerHoursWithNames.cs" />
+    <Compile Remove="Migrations\20210124003049_UpdateVolunteerHoursWithNames.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

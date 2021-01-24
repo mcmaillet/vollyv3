@@ -117,8 +117,8 @@
                         @foreach (var volunteerHours in Model.VolunteerHours)
                         {
                             <tr>
-                                <td>@volunteerHours.Organization?.Name</td>
-                                <td>@volunteerHours.Opportunity?.Name</td>
+                                <td>@volunteerHours.OrganizationName</td>
+                                <td>@volunteerHours.OpportunityName</td>
                                 <td>@volunteerHours.DateTime</td>
                                 <td>@volunteerHours.Hours</td>
                             </tr>

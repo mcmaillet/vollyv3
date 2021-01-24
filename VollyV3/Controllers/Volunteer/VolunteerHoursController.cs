@@ -94,8 +94,10 @@ namespace VollyV3.Controllers.Volunteer
             }
             _context.Add(new VolunteerHours()
             {
-                Organization = application.Opportunity.CreatedBy.Organization,
-                Opportunity = application.Opportunity,
+                OrganizationId = application.Opportunity.CreatedBy.Organization.Id,
+                OrganizationName = application.Opportunity.CreatedBy.Organization.Name,
+                OpportunityId = application.Opportunity.Id,
+                OpportunityName = application.Opportunity.Name,
                 User = user,
                 DateTime = application.Occurrence?.StartTime,
                 Hours = hours
@@ -136,7 +138,8 @@ namespace VollyV3.Controllers.Volunteer
             }
             var volunteerHours = new VolunteerHours()
             {
-                Organization = organization,
+                OrganizationId = organization.Id,
+                OrganizationName = organization.Name,
                 User = user,
                 Hours = viewModel.Hours
             };
@@ -168,10 +171,8 @@ namespace VollyV3.Controllers.Volunteer
             var user = await _userManager.GetUserAsync(HttpContext.User);
             return View(_context.VolunteerHours
                 .Where(x => x.User == user)
-                .Include(x => x.Opportunity)
-                .Include(x => x.Organization)
-                .OrderBy(x => x.Organization.Id)
-                .ThenBy(x => x.Opportunity.Id)
+                .OrderBy(x => x.OrganizationId)
+                .ThenBy(x => x.OpportunityId)
                 .ThenBy(x => x.DateTime)
                 .ToList());
         }
@@ -184,35 +185,46 @@ namespace VollyV3.Controllers.Volunteer
         public async Task<IActionResult> DeleteAsync(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
             var volunteerHours = _context.VolunteerHours
                 .Where(x => x.Id == id && x.User == user)
-                .Include(x => x.Organization)
-                .Include(x => x.Opportunity)
                 .SingleOrDefault();
+
             if (volunteerHours == null)
             {
                 TempData["Messages"] = "Hours not found.";
                 return RedirectToAction(nameof(Index));
             }
+
             return View(volunteerHours);
         }
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(int id, IFormCollection form)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
             var volunteerHours = _context.VolunteerHours
                 .Where(x => x.Id == id && x.User == user)
-                .Include(x => x.Organization)
-                .Include(x => x.Opportunity)
                 .SingleOrDefault();
+
             if (volunteerHours == null)
             {
                 TempData["Messages"] = "Hours not found.";
                 return RedirectToAction(nameof(Index));
             }
+
             var hours = volunteerHours.Hours;
+
             _context.Remove(volunteerHours);
-            _context.SaveChanges();
+
+            var result = _context.SaveChanges();
+
+            if (result <= 0)
+            {
+                TempData["Messages"] = "There was an issue deleting your hours.";
+                return RedirectToAction(nameof(Index));
+            }
+
             TempData["Messages"] = $"{hours} hours deleted.";
             return RedirectToAction(nameof(Index));
         }
@@ -222,9 +234,7 @@ namespace VollyV3.Controllers.Volunteer
             var user = await _userManager.GetUserAsync(HttpContext.User);
             List<VolunteerHoursCSVModel> hours = _context.VolunteerHours
                 .Where(x => x.User == user)
-                .Include(x => x.Opportunity)
-                .Include(x => x.Organization)
-                .Include(x=>x.User)
+                .Include(x => x.User)
                 .AsNoTracking()
                 .AsEnumerable()
                 .Select(VolunteerHoursCSVModel.FromVolunteerHours)

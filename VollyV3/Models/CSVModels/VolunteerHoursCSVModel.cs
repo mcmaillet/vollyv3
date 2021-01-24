@@ -1,10 +1,6 @@
 ﻿using CsvHelper.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VollyV3.Data;
-using VollyV3.Helpers;
 
 namespace VollyV3.Models.CSVModels
 {
@@ -21,11 +17,9 @@ namespace VollyV3.Models.CSVModels
         {
             var csvModel = new VolunteerHoursCSVModel()
             {
-                //Company = volunteerHours.User?.?.Name,
-                //CompanyCode = volunteerHours.User?.Company?.CompanyCode,
                 User = volunteerHours.User.Email,
-                OrganizationName = volunteerHours.Organization?.Name,
-                OpportunityName = volunteerHours.Opportunity?.Name,
+                OrganizationName = volunteerHours.OrganizationName,
+                OpportunityName = volunteerHours.OpportunityName,
                 Hours = volunteerHours.Hours
             };
             var dateTime = volunteerHours.DateTime;

@@ -76,11 +76,9 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
                 .ToList();
 
             VolunteerHours = _context.VolunteerHours
-                 .Include(x => x.Opportunity)
-                 .Include(x => x.Organization)
                  .Where(x => x.User == user)
-                 .OrderBy(x => x.Organization.Id)
-                 .ThenBy(x => x.Opportunity.Id)
+                 .OrderBy(x => x.OrganizationId)
+                 .ThenBy(x => x.OpportunityId)
                  .ThenBy(x => x.DateTime)
                  .ToList();
         }
