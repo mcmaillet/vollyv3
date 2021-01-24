@@ -9,5 +9,6 @@ namespace VollyV3.Models.Browse
     public class BrowseModel
     {
         public ApplicationModel ApplicationModel { get; set; }
+        public string GoogleMapsAPIKey { get; set; }
     }
 }

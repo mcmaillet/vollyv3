@@ -37,7 +37,7 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         {
             string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                "opp" + Id + ImageFile.FileName
+                $"opp_{Id}_{ImageFile.FileName}"
                 ).Result;
 
             var opportunity = context.Opportunities.Find(Id);
@@ -51,7 +51,6 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
             }
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
-            opportunity.OpportunityType = OpportunityType;
             opportunity.ContactEmail = ContactEmail;
             return opportunity;
         }

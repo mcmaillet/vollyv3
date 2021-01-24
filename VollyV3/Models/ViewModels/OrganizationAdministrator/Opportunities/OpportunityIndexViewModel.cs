@@ -8,8 +8,7 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
-        [Display(Name = "Image")]
-        public string ImageUrl { get; set; }
+        [Display(Name = "Type")]
         public OpportunityType OpportunityType { get; set; }
     }
 }

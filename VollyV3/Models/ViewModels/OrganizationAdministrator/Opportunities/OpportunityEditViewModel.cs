@@ -49,7 +49,6 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
             }
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
-            opportunity.OpportunityType = OpportunityType;
             opportunity.ContactEmail = ContactEmail;
             return opportunity;
         }

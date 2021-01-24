@@ -77,20 +77,14 @@
         <h2>Existing occurrences</h2>
     </p>
     <div class="row">
-        <div class="col-3">
-            Start time
+        <div class="col-4">
+            Duration
         </div>
-        <div class="col-3">
-            End time
-        </div>
-        <div class="col-1">
+        <div class="col-4 col-md-2">
             Openings
         </div>
-        <div class="col-3">
+        <div class="col-4">
             Application Deadline
-        </div>
-        <div class="col-2">
-
         </div>
     </div>
     <div id="existing-rows">
@@ -124,18 +118,18 @@
                     success: function (response) {
                         $("#existing-rows").empty();
                         response.forEach(x => {
-                            var rowBuilder = "<div class=\"col-3\">"
+                            var rowBuilder = "<div class=\"col-4\">"
                                 + x.startTime
-                                + "</div><div class=\"col-3\">"
+                                + "<br\>to<br\>"
                                 + x.endTime
-                                + "</div><div class=\"col-1\">"
-                                + x.openings
-                                + "</div><div class=\"col-3\">"
-                                + x.applicationDeadline
                                 + "</div><div class=\"col-2\">"
+                                + x.openings
+                                + "</div><div class=\"col-6 col-md-4\">"
+                                + x.applicationDeadline
+                                + "</div><div class=\"col-12 col-md-2 text-right\">"
                                 + "<div class='btn-remove btn btn-danger btn-sm' onclick='deleteOccurrence(" + x.id + ")'>remove</div>"
                                 + "<br />";
-                            $('#existing-rows').append("<div class=\"row py-2\">"+rowBuilder+"</div>");
+                            $('#existing-rows').append("<div class=\"row py-3 border border-primary\">"+rowBuilder+"</div>");
                         });
                     },
                     error: function (e) {

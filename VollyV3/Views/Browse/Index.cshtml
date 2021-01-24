@@ -175,7 +175,7 @@
 
 <script src="~/js/home.browse.min.js" asp-append-version="true"></script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCi84qEblX_oHY4fLUW8pjliIsrXZJs3eI&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=@Model.GoogleMapsAPIKey&callback=initMap"></script>
 
 <script>
     var baseUrl = "https://" + window.location.hostname + "/Browse/Details/";

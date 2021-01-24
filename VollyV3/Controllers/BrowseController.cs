@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace VollyV3.Controllers
 {
     public class BrowseController : Controller
     {
+        private static readonly string GoogleMapsAPIKey = Environment.GetEnvironmentVariable("google_maps_api_key");
+
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _memoryCache;
         private readonly UserManager<VollyV3User> _userManager;
@@ -51,7 +54,9 @@ namespace VollyV3.Controllers
             }
             BrowseModel browseModel = new BrowseModel
             {
-                ApplicationModel = application
+                ApplicationModel = application,
+                GoogleMapsAPIKey = GoogleMapsAPIKey
+
             };
             ViewData["OpportunityId"] = id;
             return View(browseModel);

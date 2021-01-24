@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VollyV3.Controllers.Databind.Serialization;
 using VollyV3.Models;
 using VollyV3.Services.EmailSender;
 using VollyV3.Services.HostedServices;
@@ -60,11 +61,15 @@ namespace VollyV3
                 options.LoginPath = "/Identity/Account/Login";
             });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(options=>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new LineBreakingDateTimeConverter());
+                });
+
             services.AddRazorPages();
 
             services.AddSingleton<IImageManager, ImageManagerImpl>();
-
 
             services.AddAuthorization(options =>
             {

@@ -304,13 +304,12 @@ namespace VollyV3.Controllers.PlatformAdministrator
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             if (_context.Opportunities
-                .Where(x =>
-                x.Id == occurrencePost.OpportunityId
-                && x.CreatedBy.User == user
-            ).FirstOrDefault() == null)
+                .Where(x =>x.Id == occurrencePost.OpportunityId)
+                .FirstOrDefault() == null)
             {
                 return RedirectToAction(nameof(Index));
             }
+
             var newOccurrence = new Occurrence()
             {
                 OpportunityId = occurrencePost.OpportunityId,
@@ -318,6 +317,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
                 Openings = int.Parse(occurrencePost.Openings)
             };
+
             if (!string.IsNullOrEmpty(occurrencePost.ApplicationDeadlineDate))
             {
                 newOccurrence.ApplicationDeadline = DateTime.Parse($"{occurrencePost.ApplicationDeadlineDate} 12:00am");
@@ -332,23 +332,21 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpGet]
         public IActionResult GetOccurrences(int id)
         {
-            return Ok(
-                _context.Occurrences
+            var occurrences = _context.Occurrences
                 .Where(x => x.OpportunityId == id)
-                .ToList());
+                .ToList();
+            return Ok(occurrences);
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteOccurrence(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var occurrence = _context.Occurrences
-                .Where(x =>
-                x.Id == id
-                && x.Opportunity.CreatedBy.User == user
-                ).ToList();
-            if (occurrence.Count == 1)
+                .Where(x => x.Id == id)
+                .SingleOrDefault();
+            if (occurrence != null)
             {
-                _context.Remove(occurrence[0]);
+                _context.Remove(occurrence);
                 await _context.SaveChangesAsync();
             }
             return Ok();

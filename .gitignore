@@ -8,3 +8,4 @@ VollyV3/Properties/*
 Tests/obj
 Tests/bin
 *.csproj.user
+Backup/Tests/obj

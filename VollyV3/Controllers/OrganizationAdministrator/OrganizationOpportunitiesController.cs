@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Caching.Memory;
+using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.OrganizationAdministrator.Dto;
@@ -18,7 +19,7 @@ using VollyV3.Services.ImageManager;
 
 namespace VollyV3.Controllers.OrganizationAdministrator
 {
-    [Authorize(Roles = "OrganizationAdministrator", Policy = "IsConfigured")]
+    [Authorize(Roles = nameof(Role.OrganizationAdministrator), Policy = "IsConfigured")]
     public class OrganizationOpportunitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -57,7 +58,6 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                     Id = opportunity.Id,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,
-                    ImageUrl = opportunity.ImageUrl,
                     OpportunityType = opportunity.OpportunityType
                 })
                 .ToList());
@@ -263,9 +263,11 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             TempData["Messages"] = $"\"{model.Name}\" successfully saved.";
             return RedirectToAction(nameof(Index));
         }
-        /*
-         * Occurrences
-         */
+        /// <summary>
+        /// Occurrences
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Occurrences(int id)
         {
@@ -290,6 +292,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         public async Task<IActionResult> Occurrences([FromBody] OccurrencePost occurrencePost)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
             if (_context.Opportunities
                 .Where(x =>
                 x.Id == occurrencePost.OpportunityId
@@ -298,6 +301,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             {
                 return RedirectToAction(nameof(Index));
             }
+
             var newOccurrence = new Occurrence()
             {
                 OpportunityId = occurrencePost.OpportunityId,
@@ -305,6 +309,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 EndTime = DateTime.Parse($"{occurrencePost.EndDate} {occurrencePost.EndTime}"),
                 Openings = int.Parse(occurrencePost.Openings)
             };
+
             if (!string.IsNullOrEmpty(occurrencePost.ApplicationDeadlineDate))
             {
                 newOccurrence.ApplicationDeadline = DateTime.Parse($"{occurrencePost.ApplicationDeadlineDate} 12:00am");
