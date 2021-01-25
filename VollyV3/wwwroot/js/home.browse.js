@@ -47,20 +47,26 @@ function openOpportunityModal(opportunity) {
 };
 
 function prettyFormatDateTimes(d1, d2, breakline) {
-    var dateTime = new Date(d1 + (moment(d1).isDST() ? "-06:00" : "-07:00"));
-    var endDateTime = new Date(d2 + (moment(d2).isDST() ? "-06:00" : "-07:00"));
+    var startDateTime = moment(d1, "DD-MM-YYYY H:mm");
+    var endDateTime = moment(d2, "DD-MM-YYYY H:mm");
     var dateTimeString = "Coming soon!";
-    if (dateTime.getFullYear() >= 1970) {
-        if (endDateTime.getFullYear() >= 1970) {
-            if (dateTime.getFullYear() === endDateTime.getFullYear()
-                && dateTime.getMonth() === endDateTime.getMonth()
-                && dateTime.getDay() === endDateTime.getDay()) {
-                dateTimeString = moment(dateTime).format('ddd MMM D YYYY h:mm a') + " - " + moment(endDateTime).format('h:mm a');
+    if (startDateTime.year() >= 1970) {
+        var startDateTimeOffset = startDateTime.isDST() ? "-06:00" : "-07:00";
+        if (endDateTime.year() >= 1970) {
+            var endDateTimeOffset = endDateTime.isDST() ? "-06:00" : "-07:00";
+            if (startDateTime.year() === endDateTime.year()
+                && startDateTime.month() === endDateTime.month()
+                && startDateTime.day() === endDateTime.day()) {
+                dateTimeString = startDateTime.utcOffset(startDateTimeOffset).format('ddd MMM D YYYY h:mm a')
+                    + " - "
+                    + endDateTime.utcOffset(endDateTimeOffset).format('h:mm a');
             } else {
-                dateTimeString = moment(dateTime).format('ddd MMM D YYYY h:mm a') + getSplit(breakline) + moment(endDateTime).format('ddd MMM D YYYY h:mm a')
+                dateTimeString = startDateTime.utcOffset(startDateTimeOffset).format('ddd MMM D YYYY h:mm a')
+                    + getSplit(breakline)
+                    + endDateTime.utcOffset(endDateTimeOffset).format('ddd MMM D YYYY h:mm a')
             }
         } else {
-            dateTimeString = moment(dateTime).format('ddd MMM D YYYY h:mm a');
+            dateTimeString = startDateTime.utcOffset(startDateTimeOffset).format('ddd MMM D YYYY h:mm a');
         }
     }
     return dateTimeString;

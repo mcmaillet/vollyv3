@@ -21,9 +21,9 @@ namespace VollyV3.Models.ViewModels.Components
             return new OccurrenceViewModel
             {
                 Id = occurrence.Id,
-                StartTime = ChronoHelper.ConvertFromUtc(occurrence.StartTime),
-                EndTime = ChronoHelper.ConvertFromUtc(occurrence.EndTime),
-                ApplicationDeadline = ChronoHelper.ConvertFromUtc(occurrence.ApplicationDeadline),
+                StartTime = occurrence.StartTime,
+                EndTime = occurrence.EndTime,
+                ApplicationDeadline = occurrence.ApplicationDeadline,
                 Openings = openingsCount > 0 ? openingsCount : 0
             };
         }
