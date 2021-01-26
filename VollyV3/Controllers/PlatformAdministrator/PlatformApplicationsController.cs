@@ -25,7 +25,6 @@ namespace VollyV3.Controllers.PlatformAdministrator
         {
             var applications = _context.Applications
                 .Include(x => x.Opportunity)
-                .ThenInclude(x => x.CreatedBy)
                 .ThenInclude(x => x.Organization)
                 .Include(x => x.Occurrence)
                 .OrderByDescending(x => x.Opportunity.Id)
@@ -44,7 +43,6 @@ namespace VollyV3.Controllers.PlatformAdministrator
 
             var application = _context.Applications
                 .Include(x => x.Opportunity)
-                .ThenInclude(x => x.CreatedBy)
                 .ThenInclude(x => x.Organization)
                 .Include(x => x.Occurrence)
                 .Where(x => x.Id == id)
@@ -61,7 +59,6 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpPost]
         public IActionResult Delete(int id, IFormCollection form)
         {
-
             var application = _context.Applications
                 .Where(x => x.Id == id)
                 .SingleOrDefault();
@@ -88,7 +85,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
 
             var application = _context.Applications
                 .Include(x => x.Opportunity)
-                .ThenInclude(x => x.CreatedBy)
+                .ThenInclude(x => x.Organization)
                 .Include(x => x.Occurrence)
                 .Where(x => x.Id == id)
                 .SingleOrDefault();

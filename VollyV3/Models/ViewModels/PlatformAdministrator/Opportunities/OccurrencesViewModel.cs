@@ -4,6 +4,7 @@
     {
         public int OpportunityId { get; set; }
         public string OpportunityName { get; set; }
+        public string OrganizationName { get; set; }
         public string OpportunityDescription { get; set; }
         public string OpportunityAddress { get; set; }
     }

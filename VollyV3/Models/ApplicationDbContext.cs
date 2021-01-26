@@ -29,16 +29,6 @@ namespace VollyV3.Models
 
             builder.Entity<OrganizationAdministratorUser>()
                 .HasKey(x => new { x.UserId, x.OrganizationId });
-
-            builder.Entity<Opportunity>()
-                .HasOne(x => x.CreatedBy)
-                .WithMany(x => x.Opportunities)
-                .HasForeignKey(x => new { x.CreatedByUserId, x.CreatedByOrganizationId });
-
-            builder.Entity<OrganizationAdministratorUser>()
-                .HasMany(x => x.Opportunities)
-                .WithOne(x => x.CreatedBy)
-                .HasForeignKey(x => new { x.CreatedByUserId, x.CreatedByOrganizationId });
         }
     }
 }

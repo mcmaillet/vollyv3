@@ -44,9 +44,9 @@ namespace VollyV3.Data
         public string ImageUrl { get; set; }
         public string ExternalSignUpUrl { get; set; }
         public OpportunityType OpportunityType { get; set; }
-        public string CreatedByUserId { get; set; }
-        public int CreatedByOrganizationId { get; set; }
-        public virtual OrganizationAdministratorUser CreatedBy { get; set; }
+        public string CreatedById { get; set; }
+        public virtual VollyV3User CreatedBy { get; set; }
+        public virtual Organization Organization { get; set; }
         public virtual List<OpportunityImage> OpportunityImages { get; set; }
         public virtual List<Occurrence> Occurrences { get; set; }
         public DateTime CreatedDateTime { get; set; }

@@ -1,0 +1,53 @@
+﻿@model VollyV3.Models.Contact.ContactIndexViewModel
+
+@{
+    ViewData["Title"] = "Contact Us";
+    ViewData["DarkNav"] = true;
+    ViewData["BodyClass"] = "class=blend";
+}
+<div class="container vollytron">
+    <div class="text-danger">
+        @TempData["Message"]
+    </div>
+    <div class="row">
+        <div class="col-md-6 vertical-margin-auto">
+            <h3>Contact Us:</h3>
+            <ul>
+                <li>Are you looking for volunteer opportunities in Calgary?</li>
+                <li>Is there a feature you would like us to add on this page?</li>
+                <li>Have a volunteer opportunity to post?</li>
+                <li>Is there a volunteer initiative you are dying to participate in that we can help plan?</li>
+                <li>Have a question about a particular opportunity?</li>
+            </ul>
+            <h4>Fill out this form and we will get back to you.</h4>
+            <h4>Or reach us directly at <a href="mailto:admin@vollyapp.com">admin@vollyapp.com</a></h4>
+        </div>
+        <div class="col-md-6">
+            <form id="contact-form" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="col-form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="col-form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Message" class="col-form-label"></label>
+                    <textarea asp-for="Message" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+                <input style="display:none;" asp-for="TripCheck" />
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="@Model.GoogleRecaptchaSiteKey"></div>
+                    <input class="btn btn-primary"
+                           type="submit" 
+                           value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

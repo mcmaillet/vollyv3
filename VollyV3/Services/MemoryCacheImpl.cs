@@ -22,9 +22,9 @@ namespace VollyV3.Services
                 .Where(x => !x.IsArchived)
 
                 .Include(o => o.CreatedBy)
-                .ThenInclude(u => u.Organization)
+                .Include(o => o.Organization)
 
-                .Where(x => x.CreatedBy.Organization.Enabled)
+                .Where(x => x.Organization.Enabled)
 
                 .Include(o => o.Location)
                 .Include(o => o.Occurrences)

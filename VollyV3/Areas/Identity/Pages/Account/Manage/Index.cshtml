@@ -82,7 +82,7 @@
                         @foreach (var application in Model.Applications)
                         {
                             <tr>
-                                <td>@application.Opportunity.CreatedBy.Organization.Name</td>
+                                <td>@application.Opportunity.Organization.Name</td>
                                 <td>@application.Opportunity.Name</td>
                                 <td>@application.Opportunity.Address</td>
                                 <td>@application.Occurrence?.StartTime</td>

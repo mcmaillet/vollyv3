@@ -66,11 +66,10 @@ namespace VollyV3.Areas.Identity.Pages.Account.Manage
 
             Applications = _context.Applications
                 .Include(x => x.Opportunity)
-                .ThenInclude(x => x.CreatedBy)
                 .ThenInclude(x => x.Organization)
                 .Include(x => x.Occurrence)
                 .Where(x => x.User == user)
-                .OrderBy(x => x.Opportunity.CreatedByOrganizationId)
+                .OrderBy(x => x.Opportunity.Organization.Id)
                 .ThenBy(x => x.Opportunity.Id)
                 .ThenBy(x => x.SubmittedDateTime)
                 .ToList();

@@ -31,11 +31,12 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         public async Task<IActionResult> IndexAsync()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
             var applications = _context.Applications
                 .Include(x => x.Opportunity)
                 .ThenInclude(x => x.CreatedBy)
                 .Include(x => x.Occurrence)
-                .Where(x => x.Opportunity.CreatedBy.User == user)
+                .Where(x => x.Opportunity.CreatedBy == user)
                 .OrderBy(x => x.Opportunity.Id)
                 .ToList();
 
@@ -61,7 +62,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (application.Opportunity.CreatedBy.User != user)
+            if (application.Opportunity.CreatedBy != user)
             {
                 TempData["Messages"] = "You are not the owner of that opportunity. You cannot modify applications.";
                 return RedirectToAction(nameof(Index));
@@ -83,7 +84,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (application.Opportunity.CreatedBy.User != user)
+            if (application.Opportunity.CreatedBy != user)
             {
                 TempData["Messages"] = "You are not the owner of that opportunity. You cannot modify applications.";
                 return RedirectToAction(nameof(Index));

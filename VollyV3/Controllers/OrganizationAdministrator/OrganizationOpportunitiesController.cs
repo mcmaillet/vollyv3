@@ -45,10 +45,10 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.Category)
                 .Include(o => o.CreatedBy)
-                .ThenInclude(u => u.Organization);
+                .Include(o => o.Organization);
 
             List<Opportunity> opportunities = opportunitiesQueryable
-                .Where(x => organizationsManagedByUser.Contains(x.CreatedBy.Organization.Id))
+                .Where(x => organizationsManagedByUser.Contains(x.Organization.Id))
                 .OrderByDescending(x => x.Id)
                 .ToList();
 
@@ -86,23 +86,36 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
+
+                var organizationsManagedByUser = _context.OrganizationAdministratorUsers
+                    .Where(x => x.UserId == user.Id)
+                    .Select(x => x.Organization)
+                    .ToList();
+
+                if (organizationsManagedByUser.Count != 1)
+                {
+                    return RedirectToAction("Index", "Error");
+                }
+
                 Opportunity opportunity = model.GetOpportunity(_imageManager);
-                opportunity.CreatedBy = _context.OrganizationAdministratorUsers
-                    .Where(x => x.User == user)
-                    .FirstOrDefault();
+                opportunity.CreatedBy = user;
+                opportunity.Organization = organizationsManagedByUser[0];
+                opportunity.CreatedDateTime = DateTime.Now;
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
                 {
                     opportunity.ContactEmail = user.Email;
                 }
 
-                opportunity.CreatedDateTime = DateTime.Now;
                 _context.Add(opportunity);
+
                 await _context.SaveChangesAsync();
+
                 if (Opportunity.RequiresOccurrences(model.OpportunityType))
                 {
                     return RedirectToAction(nameof(Occurrences), new { id = opportunity.Id });
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
@@ -134,24 +147,35 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(OpportunityDeleteViewModel model)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var organizationsManagedByUser = _context.OrganizationAdministratorUsers
+                .Where(x => x.UserId == user.Id)
+                .Select(x => x.OrganizationId)
+                .ToList();
+
             var opportunity = _context.Opportunities
-                .Where(x => x.Id == model.Id)
+                .Include(x => x.Organization)
+                .Where(x => x.Id == model.Id && organizationsManagedByUser.Contains(x.Organization.Id))
                 .SingleOrDefault();
 
             if (opportunity == null)
             {
+                TempData["Messages"] = $"\"{opportunity.Name}\" not found for organizations you manage.";
                 return RedirectToAction(nameof(Index));
             }
 
             var volunteerHours = _context.VolunteerHours
                 .Where(x => x.OpportunityId == opportunity.Id)
                 .ToList();
+
             if (volunteerHours.Count > 0)
             {
                 TempData["Messages"] = $"\"{opportunity.Name}\" has volunteer hours logged against it and cannot be deleted.";
                 return RedirectToAction(nameof(Index));
                 //return RedirectToAction(nameof(Archive), new { opportunity.Id });
             }
+
             _context.Remove(opportunity);
 
             await _context.SaveChangesAsync();
@@ -173,11 +197,26 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             return View(opportunity);
         }
         [HttpPost]
-        public IActionResult Archive(int id, IFormCollection form)
+        public async Task<IActionResult> ArchiveAsync(int id, IFormCollection form)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var organizationsManagedByUser = _context.OrganizationAdministratorUsers
+                .Where(x => x.UserId == user.Id)
+                .Select(x => x.OrganizationId)
+                .ToList();
+
             var opportunity = _context.Opportunities
-                .Where(x => x.Id == id)
+                .Include(x => x.Organization)
+                .Where(x => x.Id == id && organizationsManagedByUser.Contains(x.Organization.Id))
                 .SingleOrDefault();
+
+            if (opportunity == null)
+            {
+                TempData["Messages"] = $"\"{opportunity.Name}\" not found for organizations you manage.";
+                return RedirectToAction(nameof(Index));
+            }
+
             opportunity.IsArchived = true;
 
             _context.Update(opportunity);
@@ -251,6 +290,13 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         [HttpPost]
         public async Task<IActionResult> EditAsync(OpportunityEditViewModel model)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var organizationsManagedByUser = _context.OrganizationAdministratorUsers
+                .Where(x => x.UserId == user.Id)
+                .Select(x => x.OrganizationId)
+                .ToList();
+
             var opp = model.GetOpportunity(_context, _imageManager);
 
             if (opp == null)
@@ -294,10 +340,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             if (_context.Opportunities
-                .Where(x =>
-                x.Id == occurrencePost.OpportunityId
-                && x.CreatedBy.User == user
-            ).FirstOrDefault() == null)
+                .Where(x => x.Id == occurrencePost.OpportunityId && x.CreatedBy == user)
+                .FirstOrDefault() == null)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -333,16 +377,17 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         public async Task<IActionResult> DeleteOccurrence(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
             var occurrence = _context.Occurrences
-                .Where(x =>
-                x.Id == id
-                && x.Opportunity.CreatedBy.User == user
-                ).ToList();
-            if (occurrence.Count == 1)
+                .Where(x => x.Id == id && x.Opportunity.CreatedBy == user)
+                .SingleOrDefault();
+
+            if (occurrence != null)
             {
-                _context.Remove(occurrence[0]);
+                _context.Remove(occurrence);
                 await _context.SaveChangesAsync();
             }
+
             return Ok();
         }
     }

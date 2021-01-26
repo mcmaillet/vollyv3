@@ -41,7 +41,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             IIncludableQueryable<Opportunity, Organization> opportunitiesQueryable = _context.Opportunities
                 .Include(o => o.Category)
                 .Include(o => o.CreatedBy)
-                .ThenInclude(u => u.Organization);
+                .Include(o => o.Organization);
 
             List<Opportunity> opportunities = opportunitiesQueryable
                 .OrderByDescending(x => x.Id)
@@ -51,7 +51,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 .Select(opportunity => new OpportunityIndexViewModel()
                 {
                     Id = opportunity.Id,
-                    OrganizationName = opportunity.CreatedBy?.Organization?.Name,
+                    OrganizationName = opportunity.Organization.Name,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,
                     OpportunityType = opportunity.OpportunityType
@@ -65,25 +65,21 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var opp = _context.Opportunities
+            var opportunity = _context.Opportunities
                 .Where(x => x.Id == id)
                 .Include(x => x.Category)
                 .Include(x => x.CreatedBy)
-                .ThenInclude(x => x.Organization)
+                .Include(x => x.Organization)
                 .FirstOrDefault();
 
-            if (opp == null)
+            if (opportunity == null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            return GetDetailsViewResult(opp);
-        }
-        public ViewResult GetDetailsViewResult(Opportunity opportunity)
-        {
             return View(new OpportunityDetailsViewModel()
             {
-                OrganizationName = opportunity.CreatedBy?.Organization?.Name,
+                OrganizationName = opportunity.Organization.Name,
                 Name = opportunity.Name,
                 OpportunityType = opportunity.OpportunityType,
                 Address = opportunity.Address,
@@ -102,19 +98,15 @@ namespace VollyV3.Controllers.PlatformAdministrator
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            return GetCreateViewResult(user);
-        }
-        public ViewResult GetCreateViewResult(VollyV3User user)
-        {
             return View(new OpportunityCreateViewModel()
             {
                 ContactEmail = user.Email,
                 Categories = new SelectList(_context.Categories
-                .OrderBy(c => c.Name)
-                .ToList(), "Id", "Name"),
+                  .OrderBy(c => c.Name)
+                  .ToList(), "Id", "Name"),
                 Organizations = new SelectList(_context.Organizations
-                .OrderBy(x => x.Name)
-                .ToList(), "Id", "Name")
+                  .OrderBy(x => x.Name)
+                  .ToList(), "Id", "Name")
             });
         }
         [HttpPost]
@@ -129,21 +121,27 @@ namespace VollyV3.Controllers.PlatformAdministrator
                     .Where(x => x.Id == model.OrganizationId)
                     .FirstOrDefault();
 
+                if (organization == null)
+                {
+                    TempData["Messages"] = "Organization not found in request.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 Opportunity opportunity = model.GetOpportunity(_imageManager);
-                opportunity.CreatedBy = _context.OrganizationAdministratorUsers
-                    .Where(x => x.User == user && x.Organization == organization)
-                    .FirstOrDefault();
+                opportunity.CreatedBy = user;
+                opportunity.Organization = organization;
+                opportunity.CreatedDateTime = DateTime.Now;
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
                 {
                     opportunity.ContactEmail = user.Email;
                 }
 
-                opportunity.CreatedDateTime = DateTime.Now;
-
                 _context.Add(opportunity);
 
                 await _context.SaveChangesAsync();
+
+                TempData["Messages"] = $"\"{opportunity.Name}\" has been created.";
 
                 if (Opportunity.RequiresOccurrences(model.OpportunityType))
                 {
@@ -167,7 +165,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 .Where(x => x.Id == id)
                 .Include(x => x.Category)
                 .Include(x => x.CreatedBy)
-                .ThenInclude(x => x.Organization)
+                .Include(x => x.Organization)
                 .FirstOrDefault();
 
             if (opportunity == null)
@@ -178,7 +176,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             return View(new OpportunityEditViewModel()
             {
                 Id = opportunity.Id,
-                OrganizationName = opportunity.CreatedBy?.Organization?.Name,
+                OrganizationName = opportunity.Organization.Name,
                 Name = opportunity.Name,
                 OpportunityType = opportunity.OpportunityType,
                 Description = opportunity.Description,
@@ -218,7 +216,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             var opp = _context.Opportunities
                 .Where(x => x.Id == id)
                 .Include(x => x.CreatedBy)
-                .ThenInclude(x => x.Organization)
+                .Include(x => x.Organization)
                 .FirstOrDefault();
 
             if (opp == null)
@@ -229,7 +227,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             return View(new OpportunityDeleteViewModel()
             {
                 Id = id,
-                OrganizationName = opp.CreatedBy?.Organization?.Name,
+                OrganizationName = opp.Organization.Name,
                 Name = opp.Name,
                 Description = opp.Description
             });
@@ -283,6 +281,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
         public IActionResult Occurrences(int id)
         {
             var opp = _context.Opportunities
+                .Include(x => x.Organization)
                 .Where(x => x.Id == id)
                 .FirstOrDefault();
 
@@ -295,6 +294,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             {
                 OpportunityId = opp.Id,
                 OpportunityName = opp.Name,
+                OrganizationName = opp.Organization.Name,
                 OpportunityDescription = opp.Description,
                 OpportunityAddress = opp.Address,
             });
@@ -302,9 +302,8 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpPost]
         public async Task<IActionResult> Occurrences([FromBody] OccurrencePost occurrencePost)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
             if (_context.Opportunities
-                .Where(x =>x.Id == occurrencePost.OpportunityId)
+                .Where(x => x.Id == occurrencePost.OpportunityId)
                 .FirstOrDefault() == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -340,15 +339,16 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpDelete]
         public async Task<IActionResult> DeleteOccurrence(int id)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
             var occurrence = _context.Occurrences
                 .Where(x => x.Id == id)
                 .SingleOrDefault();
+
             if (occurrence != null)
             {
                 _context.Remove(occurrence);
                 await _context.SaveChangesAsync();
             }
+            
             return Ok();
         }
     }
