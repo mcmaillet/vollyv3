@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using VollyV3.Data;
 using VollyV3.Models.Contact;
 using VollyV3.Services.EmailSender;
 
@@ -35,7 +39,7 @@ namespace VollyV3.Controllers
         [HttpPost]
         public async Task<IActionResult> IndexAsync(ContactIndexViewModel model)
         {
-            if (model.TripCheck)
+            if (!IsRecaptchaValid() || model.TripCheck)
             {
                 return Ok();
             }
@@ -45,6 +49,27 @@ namespace VollyV3.Controllers
             await _emailSender.SendEmailAsync(PlatformContactEmail, "Message From: " + model.Name, model.GetEmailMessage(ip));
 
             return RedirectToAction(nameof(Confirm));
+        }
+        private bool IsRecaptchaValid()
+        {
+            var result = false;
+            var requestUri = string.Format(
+                GlobalConstants.RecaptchaPOSTUrl,
+                GoogleRecaptchaSiteSecret,
+                Request.Form["g-recaptcha-response"]
+                );
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
+
+            using (WebResponse response = request.GetResponse())
+            {
+                using (StreamReader stream = new StreamReader(response.GetResponseStream()))
+                {
+                    JObject jResponse = JObject.Parse(stream.ReadToEnd());
+                    var isSuccess = jResponse.Value<bool>("success");
+                    result = isSuccess ? true : false;
+                }
+            }
+            return result;
         }
         /// <summary>
         /// Confirm
