@@ -51,7 +51,7 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>@if (item.OpportunityType == VollyV3.Data.OpportunityType.Episodic)
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>@if (VollyV3.Data.Opportunity.RequiresOccurrences(item.OpportunityType))
                     {
                         <text> | <a asp-action="Occurrences" asp-route-id="@item.Id">Manage occurrences</a></text>
                     }

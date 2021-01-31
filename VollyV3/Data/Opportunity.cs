@@ -32,7 +32,8 @@ namespace VollyV3.Data
     {
         private static readonly List<OpportunityType> OpportunityTypesRequiringOccurrences = new List<OpportunityType>()
     {
-        OpportunityType.Episodic
+        OpportunityType.Episodic,
+        OpportunityType.Group
     };
         public int Id { get; set; }
         public string Name { get; set; }

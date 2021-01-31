@@ -38,12 +38,12 @@ namespace VollyV3.Services
                     opportunity.Occurrences = opportunity.Occurrences
                         .Where(oc =>
                         (oc.ApplicationDeadline == DateTime.MinValue || oc.ApplicationDeadline > DateTime.Now)
-                        && (oc.Openings == 0 && opportunity.OpportunityType == OpportunityType.Episodic || oc.Openings > oc.Applications.Count)
+                        && (oc.Openings == 0 && Opportunity.RequiresOccurrences(opportunity.OpportunityType) || oc.Openings > oc.Applications.Count)
                         && (oc.EndTime > DateTime.Now)
                         ).ToList();
                 }
                 return opportunities
-                .Where(x => x.OpportunityType != OpportunityType.Episodic || x.Occurrences.Count > 0)
+                .Where(x => !Opportunity.RequiresOccurrences(x.OpportunityType) || x.Occurrences.Count > 0)
                 .ToList();
             });
         }
