@@ -12,6 +12,11 @@
     <hr />
     <div class="row">
         <div class="col-md-4">
+            <a asp-action="Archive"
+               asp-route-id="@Model.Id"
+               class="btn btn-danger">
+                Archive
+            </a>
             <form asp-action="Edit" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">

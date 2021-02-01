@@ -10,5 +10,6 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         public string Category { get; set; }
         [Display(Name = "Type")]
         public OpportunityType OpportunityType { get; set; }
+        public bool IsArchived { get; set; }
     }
 }

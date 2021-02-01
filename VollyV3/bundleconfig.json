@@ -7,6 +7,13 @@
     "minify": { "enabled": true }
   },
   {
+    "outputFileName": "wwwroot/css/admin.min.css",
+    "inputFiles": [
+      "wwwroot/css/admin.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
     "outputFileName": "wwwroot/css/home.browse.min.css",
     "inputFiles": [
       "wwwroot/css/home.browse.css"

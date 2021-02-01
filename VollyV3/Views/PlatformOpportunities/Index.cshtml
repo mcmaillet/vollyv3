@@ -35,18 +35,20 @@
         <tbody>
             @foreach (var item in Model)
         {
-            <tr>
+            <tr @if (item.IsArchived) {
+            <text>class="is-archived"</text>
+            }>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OrganizationName)
+                    @item.OrganizationName
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @item.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category)
+                    @item.Category
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OpportunityType)
+                    @item.OpportunityType
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -6,8 +6,11 @@
 }
 
 <div class="container bg-default-dark padded">
+    <section class="text-danger">
+        @TempData["Messages"]
+    </section>
     <section>
-        <h2>This opportunity has volunteer hours logged against it. Would you like to archive it?</h2>
+        <h2>Would you like to archive this opportunity?</h2>
     </section>
     <section>
         <h3>@Model.Name</h3>

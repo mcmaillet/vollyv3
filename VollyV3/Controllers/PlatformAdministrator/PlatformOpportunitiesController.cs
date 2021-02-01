@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -54,7 +55,8 @@ namespace VollyV3.Controllers.PlatformAdministrator
                     OrganizationName = opportunity.Organization.Name,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,
-                    OpportunityType = opportunity.OpportunityType
+                    OpportunityType = opportunity.OpportunityType,
+                    IsArchived = opportunity.IsArchived
                 })
                 .ToList());
         }
@@ -348,8 +350,47 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 _context.Remove(occurrence);
                 await _context.SaveChangesAsync();
             }
-            
+
             return Ok();
+        }
+        /// <summary>
+        /// Archive
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Archive(int id)
+        {
+            var result = _context.Opportunities
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+
+            if (result == null)
+            {
+                return RedirectToAction("Index", "Error");
+            }
+
+            return View(result);
+        }
+        [HttpPost]
+        public IActionResult Archive(int id, IFormCollection form)
+        {
+            var opp = _context.Opportunities
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+
+            if (opp == null)
+            {
+                return RedirectToAction("Index", "Error");
+            }
+
+            opp.IsArchived = !opp.IsArchived;
+
+            _context.SaveChanges();
+
+            TempData["Messages"] = $"'{opp.Name}' was {(opp.IsArchived ? "" : "un")}archived";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
