@@ -9,6 +9,15 @@
     <div class="row">
         <div id="wrap-main" class="bg-default-dark col-lg-8 col-md-8 col-sm-12 order-lg-first order-md-first order-last">
             <ul class="nav nav-tabs border-0">
+                <li class="nav-item">
+                    <a class="nav-link opportunityType"
+                       value="-1"
+                       id="All"
+                       data-toggle="tab"
+                       href="#home">
+                        All
+                    </a>
+                </li>
                 @{
                     foreach (OpportunityType opportunityType in Enum.GetValues(typeof(OpportunityType)))
                     {

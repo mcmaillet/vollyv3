@@ -44,8 +44,7 @@ namespace VollyV3.Controllers.API
         }
         private static Func<Opportunity, bool> GetEligibleOpportunityPredicate(OpportunitySearch opportunitySearch)
         {
-            return o => opportunitySearch.OpportunityType == OpportunityType.All
-                || o.OpportunityType == opportunitySearch.OpportunityType;
+            return o => opportunitySearch.OpportunityType == -1 || (int)o.OpportunityType == opportunitySearch.OpportunityType;
         }
     }
 }

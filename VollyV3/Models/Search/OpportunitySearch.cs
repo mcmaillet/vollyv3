@@ -11,7 +11,7 @@ namespace VollyV3.Models.Search
         public List<int> CauseIds { get; set; }
         public List<int> CategoryIds { get; set; }
         public List<int> OrganizationIds { get; set; }
-        public OpportunityType OpportunityType { get; set; }
+        public int OpportunityType { get; set; }
         public List<DateTime> Dates { get; set; }
         public int Sort { get; set; }
     }

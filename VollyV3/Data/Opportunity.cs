@@ -3,15 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VollyV3.Models;
-using VollyV3.Models.Users;
 using VollyV3.Services.ImageManager;
 
 namespace VollyV3.Data
 {
     public enum OpportunityType
     {
-        All,
-        Episodic,
+        Events,
         Ongoing,
         Group,
         Donation
@@ -21,8 +19,7 @@ namespace VollyV3.Data
     {
         public static Dictionary<OpportunityType, string> MapDictionary = new Dictionary<OpportunityType, string>()
         {
-            { OpportunityType.All, "All" },
-            { OpportunityType.Episodic, "Events" },
+            { OpportunityType.Events, "Events" },
             { OpportunityType.Ongoing, "Ongoing" },
             { OpportunityType.Group, "Group" },
             { OpportunityType.Donation, "Donation" }
@@ -32,7 +29,7 @@ namespace VollyV3.Data
     {
         private static readonly List<OpportunityType> OpportunityTypesRequiringOccurrences = new List<OpportunityType>()
     {
-        OpportunityType.Episodic,
+        OpportunityType.Events,
         OpportunityType.Group
     };
         public int Id { get; set; }

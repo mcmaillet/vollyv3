@@ -30,7 +30,7 @@ function openOpportunityModal(opportunity) {
     $("#ModalAddress").html(opportunity.address);
     $("#ModalDescription").html(opportunity.description);
     var opportunityType = opportunity.opportunityType;
-    if (opportunityType === 1) {
+    if (opportunityType === 0 || opportunityType === 2) {
         $("#occurrencesSelect").css("visibility", "visible");
         $("#occurrencesSelect").css("position", "relative");
     } else {
@@ -81,7 +81,7 @@ function getSplit(breakline) {
 
 function appendOpportunityPanel(opportunity, marker) {
     var dateTimeStringWrapper = "";
-    if (opportunity.opportunityType === 1) {
+    if (opportunity.opportunityType === 0 || opportunity.opportunityType === 2) {
         var dateTimeString = "Multiple Shifts";
         if (opportunity.occurrenceViews) {
             if (opportunity.occurrenceViews.length === 1) {
