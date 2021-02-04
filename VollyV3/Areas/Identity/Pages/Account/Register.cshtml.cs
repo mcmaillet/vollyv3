@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using VollyV3.Models;
 using VollyV3.Services.EmailSender;
+using VollyV3.Services.Recaptcha;
 
 namespace VollyV3.Areas.Identity.Pages.Account
 {
@@ -43,6 +44,8 @@ namespace VollyV3.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
+        public string GoogleRecaptchaSiteKey { get; set; }
+
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public class InputModel
         {
@@ -65,22 +68,30 @@ namespace VollyV3.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "I am registering as an organization administrator.")]
             public bool IsOrganizationAdministrator { get; set; }
+
+            public bool TripCheck { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            GoogleRecaptchaSiteKey = Environment.GetEnvironmentVariable("google_recaptcha_site_key");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            if (!RecaptchaValidator.IsRecaptchaValid(Request.Form["g-recaptcha-response"]) || Input.TripCheck)
+            {
+                return RedirectToAction("Index", "Error");
+            }
 
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new VollyV3User {
+                var user = new VollyV3User
+                {
                     UserName = Input.Email,
                     Email = Input.Email,
                     CreatedDateTime = DateTime.Now

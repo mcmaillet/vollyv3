@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using VollyV3.Data;
 using VollyV3.Models.Contact;
 using VollyV3.Services.EmailSender;
+using VollyV3.Services.Recaptcha;
 
 namespace VollyV3.Controllers
 {
     public class ContactController : Controller
     {
         private static readonly string GoogleRecaptchaSiteKey = Environment.GetEnvironmentVariable("google_recaptcha_site_key");
-        private static readonly string GoogleRecaptchaSiteSecret = Environment.GetEnvironmentVariable("google_recaptcha_site_secret");
         private static readonly string PlatformContactEmail = Environment.GetEnvironmentVariable("platform_contact_email");
 
         private readonly IEmailSenderExtended _emailSender;
@@ -39,7 +39,7 @@ namespace VollyV3.Controllers
         [HttpPost]
         public async Task<IActionResult> IndexAsync(ContactIndexViewModel model)
         {
-            if (!IsRecaptchaValid() || model.TripCheck)
+            if (!RecaptchaValidator.IsRecaptchaValid(Request.Form["g-recaptcha-response"]) || model.TripCheck)
             {
                 return Ok();
             }
@@ -49,27 +49,6 @@ namespace VollyV3.Controllers
             await _emailSender.SendEmailAsync(PlatformContactEmail, "Message From: " + model.Name, model.GetEmailMessage(ip));
 
             return RedirectToAction(nameof(Confirm));
-        }
-        private bool IsRecaptchaValid()
-        {
-            var result = false;
-            var requestUri = string.Format(
-                GlobalConstants.RecaptchaPOSTUrl,
-                GoogleRecaptchaSiteSecret,
-                Request.Form["g-recaptcha-response"]
-                );
-            var request = (HttpWebRequest)WebRequest.Create(requestUri);
-
-            using (WebResponse response = request.GetResponse())
-            {
-                using (StreamReader stream = new StreamReader(response.GetResponseStream()))
-                {
-                    JObject jResponse = JObject.Parse(stream.ReadToEnd());
-                    var isSuccess = jResponse.Value<bool>("success");
-                    result = isSuccess ? true : false;
-                }
-            }
-            return result;
         }
         /// <summary>
         /// Confirm
