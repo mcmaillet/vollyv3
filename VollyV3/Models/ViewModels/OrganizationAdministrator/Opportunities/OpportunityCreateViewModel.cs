@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 using VollyV3.Data;
 using VollyV3.Services;
 using VollyV3.Services.ImageManager;
@@ -35,7 +37,7 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         {
             string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                "opp" + Id + ImageFile.FileName
+                ImageFilenameProducer.Create()
                 ).Result;
 
             return new Opportunity

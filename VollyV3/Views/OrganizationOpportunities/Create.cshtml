@@ -48,11 +48,12 @@
                     <select asp-for="OpportunityType" class="form-control"
                             asp-items="Html.GetEnumSelectList<OpportunityType>()"></select>
                     <span asp-validation-for="OpportunityType" class="text-danger"></span>
+                    <br />
                     <p>
-                        Events: Volunteer Opportunities that have a set date<br />
-                        On-going: Opportunities that need a volunteer to commit on a consistent basis<br />
-                        Group: Opportunities that require a large group of people typically from a single company<br />
-                        Donations: Seek out non-monetary donations such as food/supplies/etc.
+                        <b>Events</b>: Have a set time and date. Requires an "occurrence".<br />
+                        <b>On-going</b>: Commitment on a consistent basis required.<br />
+                        <b>Group</b>: For a large group of people typically from a single company at a set time and date. Requires an "occurrence".<br />
+                        <b>Donations</b>: Seek out non-monetary donations such as food/supplies/etc.
                     </p>
                 </div>
                 <div class="form-group">

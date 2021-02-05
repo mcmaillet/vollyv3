@@ -39,7 +39,7 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         {
             string imageUrl = ImageFile == null ? "images\\assets\\Untitled.png" : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                $"opp_{DateTime.Now}_{new Random().Next(999999)}"
+                ImageFilenameProducer.Create()
                 ).Result;
 
             return new Opportunity

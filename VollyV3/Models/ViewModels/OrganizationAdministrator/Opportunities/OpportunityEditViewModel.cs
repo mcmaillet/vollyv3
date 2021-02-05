@@ -35,7 +35,7 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         {
             string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
                 ImageFile,
-                $"opp_{Id}_{ImageFile.FileName}"
+                ImageFilenameProducer.Create()
                 ).Result;
 
             var opportunity = context.Opportunities.Find(Id);
