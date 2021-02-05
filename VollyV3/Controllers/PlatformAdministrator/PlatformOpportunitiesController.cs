@@ -52,6 +52,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 .Select(opportunity => new OpportunityIndexViewModel()
                 {
                     Id = opportunity.Id,
+                    CreatedDateTime = opportunity.CreatedDateTime,
                     OrganizationName = opportunity.Organization.Name,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,

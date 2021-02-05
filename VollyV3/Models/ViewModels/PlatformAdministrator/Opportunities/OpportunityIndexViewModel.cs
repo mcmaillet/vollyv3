@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using VollyV3.Data;
 
 namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
@@ -6,6 +7,8 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
     public class OpportunityIndexViewModel
     {
         public int Id { get; set; }
+        [Display(Name = "Created date/time")]
+        public DateTime CreatedDateTime { get; set; }
         [Display(Name = "Organization")]
         public string OrganizationName { get; set; }
         public string Name { get; set; }

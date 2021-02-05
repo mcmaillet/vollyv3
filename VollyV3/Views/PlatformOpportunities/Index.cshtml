@@ -16,6 +16,9 @@
         <thead>
             <tr>
                 <th>
+                    @Html.DisplayNameFor(model => model.CreatedDateTime)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.OrganizationName)
                 </th>
                 <th>
@@ -38,6 +41,9 @@
             <tr @if (item.IsArchived) {
             <text>class="is-archived"</text>
             }>
+                <td>
+                    @item.CreatedDateTime
+                </td>
                 <td>
                     @item.OrganizationName
                 </td>
