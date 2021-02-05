@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
 using VollyV3.Models.Users;
-using VollyV3.Models.ViewModels;
 using VollyV3.Models.ViewModels.OrganizationAdministrator;
+using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Controllers.OrganizationAdministrator
 {
@@ -22,13 +20,16 @@ namespace VollyV3.Controllers.OrganizationAdministrator
         private const int MAX_NUMBER_OF_ORGANIZATIONS_PER_ADMIN = 1;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<VollyV3User> _userManager;
+        private readonly IEmailSenderExtended _emailSender;
         public OrganizationController(
             ApplicationDbContext context,
-            UserManager<VollyV3User> userManager
+            UserManager<VollyV3User> userManager,
+            IEmailSenderExtended emailSender
             )
         {
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
         /// <summary>
         /// Index
@@ -142,6 +143,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
             await _context.SaveChangesAsync();
 
             await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(Role), Role.IsConfigured));
+
+            await _emailSender.SendEmailOrganizationConfiguredAsync(user.NormalizedEmail, model.OrganizationName);
 
             return RedirectToAction(nameof(SetupConfirm));
         }

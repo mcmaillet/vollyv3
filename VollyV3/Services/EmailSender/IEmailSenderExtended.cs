@@ -10,5 +10,7 @@ namespace VollyV3.Services.EmailSender
             string applicantName, string applicantEmail,
             string organizationContactEmail,
             string subject, string htmlMessage);
+
+        Task<HttpStatusCode> SendEmailOrganizationConfiguredAsync(string contactEmail, string organizationName);
     }
 }

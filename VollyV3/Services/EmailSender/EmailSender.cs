@@ -14,6 +14,7 @@ namespace VollyV3.Services.EmailSender
         private static readonly string SendgridApiKey = Environment.GetEnvironmentVariable("sendgrid_api_key");
         private static readonly string ApplicationsCCEmail = Environment.GetEnvironmentVariable("applications_cc_email");
         private static readonly bool SendApplicationsCCOrganizationEmailFeature = bool.TryParse(Environment.GetEnvironmentVariable("send_applications_cc_organization_email"), out bool result) && result;
+        private static readonly string OrganizationConfiguredNotifyEmail = Environment.GetEnvironmentVariable("organization_configured_notify_email");
 
         public async Task SendEmailAsync(string email, string subject, string message)
         {
@@ -103,6 +104,29 @@ namespace VollyV3.Services.EmailSender
                     sendGridMessage.AddCc(new EmailAddress(email));
                 }
             }
+
+            var result = await client.SendEmailAsync(sendGridMessage);
+
+            return result.StatusCode;
+        }
+
+        async Task<HttpStatusCode> IEmailSenderExtended.SendEmailOrganizationConfiguredAsync(string contactEmail, string organizationName)
+        {
+            var client = new SendGridClient(SendgridApiKey);
+
+            string htmlMessage = $"<p>New Organization registered by: {contactEmail}</p>" +
+                $"<p>At: {DateTime.Now}</p>" +
+                $"<p>Organization name: {organizationName}</p>" +
+                $"";
+            SendGridMessage sendGridMessage = new SendGridMessage()
+            {
+                From = new EmailAddress(FromEmail, "Organization registration notification"),
+                Subject = $"New organization registered!",
+                HtmlContent = htmlMessage,
+                PlainTextContent = htmlMessage
+            };
+
+            sendGridMessage.AddTo(new EmailAddress(OrganizationConfiguredNotifyEmail));
 
             var result = await client.SendEmailAsync(sendGridMessage);
 
