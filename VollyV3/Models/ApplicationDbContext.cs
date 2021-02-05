@@ -14,6 +14,7 @@ namespace VollyV3.Models
 
         public DbSet<Opportunity> Opportunities { get; set; }
         public DbSet<Organization> Organizations { get; set; }
+        public DbSet<OrganizationMapEntry> OrganizationMapEntries { get; set; }
         public DbSet<OrganizationAdministratorUser> OrganizationAdministratorUsers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Cause> Causes { get; set; }

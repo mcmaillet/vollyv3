@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using VollyV3.Data;
 using VollyV3.Models.Contact;
 using VollyV3.Services.EmailSender;
 using VollyV3.Services.Recaptcha;
