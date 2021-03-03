@@ -4,8 +4,63 @@
 }
 <div class="padded bg-default-dark">
     <section>
-        <p>
-            Coming soon.
-        </p>
+        <div class="text-right">
+            <a class="btn btn-outline-primary"
+               asp-area="Identity"
+               asp-page="/Account/Manage/Index">Back to your account</a>
+        </div>
+    </section>
+    <hr />
+    <section>
+        <form asp-action="TrackExternal" autocomplete="off">
+            <div class="text-right">
+                <label for="OrganizationName">
+                    Who did you volunteer for?
+                </label>
+                <input type="text"
+                       name="OrganizationName" />
+                <br />
+                <label for="OpportunityName">
+                    Event name/short description
+                </label>
+                <input type="text"
+                       name="OpportunityName" />
+                <br />
+                <label for="Hours">
+                    How many hours would you like to add?
+                </label>
+                <input type="number"
+                       id="Hours" name="Hours"
+                       value="1.0" step="0.1" min="0" />
+                <br />
+                <label for="StartDate">Start Date</label>
+                <input type="text"
+                       name="StartDate" id="start-date" />
+                <br />
+                <label for="StartTime">Start Time</label>
+                <input type="text"
+                       name="StartTime" id="start-time" />
+                <br />
+                <input type="submit"
+                       class="btn btn-secondary"
+                       value="Submit" />
+            </div>
+        </form>
     </section>
 </div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("#start-date")
+                .datepicker({
+                    defaultDate: 0,
+                    changeMonth: true,
+                    changeYear: true,
+                    numberOfMonths: 1,
+                    minDate: 0
+                });
+            $("#start-time").timepicker();
+        });
+    </script>
+}

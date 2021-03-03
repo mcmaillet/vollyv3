@@ -170,6 +170,35 @@ namespace VollyV3.Controllers.Volunteer
         {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> TrackExternalAsync(TrackExternalViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var volunteerHours = new VolunteerHours()
+            {
+                OrganizationName = model.OrganizationName,
+                OpportunityName = model.OpportunityName,
+                User = user,
+                Hours = model.Hours
+            };
+
+            var startTime = model.StartTime;
+            if (string.IsNullOrEmpty(model.StartTime))
+            {
+                startTime = "12:00am";
+            }
+
+            if (!string.IsNullOrEmpty(model.StartDate))
+            {
+                volunteerHours.DateTime = DateTime.Parse($"{model.StartDate} {model.StartTime}");
+            }
+
+            _context.Add(volunteerHours);
+            _context.SaveChanges();
+            TempData["Messages"] = $"{model.Hours} hours added.";
+            return RedirectToAction(nameof(Index));
+        }
         /// <summary>
         /// Edit
         /// </summary>

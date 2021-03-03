@@ -5,6 +5,14 @@
 }
 <div class="padded bg-default-dark">
     <section>
+        <div class="text-right">
+            <a class="btn btn-outline-primary"
+               asp-area="Identity"
+               asp-page="/Account/Manage/Index">Back to your account</a>
+        </div>
+    </section>
+    <hr />
+    <section>
         <h1>@Model.Name</h1>
         <h2>@Model.Address</h2>
         <h3>@Model.ContactEmail</h3>
@@ -15,7 +23,7 @@
         </p>
     </section>
     <section>
-        <form asp-action="TrackOrganization">
+        <form asp-action="TrackOrganization" autocomplete="off">
             <input name="Id" type="hidden" value="@Model.Id" />
             <div class="text-right">
                 <label for="Hours">

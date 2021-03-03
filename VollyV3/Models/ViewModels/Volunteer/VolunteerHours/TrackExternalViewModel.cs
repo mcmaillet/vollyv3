@@ -1,8 +1,9 @@
 ﻿namespace VollyV3.Models.ViewModels.Volunteer.VolunteerHours
 {
-    public class TrackOrganizationViewModel
+    public class TrackExternalViewModel
     {
-        public int Id { get; set; }
+        public string OrganizationName { get; set; }
+        public string OpportunityName { get; set; }
         public double Hours { get; set; }
         public string StartDate { get; set; }
         public string StartTime { get; set; }

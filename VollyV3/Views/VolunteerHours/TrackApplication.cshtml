@@ -5,6 +5,14 @@
 }
 <div class="padded bg-default-dark">
     <section>
+        <div class="text-right">
+            <a class="btn btn-outline-primary"
+               asp-area="Identity"
+               asp-page="/Account/Manage/Index">Back to your account</a>
+        </div>
+    </section>
+    <hr />
+    <section>
         <h1>@Model.Opportunity.Organization.Name</h1>
         <h2>@Model.Opportunity.Name</h2>
         <h3>@Model.Opportunity.Address</h3>
