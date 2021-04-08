@@ -1,93 +1,34 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using VollyV3.Data;
 using VollyV3.Models;
-using VollyV3.Models.Browse;
-using VollyV3.Models.ViewModels.Components;
-using VollyV3.Services;
+using VollyV3.Models.Apply;
 using VollyV3.Services.EmailSender;
 
 namespace VollyV3.Controllers
 {
-    public class BrowseController : Controller
+    public class ApplyController : Controller
     {
-        private static readonly string GoogleMapsAPIKey = Environment.GetEnvironmentVariable("google_maps_api_key");
-
         private readonly ApplicationDbContext _context;
-        private readonly IMemoryCache _memoryCache;
         private readonly UserManager<VollyV3User> _userManager;
         private readonly IEmailSenderExtended _emailSender;
-        public BrowseController(
+        public ApplyController(
             ApplicationDbContext context,
-            IMemoryCache memoryCache,
             UserManager<VollyV3User> userManager,
             IEmailSenderExtended emailSender)
         {
             _context = context;
-            _memoryCache = memoryCache;
             _userManager = userManager;
             _emailSender = emailSender;
         }
-        /// <summary>
-        /// Index
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<IActionResult> IndexAsync(int? id)
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            var application = new ApplicationModel();
-            if (user != null)
-            {
-                application.Email = user.Email;
-                application.Name = user.FullName;
-                application.PhoneNumber = user.PhoneNumber;
-            }
-            BrowseModel browseModel = new BrowseModel
-            {
-                ApplicationModel = application,
-                GoogleMapsAPIKey = GoogleMapsAPIKey
-
-            };
-            ViewData["OpportunityId"] = id;
-            return View(browseModel);
-        }
-        /// <summary>
-        /// Details
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> DetailsAsync(int id)
-        {
-            List<Opportunity> opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memoryCache, _context);
-            OpportunityViewModel opportunityView = opportunities
-                .Where(x => x.Id == id)
-                .Select(OpportunityViewModel.FromOpportunity)
-                .SingleOrDefault();
-
-            if (opportunityView == null)
-            {
-                return View(new OpportunityViewModel());
-            }
-            return View(opportunityView);
-        }
-        /// <summary>
-        /// Apply
-        /// </summary>
-        /// <param name="application"></param>
-        /// <returns></returns>
         [HttpPost]
-        public async Task<HttpStatusCode> ApplyAsync([FromBody] ApplicationModel application)
+        [Route("/apply")]
+        public async Task<HttpStatusCode> ApplyAsync([FromBody] ApplyApplicationModel application)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var opportunity = _context
@@ -125,15 +66,17 @@ namespace VollyV3.Controllers
                 return HttpStatusCode.BadRequest;
             }
 
-            return await _emailSender.SendEmailApplicationConfirmationAsync(
+            var responseCode = await _emailSender.SendEmailApplicationConfirmationAsync(
                     application.Name, application.Email,
                     opportunity.ContactEmail,
                     $"Application submitted for '{opportunity.Name}'",
                     ComposeEmailMessageForApplications(application, opportunity, occurrences)
                     );
+
+            return responseCode;
         }
 
-        private static string ComposeEmailMessageForApplications(ApplicationModel application,
+        private static string ComposeEmailMessageForApplications(ApplyApplicationModel application,
             Opportunity opportunity,
             IEnumerable<Occurrence> occurrences)
         {
@@ -153,7 +96,7 @@ namespace VollyV3.Controllers
 
         }
 
-        private static Application GetBaseApplication(ApplicationModel application,
+        private static Application GetBaseApplication(ApplyApplicationModel application,
                 Opportunity opportunity,
                 VollyV3User user)
         {

@@ -5,15 +5,18 @@
 }
 
 <script>
-    window.location.replace("/Browse?Id=@Model.Id");
+    window.location.replace("/?id=@Model.Id");
 </script>
 
 @section OGp
     {
     <meta property="og:title" content="@Html.DisplayFor(model => model.Name)" />
-    <meta property="og:image" content="@Uri.EscapeUriString(Model.ImageUrl)" />
+    @if (Model.ImageUrl != null)
+    {
+        <meta property="og:image" content="@Uri.EscapeUriString(Model.ImageUrl)" />
+    }
     <meta property="og:description" content="@Html.DisplayFor(model => model.Description)" />
     <meta property="og:site_name" content="Volly" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://volly.app/Browse/Details/@Model.Id" />
+    <meta property="og:url" content="https://volly.app/details/@Model.Id" />
 }

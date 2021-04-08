@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace VollyV3.Models.Browse
+namespace VollyV3.Models.Apply
 {
-    public class ApplicationModel
+    public class ApplyApplicationModel
     {
         public string OpportunityId { get; set; }
         [Required]

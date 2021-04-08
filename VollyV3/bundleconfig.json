@@ -14,16 +14,16 @@
     "minify": { "enabled": true }
   },
   {
-    "outputFileName": "wwwroot/css/home.browse.min.css",
+    "outputFileName": "wwwroot/css/home.min.css",
     "inputFiles": [
-      "wwwroot/css/home.browse.css"
+      "wwwroot/css/home.css"
     ],
     "minify": { "enabled": true }
   },
   {
-    "outputFileName": "wwwroot/js/home.browse.min.js",
+    "outputFileName": "wwwroot/js/home.min.js",
     "inputFiles": [
-      "wwwroot/js/home.browse.js"
+      "wwwroot/js/home.js"
     ],
     "minify": { "enabled": true }
   }

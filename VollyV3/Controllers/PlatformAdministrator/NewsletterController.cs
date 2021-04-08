@@ -21,7 +21,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
     [Authorize(Roles = nameof(Role.PlatformAdministrator))]
     public class NewsletterController : Controller
     {
-        private static readonly string opportunityUrl = "https://vollyv3.azurewebsites.net/Browse/Details/";
+        private static readonly string opportunityUrl = "https://volly.app/details/";
         private static readonly int TakeFromTopCount = 20;
         private static readonly int NumberOfOpportunitiesToInclude = 4;
         private static readonly string DefaultNewsletterSubject = "This is a test subject";
