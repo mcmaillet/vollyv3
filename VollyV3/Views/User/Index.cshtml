@@ -30,11 +30,20 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            @if (item.EmailConfirmed)
+                            {
+                                <td class="text-danger">
+                                    @item.NormalizedEmail (not confirmed)
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @item.NormalizedEmail
+                                </td>
+                            }
                             <td>
-                                @Html.DisplayFor(modelItem => item.NormalizedEmail)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                @item.PhoneNumber
                             </td>
                             <td>
                                 <a asp-route-id="@item.Id"
