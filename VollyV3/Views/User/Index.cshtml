@@ -32,34 +32,34 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            @if (item.EmailConfirmed)
+                    <tr>
+                        @if (item.EmailConfirmed)
+                        {
+                            <td>
+                                @item.NormalizedEmail
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-danger">
+                                @item.NormalizedEmail (not confirmed)
+                            </td>
+                        }
+                        <td>
+                            @item.PhoneNumber
+                        </td>
+                        <td>
+                            @item.CreatedDateTime
+                        </td>
+                        <td>
+                            <a asp-route-id="@item.Id"
+                               asp-action="Details">Details</a>@if (item.LockoutEnd != null)
                             {
-                                <td class="text-danger">
-                                    @item.NormalizedEmail (not confirmed)
-                                </td>
+                                <text> | <a asp-route-id="@item.Id"
+                                            asp-action="Unlock">Unlock</a></text>
                             }
-                            else
-                            {
-                                <td>
-                                    @item.NormalizedEmail
-                                </td>
-                            }
-                            <td>
-                                @item.PhoneNumber
-                            </td>
-                            <td>
-                                @item.CreatedDateTime
-                            </td>
-                            <td>
-                                <a asp-route-id="@item.Id"
-                                   asp-action="Details">Details</a>@if (item.LockoutEnd != null)
-                                {
-                                    <text> | <a asp-route-id="@item.Id"
-                                                asp-action="Unlock">Unlock</a></text>
-                                }
-                            </td>
-                        </tr>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
