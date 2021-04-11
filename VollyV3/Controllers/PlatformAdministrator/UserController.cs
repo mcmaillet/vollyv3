@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -9,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using VollyV3.Areas.Identity;
 using VollyV3.Models;
 using VollyV3.Models.ViewModels.PlatformAdministrator.Users;
@@ -37,6 +34,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
         {
             return View(
                 _userManager.Users
+                .OrderByDescending(u => u.CreatedDateTime)
                 .ToList()
                 );
         }
