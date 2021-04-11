@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +22,9 @@ namespace VollyV3.Controllers.PlatformAdministrator
         {
             return View(new ManageOrganizationsViewModel()
             {
-                Organizations = _context.Organizations.ToList()
+                Organizations = _context.Organizations
+                .OrderByDescending(o => o.CreatedDateTime)
+                .ToList()
             });
         }
 
@@ -51,7 +51,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
                 .SingleOrDefault();
             organization.Enabled = !organization.Enabled;
             await _context.SaveChangesAsync();
-            TempData["Messages"] = $"{organization.Name} has been {(organization.Enabled? "enabled":"disabled")}";
+            TempData["Messages"] = $"{organization.Name} has been {(organization.Enabled ? "enabled" : "disabled")}";
             return RedirectToAction(nameof(Index));
         }
     }
