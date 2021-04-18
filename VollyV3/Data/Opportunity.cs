@@ -50,6 +50,7 @@ namespace VollyV3.Data
         public DateTime CreatedDateTime { get; set; }
         public string ContactEmail { get; set; }
         public bool IsArchived { get; set; }
+        public DateTime UpdatedDateTime { get; set; }
 
         public Opportunity Clone()
         {
@@ -69,30 +70,9 @@ namespace VollyV3.Data
                 OpportunityType = OpportunityType,
                 CreatedDateTime = DateTime.Now,
                 ContactEmail = ContactEmail,
-                IsArchived = IsArchived
+                IsArchived = IsArchived,
+                UpdatedDateTime = DateTime.Now
             };
-        }
-
-        public async Task<OpportunityImage> UploadImage(IImageManager imageManager, ApplicationDbContext context, IFormFile imageFile)
-        {
-            string imageUrl = await imageManager.UploadOpportunityImageAsync(
-                imageFile,
-                GetImageFileName(imageFile.FileName));
-            OpportunityImage opportunityImage = new OpportunityImage()
-            {
-                OpportunityId = Id,
-                ImageUrl = imageUrl
-
-            };
-            context.OpportunityImages.Add(opportunityImage);
-            await context.SaveChangesAsync();
-
-            return opportunityImage;
-        }
-
-        private string GetImageFileName(string fileName)
-        {
-            return "oppimage" + Id + fileName;
         }
 
         public static bool RequiresOccurrences(OpportunityType opportunityType)

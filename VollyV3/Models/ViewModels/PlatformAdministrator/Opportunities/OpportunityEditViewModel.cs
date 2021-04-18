@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.ComponentModel.DataAnnotations;
 using VollyV3.Data;
 using VollyV3.Services;
@@ -52,6 +53,7 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
             opportunity.ExternalSignUpUrl = ExternalSignUpUrl;
             opportunity.Location = GoogleLocator.GetLocationFromAddress(Address);
             opportunity.ContactEmail = ContactEmail;
+            opportunity.UpdatedDateTime = DateTime.Now;
             return opportunity;
         }
     }

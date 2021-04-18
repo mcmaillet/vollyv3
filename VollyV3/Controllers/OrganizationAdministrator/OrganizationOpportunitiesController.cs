@@ -98,10 +98,13 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                     return RedirectToAction("Index", "Error");
                 }
 
+                var now = DateTime.Now;
+
                 Opportunity opportunity = model.GetOpportunity(_imageManager);
                 opportunity.CreatedBy = user;
                 opportunity.Organization = organizationsManagedByUser[0];
-                opportunity.CreatedDateTime = DateTime.Now;
+                opportunity.CreatedDateTime = now;
+                opportunity.UpdatedDateTime = now;
 
                 if (string.IsNullOrEmpty(model.ContactEmail))
                 {
