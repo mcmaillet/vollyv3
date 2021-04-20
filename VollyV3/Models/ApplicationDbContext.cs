@@ -24,6 +24,7 @@ namespace VollyV3.Models
         public DbSet<Occurrence> Occurrences { get; set; }
         public DbSet<VolunteerHours> VolunteerHours { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<LoggedError> LoggedErrors { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

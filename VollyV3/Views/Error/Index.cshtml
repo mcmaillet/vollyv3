@@ -1,4 +1,5 @@
-﻿@{
+﻿@model VollyV3.Models.ViewModels.Error.IndexViewModel
+@{
     ViewData["Title"] = "Error";
 }
 <div class="padded bg-default-dark">
@@ -18,6 +19,11 @@
             <tr>
                 <td>
                     @TempData["Messages"]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ErrorId: @Model.RequestId
                 </td>
             </tr>
         </tbody>
