@@ -24,7 +24,7 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         public int? CategoryId { get; set; }
         public SelectList Categories { get; set; }
         public string ImageUrl { get; set; }
-        [Display(Name = "Upload an image for this event")]
+        [Display(Name = "Upload an image for this event (supported formats: png, jpg, bmp)")]
         public IFormFile ImageFile { get; set; }
         [Display(Name = "Enter the URL of the application form or sign up sheet. Ex: volunteersignup.org or signupgenius")]
         public string ExternalSignUpUrl { get; set; }
