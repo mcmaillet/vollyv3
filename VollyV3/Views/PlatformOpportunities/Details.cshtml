@@ -6,9 +6,22 @@
 }
 
 <div class="padded bg-default-dark">
-    <h1>@Model.Name</h1>
+    <div class="text-right">
+        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    </div>
+    @if (VollyV3.Data.Opportunity.RequiresOccurrences(Model.OpportunityType))
+    {
+        <text>
+            <br />
+            <div class="text-right">
+                <a class="btn btn-warning" asp-action="Occurrences" asp-route-id="@Model.Id">Manage occurrences</a>
+            </div>
+            <br /></text>
+    }
+
+    <h2>@Model.Name</h2>
     <small>with @Model.OrganizationName</small>
-    <h3>@Model.ContactEmail</h3>
+    <p>@Model.ContactEmail</p>
     <div class="row">
         <div class="col-md-6">
             <div>
@@ -30,7 +43,15 @@
             <img class="img-fluid" src="@Model.ImageUrl" />
         </div>
     </div>
-
+    <br />
+    <div class="text-right">
+        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+    </div>
+    <br />
+    <div class="text-right">
+        <a class="btn btn-danger" asp-action="Archive" asp-route-id="@Model.Id">Toggle Archived Status</a>
+    </div>
+    <br />
     <div>
         <a asp-action="Index">Back to List</a>
     </div>

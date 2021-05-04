@@ -81,3 +81,44 @@
     margin-right: 15px;
     color: #000;
 }
+
+.vollytron {
+    color: #ff559b;
+    visibility: visible;
+    background-color: #0f0c1a;
+    border: 1px solid black;
+    border-radius: 2rem;
+    padding: 4rem 3rem;
+}
+
+    .vollytron .vtitle {
+        font-weight: 700;
+        font-size: 2.25rem;
+    }
+
+    .vollytron .vtext {
+        color: #6eb5ff;
+        font-size: 1.5rem;
+    }
+
+    .vollytron .index-subtitle {
+        color: #ff559b;
+    }
+
+    .vollytron p.paragraph {
+        color: #ff559b;
+    }
+
+    .vollytron .start-browsing {
+        text-align: center;
+    }
+
+        .vollytron .start-browsing img {
+            max-height: 100%;
+            max-width: 75%;
+        }
+
+    .vollytron p.ptron {
+        font-weight: 700;
+        font-size: 1.2rem;
+    }

@@ -82,6 +82,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
 
             return View(new OpportunityDetailsViewModel()
             {
+                Id = id,
                 OrganizationName = opportunity.Organization.Name,
                 Name = opportunity.Name,
                 OpportunityType = opportunity.OpportunityType,
@@ -389,6 +390,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
             }
 
             opp.IsArchived = !opp.IsArchived;
+            opp.UpdatedDateTime = DateTime.Now;
 
             _context.SaveChanges();
 

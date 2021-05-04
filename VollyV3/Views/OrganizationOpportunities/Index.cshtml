@@ -9,9 +9,14 @@
         @TempData["Messages"]
     </div>
     <p>
-        <a asp-action="Create">Create New</a>
+        <a class="btn btn-info" asp-action="Create">Create New</a>
     </p>
+    <br />
     <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+    <br />
+    <p>
+        Click/tap a row to select a posting
+    </p>
     <table class="table table-bordered table-striped table-text table-dark table-hover" id="opportunityList">
         <thead>
             <tr>
@@ -27,37 +32,26 @@
                 <th>
                     @Html.DisplayNameFor(model => model.OpportunityType)
                 </th>
-                <th>
-                    Actions
-                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.CreatedDateTime
-                </td>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Category
-                </td>
-                <td>
-                    @item.OpportunityType
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>@if (VollyV3.Data.Opportunity.RequiresOccurrences(item.OpportunityType))
-                    {
-                        <text> | <a asp-action="Occurrences" asp-route-id="@item.Id">Manage occurrences</a></text>
-                    }
-                </td>
-            </tr>
-        }
+            {
+                <tr @if (item.IsArchived) { <text> class="is-archived" </text> } data-href="@item.Id">
+                    <td>
+                        @item.CreatedDateTime
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Category
+                    </td>
+                    <td>
+                        @item.OpportunityType
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
@@ -68,6 +62,9 @@
             $("#opportunityList tbody tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
+        });
+        $("#opportunityList tbody tr").click(function () {
+            window.location = window.location + "/Details/" + $(this).data("href");
         });
     });
 </script>

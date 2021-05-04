@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Caching.Memory;
 using VollyV3.Areas.Identity;
 using VollyV3.Data;
 using VollyV3.Models;
@@ -59,7 +58,8 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                     CreatedDateTime = opportunity.CreatedDateTime,
                     Name = opportunity.Name,
                     Category = opportunity.Category?.Name,
-                    OpportunityType = opportunity.OpportunityType
+                    OpportunityType = opportunity.OpportunityType,
+                    IsArchived = opportunity.IsArchived
                 })
                 .ToList());
         }
@@ -221,11 +221,16 @@ namespace VollyV3.Controllers.OrganizationAdministrator
                 return RedirectToAction(nameof(Index));
             }
 
-            opportunity.IsArchived = true;
+            var isArchived = opportunity.IsArchived;
+            opportunity.IsArchived = !isArchived;
+            opportunity.UpdatedDateTime = DateTime.Now;
 
             _context.Update(opportunity);
 
-            TempData["Messages"] = $"Opportunity '{opportunity.Name}' has been archived.";
+            _context.SaveChanges();
+
+            var archivedStatus = isArchived ? "unarchived" : "archived";
+            TempData["Messages"] = $"Opportunity '{opportunity.Name}' has been {archivedStatus}.";
             return RedirectToAction(nameof(Index));
         }
         /// <summary>
@@ -248,6 +253,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
             return View(new OpportunityDetailsViewModel()
             {
+                Id = id,
                 Name = opp.Name,
                 OpportunityType = opp.OpportunityType,
                 Address = opp.Address,

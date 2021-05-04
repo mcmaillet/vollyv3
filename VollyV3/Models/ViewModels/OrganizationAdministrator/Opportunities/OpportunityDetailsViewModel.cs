@@ -4,6 +4,7 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
 {
     public class OpportunityDetailsViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string ContactEmail { get; set; }
         public OpportunityType OpportunityType { get; set; }
