@@ -35,9 +35,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.OpportunityType)
                 </th>
-                <th>
-                    Actions
-                </th>
             </tr>
         </thead>
         <tbody>
@@ -58,9 +55,6 @@
                     </td>
                     <td>
                         @item.OpportunityType
-                    </td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
