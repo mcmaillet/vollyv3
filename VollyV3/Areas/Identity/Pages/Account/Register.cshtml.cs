@@ -109,9 +109,7 @@ namespace VollyV3.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", ComposeEmailMessage(callbackUrl));
 
                     await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(Role), Role.Volunteer));
                     if (Input.IsOrganizationAdministrator)
@@ -136,6 +134,21 @@ namespace VollyV3.Areas.Identity.Pages.Account
             }
 
             return Page();
+        }
+
+        private string ComposeEmailMessage(string callbackUrl)
+        {
+            var emailMessage = "";
+            if (Input.IsOrganizationAdministrator)
+            {
+                emailMessage += "<p>" +
+                    "Your account has been created!" +
+                    "<br />" +
+                    "We must approve all accounts to make sure your organization falls within our community guidelines. You can make a posting now which will be published once your account is approved." +
+                    "</p>";
+            }
+            emailMessage += $"<p>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.</p>";
+            return emailMessage;
         }
     }
 }
