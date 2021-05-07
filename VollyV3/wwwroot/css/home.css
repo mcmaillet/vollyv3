@@ -122,3 +122,23 @@
         font-weight: 700;
         font-size: 1.2rem;
     }
+
+#ln-share {
+    text-decoration: underline;
+}
+
+    #ln-share:hover {
+        cursor: pointer;
+    }
+
+#ln-share-wrap {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    background-color: #b2dd7b;
+    color: #000;
+}
+
+#copy-confirm {
+    display: none;
+    padding-left: 5px;
+}

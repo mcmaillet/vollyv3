@@ -41,7 +41,6 @@ function openOpportunityModal(opportunity) {
 
     $("#fb-share").attr("href", "https://www.facebook.com/sharer/sharer.php?u=" + baseUrl + opportunity.id);
     $("#tw-share").attr("href", "https://twitter.com/share?url=" + baseUrl + opportunity.id + "&text=Volly - " + opportunity.name);
-    $("#ln-share").attr("href", baseUrl + opportunity.id);
     document.getElementById("ln-share").innerHTML = baseUrl + opportunity.id;
     $("#OpportunityModal").modal('show');
 };
@@ -118,7 +117,7 @@ function appendOpportunityPanel(opportunity, marker) {
                 marker.setAnimation(null);
             });
     }
-    
+
     if ($("#InitialOpportunity").html() == opportunity.id) {
         openOpportunityModal(opportunity);
     }
@@ -301,4 +300,20 @@ function toggleFilterVisibility(filterid) {
             }
         });
     });
+    $("#ln-share").click(function () {
+        var lnShare = document.getElementById("ln-share");
+        var el = document.createElement("input");
+        el.setAttribute("id", "ln-share-clipboard");
+        el.setAttribute("type", "text");
+        el.setAttribute("value", lnShare.innerHTML);
+        lnShare.appendChild(el);
+        document.getElementById("ln-share-clipboard").select();
+        document.execCommand("copy");
+        lnShare.removeChild(el);
+        var copyConfirm = document.getElementById("copy-confirm");
+        copyConfirm.style.display = 'inline-block';
+        setTimeout(() => {
+            copyConfirm.style.display = 'none';
+        }, 2000);
+    })
 })();

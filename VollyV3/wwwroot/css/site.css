@@ -167,17 +167,6 @@ nav img.img-brand {
     height: 85vh;
 }
 
-#ln-share {
-    text-decoration: none;
-    color: #fff;
-}
-
-#ln-share-wrap {
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
-    background-color: #b2dd7b;
-}
-
 #fb-share {
     text-decoration: none;
     color: #fff;
@@ -186,10 +175,6 @@ nav img.img-brand {
 
 #fb-share-wrap {
     background-color: #3b5998;
-}
-
-#ln-share img {
-    height: 1rem;
 }
 
 #fb-share img {
