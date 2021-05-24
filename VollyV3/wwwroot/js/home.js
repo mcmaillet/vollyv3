@@ -30,7 +30,7 @@ function openOpportunityModal(opportunity) {
     $("#ModalAddress").html(opportunity.address);
     $("#ModalDescription").html(opportunity.description);
     var opportunityType = opportunity.opportunityType;
-    if (opportunityType === 0 || opportunityType === 2) {
+    if (opportunityType === 0) {
         $("#occurrencesSelect").css("visibility", "visible");
         $("#occurrencesSelect").css("position", "relative");
     } else {
