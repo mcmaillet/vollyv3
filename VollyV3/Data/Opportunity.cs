@@ -29,8 +29,7 @@ namespace VollyV3.Data
     {
         private static readonly List<OpportunityType> OpportunityTypesRequiringOccurrences = new List<OpportunityType>()
     {
-        OpportunityType.Events,
-        OpportunityType.Group
+        OpportunityType.Events
     };
         public int Id { get; set; }
         public string Name { get; set; }

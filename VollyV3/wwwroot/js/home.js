@@ -80,7 +80,7 @@ function getSplit(breakline) {
 
 function appendOpportunityPanel(opportunity, marker) {
     var dateTimeStringWrapper = "";
-    if (opportunity.opportunityType === 0 || opportunity.opportunityType === 2) {
+    if (opportunity.opportunityType === 0) {
         var dateTimeString = "Multiple Shifts";
         if (opportunity.occurrenceViews) {
             if (opportunity.occurrenceViews.length === 1) {
