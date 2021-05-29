@@ -14,7 +14,8 @@
     <div class="page-separator"></div>
     <div class="page-content">
         <div class="page-text">
-            <table class="table table-text table-hover table-dark">
+            <input class="form-control" id="searchInput" type="text" placeholder="Search..">
+            <table class="table table-text table-hover table-dark" id="searchableList">
                 <thead>
                     <tr>
                         <th>
@@ -32,37 +33,47 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                    <tr>
-                        @if (item.EmailConfirmed)
-                        {
-                            <td>
-                                @item.NormalizedEmail
-                            </td>
-                        }
-                        else
-                        {
-                            <td class="text-danger">
-                                @item.NormalizedEmail (not confirmed)
-                            </td>
-                        }
-                        <td>
-                            @item.PhoneNumber
-                        </td>
-                        <td>
-                            @item.CreatedDateTime
-                        </td>
-                        <td>
-                            <a asp-route-id="@item.Id"
-                               asp-action="Details">Details</a>@if (item.LockoutEnd != null)
+                        <tr>
+                            @if (item.EmailConfirmed)
                             {
-                                <text> | <a asp-route-id="@item.Id"
-                                            asp-action="Unlock">Unlock</a></text>
+                                <td>
+                                    @item.NormalizedEmail
+                                </td>
                             }
-                        </td>
-                    </tr>
+                            else
+                            {
+                                <td class="text-danger">
+                                    @item.NormalizedEmail (not confirmed)
+                                </td>
+                            }
+                            <td>
+                                @item.PhoneNumber
+                            </td>
+                            <td>
+                                @item.CreatedDateTime
+                            </td>
+                            <td>
+                                <a asp-route-id="@item.Id"
+                                   asp-action="Details">Details</a>@if (item.LockoutEnd != null)
+                                {
+                                    <text> | <a asp-route-id="@item.Id"
+                                                asp-action="Unlock">Unlock</a></text>
+                                }
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#searchableList tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
