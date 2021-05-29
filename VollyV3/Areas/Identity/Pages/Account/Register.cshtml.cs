@@ -81,13 +81,16 @@ namespace VollyV3.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            returnUrl = returnUrl ?? Url.Content("~/");
+            GoogleRecaptchaSiteKey = Environment.GetEnvironmentVariable("google_recaptcha_site_key");
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (!RecaptchaValidator.IsRecaptchaValid(Request.Form["g-recaptcha-response"]) || Input.TripCheck)
             {
-                return RedirectToAction("Index", "Error");
+                ModelState.AddModelError(string.Empty, "Captcha invalid");
+                return Page();
             }
 
-            returnUrl = returnUrl ?? Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = new VollyV3User

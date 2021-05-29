@@ -95,6 +95,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
                 if (organizationsManagedByUser.Count != 1)
                 {
+                    TempData["Messages"] = $"Failed to create opportunity.";
                     return RedirectToAction("Index", "Error");
                 }
 
