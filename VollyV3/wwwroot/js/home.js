@@ -1,9 +1,5 @@
 ﻿var map;
 var markers = [];
-var currentPage = 1;
-var currentLimit = 12;
-var currentOpportunityType;
-var currentTotalCount = 0;
 
 function addOpportunityMarker(opportunity) {
     if (opportunity.latitude && opportunity.longitude) {
@@ -216,17 +212,16 @@ function setMapOnAll(map) {
 
 $(".opportunityType").click(function () {
     var opportunityType = parseInt($(this).attr('value'));
-    filter(opportunityType, 1);
+    filter(opportunityType);
 });
 
-function filter(opportunityType, page = 1) {
-    currentPage = page;
-    var opportunityTypeChanged = currentOpportunityType != opportunityType;
-    currentOpportunityType = opportunityType;
+function filter(opportunityType) {
     var data = {
+        "CategoryIds": null,
+        "CauseIds": null,
+        "OrganizationIds": null,
         "OpportunityType": opportunityType,
-        "Page": page,
-        "Limit": currentLimit,
+        "Dates": null,
         "Sort": 1
     };
 
@@ -236,18 +231,12 @@ function filter(opportunityType, page = 1) {
         url: '/api/Search/Opportunities',
         data: JSON.stringify(data),
         dataType: "json",
-        success: function (data) {
-            var opportunities = data.opportunities;
-            currentTotalCount = data.totalCount;
-            if (opportunityTypeChanged) {
-                clearOpportunities();
-            }
+        success: function (opportunities) {
+            clearOpportunities();
             $('#loader').show();
             if (opportunities.length === 0) {
                 $('#loader').hide();
-                if (opportunityTypeChanged) {
-                    $('#nothingFoundAlert').show();
-                }
+                $('#nothingFoundAlert').show();
             } else {
                 $('#nothingFoundAlert').hide();
                 addOpportunityMarkers(opportunities);
@@ -280,27 +269,7 @@ function toggleFilterVisibility(filterid) {
         $("#filter-wrapper").addClass("filter-wrapper-show")
     }
 }
-
 (function () {
-    window.addEventListener('scroll', () => {
-        const {
-            scrollTop,
-            scrollHeight,
-            clientHeight
-        } = document.documentElement;
-
-        const hasMoreResults = (page) => {
-            const startIndex = (page - 1) * currentLimit + 1;
-            return currentTotalCount === 0 || startIndex < currentTotalCount;
-        };
-
-        if (scrollTop + clientHeight >= scrollHeight - 5 && hasMoreResults(currentPage)) {
-            currentPage++;
-            filter(currentOpportunityType, currentPage);
-        }
-    }, {
-        passive: true
-    })
     $("#toggleMap").click(function () {
         var dataShow = parseInt($('#toggleMap').attr('data-show'));
         if (dataShow === 1) {
