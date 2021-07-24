@@ -282,7 +282,8 @@ function toggleFilterVisibility(filterid) {
 }
 
 (function () {
-    window.addEventListener('scroll', () => {
+
+    const performScroll = () => {
         const {
             scrollTop,
             scrollHeight,
@@ -298,9 +299,15 @@ function toggleFilterVisibility(filterid) {
             currentPage++;
             filter(currentOpportunityType, currentPage);
         }
-    }, {
+    }
+
+    window.addEventListener('scroll', performScroll, {
         passive: true
-    })
+    });
+    window.addEventListener('touchmove', performScroll, {
+        passive: true
+    });
+
     $("#toggleMap").click(function () {
         var dataShow = parseInt($('#toggleMap').attr('data-show'));
         if (dataShow === 1) {
