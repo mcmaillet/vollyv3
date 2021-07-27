@@ -8,11 +8,9 @@ namespace VollyV3.Models.Search
 {
     public class OpportunitySearch
     {
-        public List<int> CauseIds { get; set; }
-        public List<int> CategoryIds { get; set; }
-        public List<int> OrganizationIds { get; set; }
         public int OpportunityType { get; set; }
-        public List<DateTime> Dates { get; set; }
+        public int Page { get; set; }
+        public int Limit { get; set; }
         public int Sort { get; set; }
     }
 }

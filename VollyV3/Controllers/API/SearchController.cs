@@ -27,20 +27,30 @@ namespace VollyV3.Controllers.API
 
         [HttpPost]
         [Route("/api/Search/Opportunities")]
-        public async Task<IActionResult> Search([FromBody] OpportunitySearch opportunitySearch)
+        public async Task<IActionResult> Search([FromBody] OpportunitySearch model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            List<Opportunity> opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memoryCache, _context);
-            List<OpportunityViewModel> opportunityViews = opportunities
-                .Where(GetEligibleOpportunityPredicate(opportunitySearch))
+            var opportunities = await MemoryCacheImpl.GetOpportunitiesAcceptingApplications(_memoryCache, _context);
+
+            var eligibleOpportunities = opportunities
+                .Where(GetEligibleOpportunityPredicate(model));
+
+            var totalCount = eligibleOpportunities.Count();
+
+            return Ok(new OpportunitySearchResult()
+            {
+                TotalCount = totalCount,
+                Opportunities = eligibleOpportunities
                 .Select(OpportunityViewModel.FromOpportunity)
                 .OrderByDescending(x => x.Id)
-                .ToList();
-            return Ok(opportunityViews);
+                .Skip((model.Page - 1) * model.Limit)
+                .Take(model.Limit)
+                .ToList()
+            });
         }
         private static Func<Opportunity, bool> GetEligibleOpportunityPredicate(OpportunitySearch opportunitySearch)
         {
