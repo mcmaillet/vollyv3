@@ -294,7 +294,7 @@ function toggleFilterVisibility(filterid) {
             return currentTotalCount === 0 || startIndex < currentTotalCount;
         };
 
-        if (scrollTop + clientHeight >= scrollHeight - 5 && hasMoreResults(currentPage)) {
+        if (scrollTop + clientHeight >= scrollHeight - 130 && hasMoreResults(currentPage)) {
             currentPage++;
             filter(currentOpportunityType, currentPage);
         }
