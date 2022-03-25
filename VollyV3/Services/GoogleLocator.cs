@@ -26,11 +26,15 @@ namespace VollyV3.Services
         {
             Client = GetNewClient();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            string addressQuery = addressString.Replace(' ', '+');
+            string addressQuery = addressString.Replace(' ', '+').Replace("#", string.Empty);
             int tryCount = 0;
             do
             {
-                HttpResponseMessage response = Client.GetAsync(Endpoint + addressQuery + "+Calgary").Result;
+                if (!addressQuery.ToLower().Contains("calgary"))
+                {
+                    addressQuery += "+Calgary";
+                }
+                HttpResponseMessage response = Client.GetAsync(Endpoint + addressQuery).Result;
 
                 var googleString = response.Content.ReadAsStringAsync().Result;
                 GoogleLocation googleLocation = GoogleLocation.FromJson(googleString);
