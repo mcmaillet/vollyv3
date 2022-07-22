@@ -1,0 +1,32 @@
+﻿@model VollyV3User
+@{
+    ViewData["Title"] = "Confirm User Email";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container bg-default-dark padded">
+    <div class="page-title">
+        @ViewData["Title"]
+    </div>
+    <div class="page-separator"></div>
+    <div class="page-content">
+        <div class="page-text">
+            <h3>Are you sure you want to manually confirm the email of this user?</h3>
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+                </dl>
+
+                <form asp-action="ConfirmEmail">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="submit" value="Confirm Email" class="btn btn-outline-danger" /> |
+                    <a asp-action="Index">Back to List</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

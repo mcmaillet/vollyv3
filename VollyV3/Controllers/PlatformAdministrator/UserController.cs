@@ -140,5 +140,32 @@ namespace VollyV3.Controllers.PlatformAdministrator
             TempData["Messages"] = $"User {email} deleted";
             return RedirectToAction(nameof(Index));
         }
+
+        /// <summary>
+        /// ConfirmEmail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult ConfirmEmail(string id)
+        {
+            return View(
+                _userManager.Users.SingleOrDefault(u => u.Id == id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmEmail(string id, IFormCollection collection)
+        {
+            var user = _context.Users.SingleOrDefault(u => u.Id == id);
+
+            user.EmailConfirmed = true;
+
+            var email = user.Email;
+
+            await _context.SaveChangesAsync();
+            TempData["Messages"] = $"User {email} confirmed";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
