@@ -39,10 +39,28 @@ namespace VollyV3.Models.ViewModels.PlatformAdministrator.Opportunities
         public Opportunity GetOpportunity(ApplicationDbContext context, IWebHostEnvironment environment, IImageManager imageManager)
         {
             string imageUrl = null;
-            using (var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream())
+            try
             {
-                var imageFileName = ImageFilenameProducer.Create();
-                imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
+                using (var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream())
+                {
+                    var imageFileName = ImageFilenameProducer.Create();
+                    imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
+                }
+            }
+            catch (Exception e)
+            {
+                var error = new LoggedError()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ExceptionType = e?.GetType().FullName,
+                    ExceptionMessage = e?.Message,
+                    ExceptionStackTrace = e?.StackTrace,
+                    Path = "/PlatformOpportunities/Edit",
+                    CreatedDateTime = DateTime.Now
+                };
+
+                context.LoggedErrors.Add(error);
+                context.SaveChangesAsync();
             }
 
             var opportunity = context.Opportunities.Find(Id);

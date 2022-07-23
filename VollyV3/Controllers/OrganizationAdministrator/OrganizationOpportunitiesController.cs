@@ -105,7 +105,7 @@ namespace VollyV3.Controllers.OrganizationAdministrator
 
                 var now = DateTime.Now;
 
-                Opportunity opportunity = model.GetOpportunity(_environment, _imageManager);
+                Opportunity opportunity = model.GetOpportunity(_context, _environment, _imageManager);
                 opportunity.CreatedBy = user;
                 opportunity.Organization = organizationsManagedByUser[0];
                 opportunity.CreatedDateTime = now;

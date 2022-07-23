@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using VollyV3.Data;
@@ -33,14 +34,33 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         [Display(Name = "Contact Email")]
         [EmailAddress]
         public string ContactEmail { get; set; }
-        public Opportunity GetOpportunity(IWebHostEnvironment environment, IImageManager imageManager)
+        public Opportunity GetOpportunity(ApplicationDbContext context, IWebHostEnvironment environment, IImageManager imageManager)
         {
             string imageUrl = null;
-            using (var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream())
+
+            try
             {
-                var imageFileName = ImageFilenameProducer.Create();
-                imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
-            }            
+                using (var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream())
+                {
+                    var imageFileName = ImageFilenameProducer.Create();
+                    imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
+                }
+            }
+            catch (Exception e)
+            {
+                var error = new LoggedError()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ExceptionType = e?.GetType().FullName,
+                    ExceptionMessage = e?.Message,
+                    ExceptionStackTrace = e?.StackTrace,
+                    Path = "/OrganizationOpportunities/Create",
+                    CreatedDateTime = DateTime.Now
+                };
+
+                context.LoggedErrors.Add(error);
+                context.SaveChangesAsync();
+            }
 
             return new Opportunity
             {
