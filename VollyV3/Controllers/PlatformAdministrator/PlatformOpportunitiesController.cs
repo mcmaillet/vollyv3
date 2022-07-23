@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,14 +25,16 @@ namespace VollyV3.Controllers.PlatformAdministrator
         private readonly ApplicationDbContext _context;
         private readonly UserManager<VollyV3User> _userManager;
         private readonly IImageManager _imageManager;
+        private readonly IWebHostEnvironment _environment;
         public PlatformOpportunitiesController(ApplicationDbContext context,
             UserManager<VollyV3User> userManager,
-            IImageManager imageManager)
+            IImageManager imageManager,
+            IWebHostEnvironment environment)
         {
-
             _context = context;
             _userManager = userManager;
             _imageManager = imageManager;
+            _environment = environment;
         }
         /// <summary>
         /// Index
@@ -133,7 +136,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
 
                 var now = DateTime.Now;
 
-                Opportunity opportunity = model.GetOpportunity(_imageManager);
+                Opportunity opportunity = model.GetOpportunity(_environment, _imageManager);
                 opportunity.CreatedBy = user;
                 opportunity.Organization = organization;
                 opportunity.CreatedDateTime = now;
@@ -200,7 +203,7 @@ namespace VollyV3.Controllers.PlatformAdministrator
         [HttpPost]
         public async Task<IActionResult> EditAsync(OpportunityEditViewModel model)
         {
-            var opp = model.GetOpportunity(_context, _imageManager);
+            var opp = model.GetOpportunity(_context, _environment, _imageManager);
 
             if (opp == null)
             {

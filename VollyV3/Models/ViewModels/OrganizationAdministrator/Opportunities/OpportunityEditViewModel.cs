@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using VollyV3.Data;
 using VollyV3.Services;
 using VollyV3.Services.ImageManager;
@@ -32,12 +34,11 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         [Display(Name = "Contact Email")]
         [EmailAddress]
         public string ContactEmail { get; set; }
-        public Opportunity GetOpportunity(ApplicationDbContext context, IImageManager imageManager)
+        public Opportunity GetOpportunity(ApplicationDbContext context, IWebHostEnvironment environment, IImageManager imageManager)
         {
-            string imageUrl = ImageFile == null ? null : imageManager.UploadOpportunityImageAsync(
-                ImageFile,
-                ImageFilenameProducer.Create()
-                ).Result;
+            var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream();
+            var imageFileName = ImageFilenameProducer.Create();
+            string imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
 
             var opportunity = context.Opportunities.Find(Id);
             opportunity.Name = Name;

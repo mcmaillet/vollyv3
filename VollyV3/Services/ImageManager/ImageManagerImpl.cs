@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace VollyV3.Services.ImageManager
@@ -19,7 +16,7 @@ namespace VollyV3.Services.ImageManager
         private const int ImageFixedHeight = 768;
         private const double ImageAspectRatio = 4.0 / 3.0;
 
-        public async Task<string> UploadOpportunityImageAsync(IFormFile imageFile, string imageName)
+        public async Task<string> UploadOpportunityImageAsync(Stream imageStream, string imageName)
         {
             CloudStorageAccount storageAccount = new CloudStorageAccount(
                 new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
@@ -33,7 +30,7 @@ namespace VollyV3.Services.ImageManager
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                using (var image = Image.FromStream(imageFile.OpenReadStream(), true, true))
+                using (var image = Image.FromStream(imageStream, true, true))
                 {
                     var imageWidth = ImageFixedWidth;
                     var imageHeight = ImageFixedHeight;
