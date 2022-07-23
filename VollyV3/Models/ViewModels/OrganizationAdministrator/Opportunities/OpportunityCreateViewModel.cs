@@ -35,9 +35,12 @@ namespace VollyV3.Models.ViewModels.OrganizationAdministrator.Opportunities
         public string ContactEmail { get; set; }
         public Opportunity GetOpportunity(IWebHostEnvironment environment, IImageManager imageManager)
         {
-            var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream();
-            var imageFileName = ImageFilenameProducer.Create();
-            string imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
+            string imageUrl = null;
+            using (var imageStream = ImageFile == null ? new FileStream(environment.WebRootPath + "/images/assets/logo-dark.png", FileMode.Open) : ImageFile.OpenReadStream())
+            {
+                var imageFileName = ImageFilenameProducer.Create();
+                imageUrl = imageManager.UploadOpportunityImageAsync(imageStream, imageFileName).Result;
+            }            
 
             return new Opportunity
             {
