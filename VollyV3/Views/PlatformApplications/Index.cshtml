@@ -13,19 +13,22 @@
         <thead>
             <tr>
                 <th>
+                    Date/time submitted
+                </th>
+                <th>
                     Organization
                 </th>
                 <th>
-                    Opportunity
+                    Event name
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Occurrence.StartTime)
+                    Start time
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Email)
+                    Email
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                    Phone number
                 </th>
                 <th>
                     Actions
@@ -36,6 +39,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @item.SubmittedDateTime
+                    </td>
                     <td>
                         @item.Opportunity.Organization.Name
                     </td>
