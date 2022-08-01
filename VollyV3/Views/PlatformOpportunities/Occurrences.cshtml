@@ -178,6 +178,17 @@
             $("#start-time").timepicker();
             $("#end-time").timepicker();
             $("#add").click(() => {
+                var requiredFields = [];
+                if ($("#start-date").val() === "") {
+                    requiredFields.push("Start Date");
+                }
+                if ($("#end-date").val() === "") {
+                    requiredFields.push("End Date");
+                }
+                if (requiredFields.length !== 0) {
+                    alert("The following fields are required: " + requiredFields.join(", "));
+                    return;
+                }
                 var data = {
                     "OpportunityId": @Model.OpportunityId,
                     "StartDate": $("#start-date").val(),
