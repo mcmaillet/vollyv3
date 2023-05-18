@@ -66,7 +66,7 @@ namespace VollyV3.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            [Display(Name = "I am registering as an organization administrator.")]
+            [Display(Name = "I work at a non profit and want to register an organization account to recruit volunteers")]
             public bool IsOrganizationAdministrator { get; set; }
 
             public bool TripCheck { get; set; }
